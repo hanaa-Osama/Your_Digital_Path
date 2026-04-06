@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -29,6 +30,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    kotlinOptions {
+        jvmTarget = "11" // أو "21"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -71,8 +75,8 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.52")
-    ksp("com.google.dagger:hilt-compiler:2.52")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")

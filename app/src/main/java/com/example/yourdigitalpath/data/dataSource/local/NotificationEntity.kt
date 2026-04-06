@@ -8,8 +8,7 @@ data class NotificationEntity(
     @PrimaryKey val id: String,
     val title: String,
     val message: String,
-    val timeAgo: String,
     val type: String,
     val isRead: Boolean = false,
-    val timestamp: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis()
 )

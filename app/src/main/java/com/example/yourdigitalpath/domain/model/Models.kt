@@ -2,18 +2,18 @@ package com.example.yourdigitalpath.domain.model
 
 
 data class TrackingStep(
-    val id: Int,
-    val title: String,
-    val timestamp: String,
-    val status: String // "completed", "current", "pending"
+    val id: Int = 0,
+    val title: String = "",
+    val timestamp: String = "",
+    val status: String = "pending"
 )
 
 data class OrderTrackingDetail(
-    val orderId: String,
-    val serviceType: String,
-    val date: String,
-    val price: String,
-    val steps: List<TrackingStep>
+    val orderId: String = "",
+    val serviceType: String = "",
+    val date: String = "",
+    val price: String = "",
+    val steps: List<TrackingStep> = emptyList()
 )
 
 data class NotificationItem(

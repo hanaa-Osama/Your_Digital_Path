@@ -2,6 +2,7 @@ package com.example.yourdigitalpath.data.repositoryImp
 
 import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.NotificationEntity
+import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,11 +13,9 @@ class NotificationRepositoryImpl(
 ) : NotificationRepository {
 
     override fun getAllNotifications(): Flow<List<NotificationItem>> {
-
         return dao.getNotificationsFlow().map { entities ->
-            entities.map {
-                NotificationItem(it.id, it.title, it.message, it.timeAgo, it.type, it.isRead)
-            }
+
+            entities.map { it.toDomain() }
         }
     }
 
@@ -29,10 +28,10 @@ class NotificationRepositoryImpl(
             id = notification.id,
             title = notification.title,
             message = notification.message,
-            timeAgo = notification.timeAgo,
             type = notification.type,
-            isRead = notification.isRead
+            isRead = notification.isRead,
+            createdAt = System.currentTimeMillis()
         )
-        dao.insert(entity)
+        dao.insertNotification(entity)
     }
 }

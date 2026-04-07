@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation
+package com.example.yourdigitalpath.presentation.notification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +21,7 @@ class NotificationViewModel @Inject constructor(
     val notifications: StateFlow<List<NotificationItem>> = getNotificationsUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.Companion.Lazily,
             initialValue = emptyList()
         )
 

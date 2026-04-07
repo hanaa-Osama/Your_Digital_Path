@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation
+package com.example.yourdigitalpath.presentation.tracking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

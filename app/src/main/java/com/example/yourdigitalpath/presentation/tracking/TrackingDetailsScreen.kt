@@ -25,6 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.presentation.tracking.TrackingViewModel
 import com.example.yourdigitalpath.presentation.tracking.component.OrderInfoTable
 import com.example.yourdigitalpath.presentation.tracking.component.OrderTimelineSection
 import com.example.yourdigitalpath.ui.theme.LightGrayBg
@@ -39,7 +43,16 @@ import com.example.yourdigitalpath.ui.theme.PrimaryBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrackingDetailsScreen() {
+fun TrackingDetailsScreen(
+    orderId: String,
+    trackingviewModel: TrackingViewModel
+) {
+    val state by trackingviewModel.state.collectAsState()
+
+    LaunchedEffect(orderId) {
+        trackingviewModel.startTracking(orderId)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,7 +66,8 @@ fun TrackingDetailsScreen() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Back */ }) {
+                    IconButton(
+                        onClick = { }) {
                         Icon(
                             Icons.Default.KeyboardArrowRight,
                             contentDescription = null,
@@ -62,8 +76,13 @@ fun TrackingDetailsScreen() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* More */ }) {
-                        Icon(Icons.Default.MoreHoriz, contentDescription = null, tint = PrimaryBlue)
+                    IconButton(
+                        onClick = { }) {
+                        Icon(
+                            Icons.Default.MoreHoriz,
+                            contentDescription = null,
+                            tint = PrimaryBlue
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -81,17 +100,23 @@ fun TrackingDetailsScreen() {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("REQ-2025-00841", color = Color.Gray, fontSize = 12.sp)
-            Spacer(modifier = Modifier.height(16.dp))
 
+            state?.let { detail ->
+                Text(detail.orderId, color = Color.Gray, fontSize = 12.sp)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            OrderInfoTable()
+                // نمرر البيانات الحقيقية للـ Table
+                OrderInfoTable(detail)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            OrderTimelineSection()
+                // نمرر الخطوات الحقيقية للـ Timeline
+                OrderTimelineSection(detail.steps)
+            } ?: run {
+                // ممكن تحطي هنا CircularProgressIndicator لو الداتا لسه بتحمل
+                Text("جاري تحميل بيانات الطلب...")
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

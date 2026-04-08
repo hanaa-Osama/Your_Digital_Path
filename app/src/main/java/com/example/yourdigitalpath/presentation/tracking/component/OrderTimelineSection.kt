@@ -28,11 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.ui.theme.PrimaryBlue
 import com.example.yourdigitalpath.ui.theme.SuccessGreen
 
 @Composable
-fun OrderTimelineSection() {
+fun OrderTimelineSection(steps: List<TrackingStep>) {
     Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
@@ -43,11 +44,17 @@ fun OrderTimelineSection() {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            TimelineItem("تم استلام الطلب", "2 أبريل", true, isLast = false)
-            TimelineItem("تأكيد الدفع", "2 أبريل", true, isLast = false)
-            TimelineItem("مراجعة المستندات", "جاري", false, isLast = false, isCurrent = true)
-            TimelineItem("إصدار الوثيقة", "-", false, isLast = false)
-            TimelineItem("التسليم", "-", false, isLast = true)
+            // اللف على الخطوات
+            steps.forEachIndexed { index, step ->
+                TimelineItem(
+                    status = step.title,
+                    date = step.timestamp,
+                    // اللوجيك بتاع الحالة:
+                    isDone = step.status == "completed",
+                    isCurrent = step.status == "active",
+                    isLast = index == steps.size - 1
+                )
+            }
         }
     }
 }
@@ -57,21 +64,24 @@ fun TimelineItem(
     status: String,
     date: String,
     isDone: Boolean,
-    isLast: Boolean,
-    isCurrent: Boolean = false
+    isCurrent: Boolean = false,
+    isLast: Boolean
+
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
+            // تعديل بسيط في الـ drawBehind داخل TimelineItem
             .drawBehind {
                 if (!isLast) {
+                    // حساب السنتر بتاع الدائرة تقريباً عشان الخط يبدأ منها
+                    val circleCenterOffset = 45f // ده الرقم اللي إنتِ مستخدماه
                     drawLine(
-
                         color = if (isDone) SuccessGreen else Color.LightGray,
-                        start = Offset(size.width - 45f, 70f),
-                        end = Offset(size.width - 45f, size.height + 30f),
-                        strokeWidth = 3.dp.toPx()
+                        start = Offset(size.width - circleCenterOffset, 60f), // بداية من نص الدائرة
+                        end = Offset(size.width - circleCenterOffset, size.height + 40f),
+                        strokeWidth = 2.dp.toPx()
                     )
                 }
             },

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.NotificationDatabase
+import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import com.example.yourdigitalpath.data.repositoryImp.NotificationRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.TrackingRepositoryImpl
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
@@ -82,5 +83,17 @@ object AppModule {
         repo: TrackingRepository
     ): ObserveOrderTrackingUseCase {
         return ObserveOrderTrackingUseCase(repo)
+    }
+
+// ضيفي ده جوه الـ AppModule
+
+    @Provides
+    @Singleton
+    fun provideFirestoreNotificationListener(
+        firestore: FirebaseFirestore,
+        dao: NotificationDao,
+        @ApplicationContext context: Context
+    ): FirestoreNotificationListener {
+        return FirestoreNotificationListener(firestore, dao, context)
     }
 }

@@ -4,19 +4,19 @@ import com.example.yourdigitalpath.data.local.entity.OrderEntity
 import com.example.yourdigitalpath.domain.model.Order
 import com.example.yourdigitalpath.domain.model.OrderStatus
 
-fun String.toOrderStatus(rejectReason: String? = null): OrderStatus{
-    return when(this){
+fun String.toOrderStatus(rejectReason: String? = null): OrderStatus {
+    return when (this) {
         "Pending" -> OrderStatus.Pending
         "InProgress" -> OrderStatus.InProgress
         "Completed" -> OrderStatus.Completed
         "Issued" -> OrderStatus.Issued
-        "Rejected" -> OrderStatus.Rejected(rejectReason?: "سبب غير محدد")
+        "Rejected" -> OrderStatus.Rejected(rejectReason ?: "سبب غير محدد")
         else -> OrderStatus.Pending
     }
 }
 
-fun OrderStatus.toDbStatus(): String{
-    return when(this){
+fun OrderStatus.toDbStatus(): String {
+    return when (this) {
         is OrderStatus.Pending -> "Pending"
         is OrderStatus.InProgress -> "InProgress"
         is OrderStatus.Completed -> "Completed"
@@ -25,7 +25,7 @@ fun OrderStatus.toDbStatus(): String{
     }
 }
 
-fun OrderEntity.toDomain(): Order{
+fun OrderEntity.toDomain(): Order {
     return Order(
         id = id,
         serviceName = serviceName,
@@ -38,7 +38,7 @@ fun OrderEntity.toDomain(): Order{
     )
 }
 
-fun Order.toEntity(): OrderEntity{
+fun Order.toEntity(): OrderEntity {
     return OrderEntity(
         id = id,
         serviceName = serviceName,

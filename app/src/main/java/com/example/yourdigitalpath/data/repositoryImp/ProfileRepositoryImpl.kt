@@ -18,7 +18,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateProfile(profile: UserProfile): Boolean {
         return try {
-             userProfileDao.insertUserProfile(profile.toEntity())
+            userProfileDao.insertUserProfile(profile.toEntity())
             true
         } catch (e: Exception) {
             false

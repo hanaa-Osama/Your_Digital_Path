@@ -84,4 +84,9 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
+// Firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+// Messaging
+    implementation("com.google.firebase:firebase-messaging-ktx")
 }

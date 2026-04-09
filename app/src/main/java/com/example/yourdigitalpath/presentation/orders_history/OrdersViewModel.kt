@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.viewModel
+package com.example.yourdigitalpath.presentation.orders_history
 
 
 import androidx.lifecycle.ViewModel
@@ -9,8 +9,12 @@ import com.example.yourdigitalpath.domain.usecase.GetMyOrdersUseCase
 import com.example.yourdigitalpath.domain.usecase.GetOrdersByStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel

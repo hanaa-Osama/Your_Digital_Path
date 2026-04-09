@@ -1,10 +1,13 @@
-package com.example.yourdigitalpath.presentation.viewModel
-
+package com.example.yourdigitalpath.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.domain.model.UserProfile
-import com.example.yourdigitalpath.domain.usecase.*
+import com.example.yourdigitalpath.domain.usecase.GetNotificationSettingsUseCase
+import com.example.yourdigitalpath.domain.usecase.GetUserProfileUseCase
+import com.example.yourdigitalpath.domain.usecase.LogoutUseCase
+import com.example.yourdigitalpath.domain.usecase.ToggleNotificationsUseCase
+import com.example.yourdigitalpath.domain.usecase.UpdateUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

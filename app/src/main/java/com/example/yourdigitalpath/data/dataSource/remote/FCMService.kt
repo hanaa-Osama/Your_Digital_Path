@@ -8,8 +8,8 @@ import androidx.core.app.NotificationCompat
 import com.example.yourdigitalpath.MainActivity
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.YourDigitalPathApp
-import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
-import com.example.yourdigitalpath.data.dataSource.local.NotificationEntity
+import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
+import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint

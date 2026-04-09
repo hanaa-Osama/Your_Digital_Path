@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.data.dataSource.local
+package com.example.yourdigitalpath.data.dataSource.local.Entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

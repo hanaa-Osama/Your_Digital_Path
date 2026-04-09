@@ -1,0 +1,6 @@
+- Main directories in routes should only be Domain, Data, Presentation, DI
+- Each model (data class) should be in a separate file
+- Timestamp should be long or LocalDateTime
+- Status should be an enum
+- No default values unless the value can be unused
+- Serialized name in Dto

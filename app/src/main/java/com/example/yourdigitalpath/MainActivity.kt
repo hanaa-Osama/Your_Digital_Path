@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
+    // Inject the FirestoreNotificationListener
     @Inject
     lateinit var firestoreNotificationListener: FirestoreNotificationListener
 

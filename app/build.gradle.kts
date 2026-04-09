@@ -89,9 +89,11 @@ dependencies {
     // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
+
 // Firestore
     implementation("com.google.firebase:firebase-firestore-ktx")
 
 // Messaging
     implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 }

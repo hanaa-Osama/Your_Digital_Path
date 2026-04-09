@@ -9,7 +9,8 @@ import com.example.yourdigitalpath.data.local.entity.OrderEntity
 
 @Database(entities =
     [
-    UserProfileEntity::class, OrderEntity::class
+    UserProfileEntity::class,
+        OrderEntity::class
     ],
     version = 1,
     exportSchema = false

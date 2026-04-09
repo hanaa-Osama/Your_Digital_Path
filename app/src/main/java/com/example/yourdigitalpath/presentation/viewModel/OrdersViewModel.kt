@@ -3,14 +3,13 @@ package com.example.yourdigitalpath.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.yourdigitalpath.domain.model.Order
+import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.usecase.GetMyOrdersUseCase
 import com.example.yourdigitalpath.domain.usecase.GetOrdersByStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +22,7 @@ class OrdersViewModel @Inject constructor(
     val selectedStatus = _selectedStatus.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val orders: StateFlow<List<Order>> = _selectedStatus
+    val orders: StateFlow<List<OrderModel>> = _selectedStatus
         .flatMapLatest { status ->
             if (status == null) {
                 getMyOrdersUseCase()

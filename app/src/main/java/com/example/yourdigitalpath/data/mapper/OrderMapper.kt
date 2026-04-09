@@ -1,7 +1,7 @@
 package com.example.yourdigitalpath.data.mapper
 
 import com.example.yourdigitalpath.data.local.entity.OrderEntity
-import com.example.yourdigitalpath.domain.model.Order
+import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
 
 fun String.toOrderStatus(rejectReason: String? = null): OrderStatus{
@@ -25,8 +25,8 @@ fun OrderStatus.toDbStatus(): String{
     }
 }
 
-fun OrderEntity.toDomain(): Order{
-    return Order(
+fun OrderEntity.toDomain(): OrderModel{
+    return OrderModel(
         id = id,
         serviceName = serviceName,
         requestDate = requestDate,
@@ -38,7 +38,7 @@ fun OrderEntity.toDomain(): Order{
     )
 }
 
-fun Order.toEntity(): OrderEntity{
+fun OrderModel.toEntity(): OrderEntity{
     return OrderEntity(
         id = id,
         serviceName = serviceName,

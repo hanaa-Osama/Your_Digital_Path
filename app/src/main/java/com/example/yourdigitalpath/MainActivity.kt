@@ -4,7 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.yourdigitalpath.presentation.screens.NotificationsScreen
+import com.example.yourdigitalpath.presentation.screens.SettingsScreen
+import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
+import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -13,7 +20,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Text("Digital Path")
+            AppContent()
         }
+    }
+}
+
+@Composable
+fun AppContent() {
+    val viewModel: ProfileViewModel = hiltViewModel()
+    val appSettings by viewModel.appSettings.collectAsState()
+    val isDarkTheme = appSettings?.displayMode == "الوضع المظلم"
+
+    YourDigitalPathTheme(darkTheme = isDarkTheme) {
+        NotificationsScreen(onBackClick = { /* Handle back navigation */ })
+//        SettingsScreen(onBackClick = { /* Handle back navigation */ })
     }
 }

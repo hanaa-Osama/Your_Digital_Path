@@ -1,7 +1,7 @@
 package com.example.yourdigitalpath.data.repositoryImp
 
-import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
-import com.example.yourdigitalpath.data.dataSource.local.NotificationEntity
+import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
+import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
 import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.repository.NotificationRepository

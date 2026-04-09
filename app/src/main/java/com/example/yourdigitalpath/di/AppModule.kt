@@ -1,8 +1,8 @@
 package com.example.yourdigitalpath.di
 
 import android.content.Context
+import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.Database
-import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import com.example.yourdigitalpath.data.repositoryImp.NotificationRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.TrackingRepositoryImpl
@@ -37,13 +37,6 @@ object AppModule {
     @Provides
     fun provideNotificationDao(db: Database): NotificationDao {
         return db.notificationDao()
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideFirestore(): FirebaseFirestore {
-        return FirebaseFirestore.getInstance()
     }
 
 

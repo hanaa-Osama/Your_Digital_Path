@@ -1,5 +1,4 @@
-package com.example.yourdigitalpath.presentation.viewModel
-
+package com.example.yourdigitalpath.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

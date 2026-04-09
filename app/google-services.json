@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "132381421860",
+    "firebase_url": "https://yourdigitalpath-2bd93-default-rtdb.firebaseio.com",
+    "project_id": "yourdigitalpath-2bd93",
+    "storage_bucket": "yourdigitalpath-2bd93.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132381421860:android:e78f4bacf27aa4e5eb03b1",
+        "android_client_info": {
+          "package_name": "com.example.yourdigitalpath"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwbLLvRLDwwSZiG7Zl75KpUwM83G98YIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

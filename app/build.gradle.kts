@@ -1,4 +1,3 @@
-// app/build.gradle.kts
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,7 +5,6 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-
 }
 
 android {
@@ -36,7 +34,7 @@ android {
         }
     }
     kotlinOptions {
-        jvmTarget = "11" // أو "21"
+        jvmTarget = "11"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

@@ -1,10 +1,6 @@
 package com.example.yourdigitalpath.ui.theme
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.example.yourdigitalpath.ui.theme.DarkAppColors
-import com.example.yourdigitalpath.ui.theme.LightAppColors
-import com.example.yourdigitalpath.ui.theme.LocalDarkTheme
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)

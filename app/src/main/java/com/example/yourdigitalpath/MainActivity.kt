@@ -12,15 +12,34 @@ import com.example.yourdigitalpath.presentation.screens.NotificationsScreen
 import com.example.yourdigitalpath.presentation.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    // Inject the FirestoreNotificationListener
+    @Inject
+    lateinit var firestoreNotificationListener: FirestoreNotificationListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        firestoreNotificationListener.startListening()
+
         setContent {
-            AppContent()
+            MaterialTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+
+                }
+
+            }
         }
     }
 }

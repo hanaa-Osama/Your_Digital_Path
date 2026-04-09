@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-//    alias(libs.plugins.google.services)
+    alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -28,6 +28,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false
         }
     }
     kotlinOptions {
@@ -62,10 +65,12 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.5")
 
+
+    implementation("androidx.compose.material:material-icons-extended")
     // Firebase
-//    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-//    implementation("com.google.firebase:firebase-firestore")
-//    implementation("com.google.firebase:firebase-messaging")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-messaging")
 
     // Room
     val roomVersion = "2.6.1"
@@ -82,4 +87,14 @@ dependencies {
 //    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+
+    // Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+
+// Firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+// Messaging
+    implementation("com.google.firebase:firebase-messaging-ktx")
 }

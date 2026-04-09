@@ -2,9 +2,9 @@ package com.example.yourdigitalpath.data.mapper
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.NotificationsNone
-import androidx.compose.material.icons.filled.Payment
-import androidx.compose.material.icons.filled.PriorityHigh
+import androidx.compose.material.icons.filled.Notifications
+
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
 import com.example.yourdigitalpath.data.dataSource.local.NotificationEntity
 import com.example.yourdigitalpath.data.model.TrackingFirebaseDto
@@ -44,11 +44,11 @@ fun TrackingFirebaseDto.toDomain(stepId: Long = 0L): TrackingStep {
 
 fun NotificationItem.toUiData(): NotificationItemData {
     val icon = when (type) {
-        "info" -> Icons.Default.NotificationsNone
+        "info" -> Icons.Default.Notifications
         "success" -> Icons.Default.Check
-        "warning" -> Icons.Default.PriorityHigh
-        "payment" -> Icons.Default.Payment
-        else -> Icons.Default.NotificationsNone
+        "warning" -> Icons.Default.Person
+        "payment" -> Icons.Default.Person
+        else -> Icons.Default.Notifications
     }
     val color = when (type) {
         "success" -> Color(0xFF4CAF50)

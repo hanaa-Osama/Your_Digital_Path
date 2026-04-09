@@ -6,13 +6,16 @@ import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.NotificationDatabase
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import com.example.yourdigitalpath.data.repositoryImp.NotificationRepositoryImpl
+import com.example.yourdigitalpath.data.repositoryImp.OrderRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.TrackingRepositoryImpl
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
+import com.example.yourdigitalpath.domain.repository.OrderRepository
 import com.example.yourdigitalpath.domain.repository.TrackingRepository
 import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
 import com.example.yourdigitalpath.domain.usecase.ObserveOrderTrackingUseCase
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -95,5 +98,16 @@ object AppModule {
         @ApplicationContext context: Context
     ): FirestoreNotificationListener {
         return FirestoreNotificationListener(firestore, dao, context)
+    }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class RepositoryModule {
+
+        @Binds
+        @Singleton
+        abstract fun bindOrderRepository(
+            orderRepositoryImpl: OrderRepositoryImpl
+        ): OrderRepository
     }
 }

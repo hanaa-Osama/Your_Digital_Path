@@ -33,7 +33,7 @@ fun formatTimestamp(timestamp: Long): String {
     }
 }
 
-fun TrackingFirebaseDto.toDomain(stepId: Int = 0): TrackingStep {
+fun TrackingFirebaseDto.toDomain(stepId: Long = 0L): TrackingStep {
     return TrackingStep(
         id = stepId,
         title = this.description,

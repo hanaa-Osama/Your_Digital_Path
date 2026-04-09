@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.common.ktx)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.unit)
 
 
     testImplementation(libs.junit)

@@ -1,11 +1,11 @@
-package com.example.yourdigitalpath.data.local.entity
+package com.example.yourdigitalpath.data.dataSource.local.Entity.certificates
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "birth_certificate_cache")
 data class BirthCertificateEntity(
-    @PrimaryKey val id: Int = 0, // Single row for cache
+    @PrimaryKey val id: Int = 0,
     val fullName: String,
     val dateOfBirth: String,
     val governorate: String,

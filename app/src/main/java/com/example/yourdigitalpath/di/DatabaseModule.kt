@@ -32,6 +32,9 @@ object DatabaseModule {
     fun provideOrderDao(database: Database): OrderDao =
         database.orderDao()
 
+    @Provides
+    fun provideBirthCertificateDao(database: Database): com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.BirthCertificateDao =
+        database.birthCertificateDao()
 
     @Provides
     @Singleton

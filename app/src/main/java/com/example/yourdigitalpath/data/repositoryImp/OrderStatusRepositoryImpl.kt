@@ -6,17 +6,17 @@ import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.domain.model.Order
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
-import com.example.yourdigitalpath.domain.repository.OrderRepository
+import com.example.yourdigitalpath.domain.repository.OrderStatusRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class OrderRepositoryImpl @Inject constructor(
+class OrderStatusRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao,
     private val firestore: FirebaseFirestore
-) : OrderRepository {
+) : OrderStatusRepository {
 
     override fun getAllOrders(): Flow<List<Order>> =
         orderDao.getAllOrders().map {
@@ -26,7 +26,6 @@ class OrderRepositoryImpl @Inject constructor(
 
     override suspend fun addNewOrder(order: OrderTrackingDetail) {
         try {
-            // بنرفع الـ object كامل والفايربيز هيفهمه لو الـ fields مطابقة
             firestore.collection("orders")
                 .document(order.orderId)
                 .set(order)

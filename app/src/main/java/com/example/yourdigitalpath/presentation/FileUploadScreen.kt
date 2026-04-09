@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.dataEntry
+package com.example.yourdigitalpath.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

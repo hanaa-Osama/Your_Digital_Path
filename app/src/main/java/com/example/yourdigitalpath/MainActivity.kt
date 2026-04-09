@@ -12,8 +12,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
-import com.example.yourdigitalpath.presentation.dataEntry.FileUploadScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Notifications
 
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
-import com.example.yourdigitalpath.data.dataSource.local.NotificationEntity
+import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
 import com.example.yourdigitalpath.data.model.TrackingFirebaseDto
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.model.TrackingStep

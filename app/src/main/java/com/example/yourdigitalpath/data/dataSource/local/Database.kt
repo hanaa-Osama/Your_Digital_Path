@@ -2,6 +2,8 @@ package com.example.yourdigitalpath.data.dataSource.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
+import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
 import com.example.yourdigitalpath.data.local.Dao.OrderDao
 import com.example.yourdigitalpath.data.local.Dao.UserProfileDao
 import com.example.yourdigitalpath.data.local.entity.OrderEntity
@@ -9,7 +11,11 @@ import com.example.yourdigitalpath.data.local.entity.UserProfileEntity
 
 @Database(
     entities =
-        [UserProfileEntity::class, OrderEntity::class, NotificationEntity::class],
+        [
+            UserProfileEntity::class,
+            OrderEntity::class,
+            NotificationEntity::class
+        ],
     version = 1,
     exportSchema = false
 )

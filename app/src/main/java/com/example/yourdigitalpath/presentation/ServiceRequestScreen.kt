@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
@@ -117,7 +118,7 @@ fun ServiceRequestScreen(
                     NavigationBarItem(
                         selected = true,
                         onClick = { },
-                        icon = { Icon(Icons.Outlined.Home, contentDescription = null) },
+                        icon = { Icon(Icons.Outlined.Description, contentDescription = null) },
                         label = { Text("طلباتي", fontSize = 10.sp) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = PrimaryBlue,

@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.tracking.component
+package com.example.yourdigitalpath.presentation.order_track.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

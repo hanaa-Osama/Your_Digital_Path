@@ -1,9 +1,8 @@
 package com.example.yourdigitalpath.di
 
 import android.content.Context
-import androidx.room.Room
+import com.example.yourdigitalpath.data.dataSource.local.Database
 import com.example.yourdigitalpath.data.dataSource.local.NotificationDao
-import com.example.yourdigitalpath.data.dataSource.local.NotificationDatabase
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import com.example.yourdigitalpath.data.repositoryImp.NotificationRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.TrackingRepositoryImpl
@@ -24,19 +23,19 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): NotificationDatabase {
-        return Room.databaseBuilder(
-            context,
-            NotificationDatabase::class.java,
-            "notification_db"
-        ).build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideDatabase(@ApplicationContext context: Context): Database {
+//        return Room.databaseBuilder(
+//            context,
+//            Database::class.java,
+//            "notification_db"
+//        ).build()
+//    }
 
 
     @Provides
-    fun provideNotificationDao(db: NotificationDatabase): NotificationDao {
+    fun provideNotificationDao(db: Database): NotificationDao {
         return db.notificationDao()
     }
 
@@ -96,4 +95,15 @@ object AppModule {
     ): FirestoreNotificationListener {
         return FirestoreNotificationListener(firestore, dao, context)
     }
+
+//    @Module
+//    @InstallIn(SingletonComponent::class)
+//    abstract class RepositoryModule {
+//
+//        @Binds
+//        @Singleton
+//        abstract fun bindOrderRepository(
+//            orderRepositoryImpl: OrderRepositoryImpl
+//        ): OrderRepository
+//    }
 }

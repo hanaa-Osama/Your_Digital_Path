@@ -2,7 +2,7 @@ package com.example.yourdigitalpath.domain.model
 
 
 data class TrackingStep(
-    val id: Int = 0,
+    val id: Long = 0L, // التعديل الأهم: خليناها Long بدل Int
     val title: String = "",
     val timestamp: String = "",
     val status: String = "pending"

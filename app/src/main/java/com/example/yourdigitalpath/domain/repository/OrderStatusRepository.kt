@@ -5,7 +5,7 @@ import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import kotlinx.coroutines.flow.Flow
 
-interface OrderRepository {
+interface OrderStatusRepository {
     fun getAllOrders(): Flow<List<Order>>
     fun getOrderByStatus(status: OrderStatus): Flow<List<Order>>
     suspend fun getOrderById(id: String): Order?

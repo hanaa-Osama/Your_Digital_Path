@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.tracking
+package com.example.yourdigitalpath.presentation.order_track
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -41,7 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.tracking.component.OrderTimelineSection
+import com.example.yourdigitalpath.presentation.order_track.component.OrderTimelineSection
 import com.example.yourdigitalpath.ui.theme.PrimaryBlue
 import com.example.yourdigitalpath.ui.theme.SuccessGreen
 

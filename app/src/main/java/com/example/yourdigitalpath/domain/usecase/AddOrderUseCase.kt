@@ -2,14 +2,14 @@ package com.example.yourdigitalpath.domain.usecase
 
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.model.TrackingStep
-import com.example.yourdigitalpath.domain.repository.OrderRepository
+import com.example.yourdigitalpath.domain.repository.OrderStatusRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
 class AddOrderUseCase @Inject constructor(
-    private val repository: OrderRepository
+    private val repository: OrderStatusRepository
 ) {
     suspend operator fun invoke(serviceName: String) {
 

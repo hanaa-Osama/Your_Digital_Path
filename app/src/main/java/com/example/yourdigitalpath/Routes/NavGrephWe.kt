@@ -11,11 +11,11 @@ import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
-import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
+import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
-import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
+import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
 fun AppNavGraph() {
@@ -75,7 +75,7 @@ fun AppNavGraph() {
                 notificationViewModel = viewModel
             )
         }
-        
+
         // File Upload Screen
         composable("file_upload_screen") {
             FileUploadScreen(

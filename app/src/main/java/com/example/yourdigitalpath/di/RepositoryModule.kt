@@ -1,11 +1,13 @@
 package com.example.yourdigitalpath.di
 
 import com.example.yourdigitalpath.data.repositoryImp.OrderStatusRepositoryImpl
+import com.example.yourdigitalpath.data.repositoryImp.OrderTrackRepositoryImp
 import com.example.yourdigitalpath.data.repositoryImp.PreferencesRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.ProfileRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.ServiceRequestRepoImpl
 import com.example.yourdigitalpath.data.repositoryImp.certificates.BirthCertificateRepoImpl
 import com.example.yourdigitalpath.domain.repository.OrderStatusRepository
+import com.example.yourdigitalpath.domain.repository.OrderTrackRepository
 import com.example.yourdigitalpath.domain.repository.PreferencesRepository
 import com.example.yourdigitalpath.domain.repository.ProfileRepository
 import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
@@ -50,4 +52,10 @@ abstract class RepositoryModule {
     abstract fun bindBirthCertificateRepository(
         impl: BirthCertificateRepoImpl
     ): BirthCertificateRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindOrderTrackRepository(
+        impl: OrderTrackRepositoryImp
+    ): OrderTrackRepository
 }

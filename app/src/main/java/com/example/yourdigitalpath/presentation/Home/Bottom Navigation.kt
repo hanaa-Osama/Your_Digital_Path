@@ -53,7 +53,6 @@ fun BottomNavBar(
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = {
-                        // التنقل فقط إذا كان المسار مختلفاً ولتجنب تكرار الصفحات
                         if (currentRoute != item.route) {
                             navController.navigate(item.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

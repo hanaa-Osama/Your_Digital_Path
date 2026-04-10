@@ -1,12 +1,17 @@
 package com.example.yourdigitalpath.Routes
-
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.FileUploadScreen
@@ -18,14 +23,32 @@ import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScree
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
+
 @Composable
 fun AppNavHost(
     navController: NavHostController
 ) {
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val showBottomBar = currentRoute in listOf(
+        "home_screen",
+        "notifications_screen"
+    )
+
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                BottomNavBar(navController)
+            }
+        }
+    ) { padding ->
+
     NavHost(
         navController = navController,
-        startDestination = "welcome_screen"
+        startDestination = "welcome_screen",
+                modifier = Modifier.padding(padding)
     ) {
 
         composable("welcome_screen") {
@@ -41,7 +64,7 @@ fun AppNavHost(
         }
 
         composable("home_screen") {
-            MainScreen(navController)
+            MainScreen(navController = navController, onBack = {})
         }
 
         composable(
@@ -53,7 +76,8 @@ fun AppNavHost(
                 serviceName = serviceName,
                 navController = navController,
                 onNext = { navController.navigate("data_entry_screen/$serviceName") },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                navController = navController
             )
         }
 
@@ -72,7 +96,8 @@ fun AppNavHost(
             val viewModel: NotificationViewModel = hiltViewModel()
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
-                notificationViewModel = viewModel
+                notificationViewModel = viewModel,
+                navController = navController
             )
         }
 
@@ -98,4 +123,4 @@ fun AppNavHost(
         }
 
     }
-}
+}}

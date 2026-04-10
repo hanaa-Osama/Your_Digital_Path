@@ -19,6 +19,7 @@ import com.blqes.digi.presentation.HeaderSection
 
 @Composable
 fun MainScreen(
+    onBack: () -> Unit,
     navController: NavController
 ) {
 
@@ -45,7 +46,7 @@ fun MainScreen(
 
             EventSection(navController)
         }
-        BottomNavBar(navController)
+
 
 
     }
@@ -55,7 +56,8 @@ fun MainScreen(
 @Preview
 private fun MainScreenprev() {
     MainScreen(
-        navController = androidx.navigation.compose.rememberNavController()
+        navController = androidx.navigation.compose.rememberNavController(),
+        onBack = {}
     )
 }
 

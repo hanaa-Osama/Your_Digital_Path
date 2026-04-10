@@ -41,7 +41,7 @@ fun AppNavGraph() {
         }
         // Home Screen
         composable("home_screen") {
-            MainScreen(navController)
+            MainScreen(navController = navController, onBack = {})
         }
         // Service Request Screen
         composable(
@@ -72,7 +72,8 @@ fun AppNavGraph() {
             val viewModel: NotificationViewModel = hiltViewModel()
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
-                notificationViewModel = viewModel
+                notificationViewModel = viewModel,
+                navController = navController
             )
         }
 

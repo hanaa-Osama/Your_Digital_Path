@@ -4,18 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import com.example.yourdigitalpath.Routes.AppNavGraph
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
+import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    // Inject the FirestoreNotificationListener
+
     @Inject
     lateinit var firestoreNotificationListener: FirestoreNotificationListener
 
@@ -26,11 +24,8 @@ class MainActivity : ComponentActivity() {
         firestoreNotificationListener.startListening()
 
         setContent {
-            MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-
-                }
-
+            YourDigitalPathTheme  {
+                AppNavGraph()
             }
         }
     }

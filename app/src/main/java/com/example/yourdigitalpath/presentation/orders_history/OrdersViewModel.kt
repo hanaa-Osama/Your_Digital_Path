@@ -3,7 +3,7 @@ package com.example.yourdigitalpath.presentation.orders_history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.yourdigitalpath.domain.model.Order
+import com.example.yourdigitalpath.domain.model.OrderDetails
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.usecase.GetMyOrdersUseCase
 import com.example.yourdigitalpath.domain.usecase.GetOrdersByStatusUseCase
@@ -27,7 +27,7 @@ class OrdersViewModel @Inject constructor(
     val selectedStatus = _selectedStatus.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val orders: StateFlow<List<Order>> = _selectedStatus
+    val orders: StateFlow<List<OrderDetails>> = _selectedStatus
         .flatMapLatest { status ->
             if (status == null) {
                 getMyOrdersUseCase()

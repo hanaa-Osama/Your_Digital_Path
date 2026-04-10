@@ -3,6 +3,7 @@ package com.example.yourdigitalpath.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.example.yourdigitalpath.data.dataSource.local.Dao.ServiceRequestDao
 import com.example.yourdigitalpath.data.dataSource.local.Database
 import com.example.yourdigitalpath.data.local.Dao.OrderDao
 import com.example.yourdigitalpath.data.local.Dao.UserProfileDao
@@ -32,6 +33,13 @@ object DatabaseModule {
     fun provideOrderDao(database: Database): OrderDao =
         database.orderDao()
 
+    @Provides
+    fun provideBirthCertificateDao(database: Database): com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.BirthCertificateDao =
+        database.birthCertificateDao()
+
+    @Provides
+    fun provideServiceRequestDao(database: Database): ServiceRequestDao =
+        database.serviceRequestDao()
 
     @Provides
     @Singleton

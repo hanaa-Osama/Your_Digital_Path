@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.presentation.service_request
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.domain.model.ServiceRequestModel
@@ -19,6 +20,21 @@ class ServiceRequestViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ServiceRequestModel())
     val uiState: StateFlow<ServiceRequestModel> = _uiState.asStateFlow()
+
+    private val _isUploading = MutableStateFlow(false)
+    val isUploading: StateFlow<Boolean> = _isUploading.asStateFlow()
+
+    fun uploadDocument(uri: Uri) {
+        viewModelScope.launch {
+            _isUploading.value = true
+            try {
+                val fakeUrl = "https://firebasestorage.com/${uri.lastPathSegment}"
+                _uiState.update { it.copy(documentsUrls = it.documentsUrls + fakeUrl) }
+            } finally {
+                _isUploading.value = false
+            }
+        }
+    }
 
     fun updateSelectedType(type: String) {
         _uiState.update { it.copy(selectedType = type) }
@@ -46,7 +62,6 @@ class ServiceRequestViewModel @Inject constructor(
                 saveServiceRequestUseCase(_uiState.value)
                 onSuccess()
             } catch (e: Exception) {
-                // Handle error
             }
         }
     }

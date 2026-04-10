@@ -16,7 +16,7 @@ import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.SectionCard
 
 @Composable
-fun ServiceRequestScreen(
+fun ServiceSummaryScreen(
     viewModel: ServiceRequestViewModel,
     onConfirm: () -> Unit
 ) {

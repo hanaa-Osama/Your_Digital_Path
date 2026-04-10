@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.yourdigitalpath.presentation.AppNavGraph
+import com.example.yourdigitalpath.Routes.AppNavGraph
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
 import dagger.hilt.android.AndroidEntryPoint

@@ -52,7 +52,7 @@ fun DataScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: BirthCertificateViewModel = hiltViewModel()
+    viewModel: BirthCertificateViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val egyptGovernorates = listOf(
@@ -180,8 +180,11 @@ fun DataScreen(
                 ActionButton(
                     text = "التالي",
                     onClick = {
-                        viewModel.submitForm(onSuccess = onNext)
+//                        viewModel.submitForm(onSuccess = onNext)
+
+
                     }
+
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

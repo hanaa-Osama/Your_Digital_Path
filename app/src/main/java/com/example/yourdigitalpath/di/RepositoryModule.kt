@@ -5,13 +5,11 @@ import com.example.yourdigitalpath.data.repositoryImp.OrderTrackRepositoryImp
 import com.example.yourdigitalpath.data.repositoryImp.PreferencesRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.ProfileRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.ServiceRequestRepoImpl
-import com.example.yourdigitalpath.data.repositoryImp.certificates.BirthCertificateRepoImpl
 import com.example.yourdigitalpath.domain.repository.OrderStatusRepository
 import com.example.yourdigitalpath.domain.repository.OrderTrackRepository
 import com.example.yourdigitalpath.domain.repository.PreferencesRepository
 import com.example.yourdigitalpath.domain.repository.ProfileRepository
 import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
-import com.example.yourdigitalpath.domain.repository.certificates.BirthCertificateRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,38 +22,31 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindRequestRepository(
-        serviceRequestRepoImpl: ServiceRequestRepoImpl
-    ): ServiceRequestRepository
-
-
-    @Binds
-    @Singleton
-    abstract fun bindProfileRepository(
-        impl: ProfileRepositoryImpl
-    ): ProfileRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindOrderRepository(
-        impl: OrderStatusRepositoryImpl
+    abstract fun bindOrderStatusRepository(
+        orderStatusRepositoryImpl: OrderStatusRepositoryImpl
     ): OrderStatusRepository
 
     @Binds
     @Singleton
+    abstract fun bindProfileRepository(
+        profileRepositoryImpl: ProfileRepositoryImpl
+    ): ProfileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindServiceRequestRepository(
+        serviceRequestRepoImpl: ServiceRequestRepoImpl
+    ): ServiceRequestRepository
+
+    @Binds
+    @Singleton
     abstract fun bindPreferencesRepository(
-        impl: PreferencesRepositoryImpl
+        preferencesRepositoryImpl: PreferencesRepositoryImpl
     ): PreferencesRepository
 
     @Binds
     @Singleton
-    abstract fun bindBirthCertificateRepository(
-        impl: BirthCertificateRepoImpl
-    ): BirthCertificateRepository
-
-    @Binds
-    @Singleton
     abstract fun bindOrderTrackRepository(
-        impl: OrderTrackRepositoryImp
+        orderTrackRepositoryImp: OrderTrackRepositoryImp
     ): OrderTrackRepository
 }

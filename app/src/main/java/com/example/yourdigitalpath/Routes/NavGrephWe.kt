@@ -63,7 +63,7 @@ fun AppNavGraph() {
             DataScreen(
                 serviceName = it.arguments?.getString("serviceName") ?: "",
                 onNext = { navController.navigate("file_upload_screen") },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
 

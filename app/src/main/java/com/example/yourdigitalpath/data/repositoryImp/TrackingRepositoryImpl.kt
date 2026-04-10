@@ -15,7 +15,7 @@ class TrackingRepositoryImpl(
 ) : TrackingRepository {
 
     override fun observeOrderTracking(orderId: String): Flow<OrderTrackingDetail?> = callbackFlow {
-        // بنحدد الـ Document اللي هنراقبه بناءً على الـ orderId
+
         val docRef = firestore.collection("orders").document(orderId)
 
         val listener = docRef.addSnapshotListener { snapshot, error ->
@@ -26,23 +26,21 @@ class TrackingRepositoryImpl(
 
             if (snapshot != null && snapshot.exists()) {
                 try {
-                    // 1. بنسحب لستة الخرائط (List of Maps) اللي شايلة الـ steps
+
                     val stepsList = snapshot.get("steps") as? List<Map<String, Any>> ?: emptyList()
 
-                    // 2. بنحول كل Map لـ Domain Model (TrackingStep)
-                    // خلي بالك: الأسماء هنا (status, title, timestamp) لازم تطابق اللي بتبعتيه في الـ UseCase
                     val domainSteps = stepsList.mapIndexed { index, map ->
                         TrackingFirebaseDto(
                             status_code = map["status"] as? String
-                                ?: "", // غيرنا status_code لـ status عشان تطابق الـ UseCase
+                                ?: "",
                             update_time = map["timestamp"] as? String
-                                ?: "", // غيرنا update_time لـ timestamp
+                                ?: "",
                             description = map["title"] as? String
-                                ?: "" // غيرنا description لـ title
+                                ?: ""
                         ).toDomain(stepId = index.toLong())
                     }
 
-                    // 3. بنجمع الـ Object الكبير اللي الشاشة مستنياه
+
                     val detail = OrderTrackingDetail(
                         orderId = snapshot.id,
                         steps = domainSteps,
@@ -57,11 +55,10 @@ class TrackingRepositoryImpl(
                     trySend(null)
                 }
             } else {
-                trySend(null) // لو مفيش طلب بالـ ID ده
+                trySend(null)
             }
         }
 
-        // لو الـ Flow اتقفل (اليوزر خرج من الشاشة) بنوقف الـ Listener عشان ميسحبش نت وبطارية
         awaitClose { listener.remove() }
     }
 }

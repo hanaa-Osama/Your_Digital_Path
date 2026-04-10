@@ -3,7 +3,7 @@ package com.example.yourdigitalpath.data.repositoryImp
 import com.example.yourdigitalpath.data.local.Dao.OrderDao
 import com.example.yourdigitalpath.data.mapper.toDbStatus
 import com.example.yourdigitalpath.data.mapper.toDomain
-import com.example.yourdigitalpath.domain.model.Order
+import com.example.yourdigitalpath.domain.model.OrderDetails
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.repository.OrderStatusRepository
@@ -18,7 +18,7 @@ class OrderStatusRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : OrderStatusRepository {
 
-    override fun getAllOrders(): Flow<List<Order>> =
+    override fun getAllOrders(): Flow<List<OrderDetails>> =
         orderDao.getAllOrders().map {
             it.map { entity -> entity.toDomain() }
         }
@@ -35,12 +35,12 @@ class OrderStatusRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getOrderByStatus(status: OrderStatus): Flow<List<Order>> =
+    override fun getOrderByStatus(status: OrderStatus): Flow<List<OrderDetails>> =
         orderDao.getOrdersByStatus(status.toDbStatus()).map {
             it.map { entity -> entity.toDomain() }
         }
 
-    override suspend fun getOrderById(id: String): Order? =
+    override suspend fun getOrderById(id: String): OrderDetails? =
         orderDao.getOrderById(id)?.toDomain()
 
 }

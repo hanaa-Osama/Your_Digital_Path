@@ -1,25 +1,23 @@
 package com.example.yourdigitalpath.presentation
 
-
-
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
+import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
+import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
+import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
-
 
 @Composable
 fun AppNavGraph() {
 
-
     val navController = rememberNavController()
-
 
     NavHost(
         navController = navController,
@@ -56,6 +54,15 @@ fun AppNavGraph() {
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable("notifications_screen") {
+            val viewModel: NotificationViewModel = hiltViewModel()
+            NotificationsScreen(
+                onBack = { navController.popBackStack() },
+                notificationViewModel = viewModel
+            )
+        }
+        
         // File Upload Screen
         composable("file_upload_screen") {
             FileUploadScreen(
@@ -69,6 +76,3 @@ fun AppNavGraph() {
         }
     }
 }
-
-
-

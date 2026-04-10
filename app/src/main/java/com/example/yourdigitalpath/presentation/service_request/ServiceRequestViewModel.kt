@@ -46,13 +46,14 @@ class ServiceRequestViewModel @Inject constructor(
         _uiState.update { it.copy(otherReason = reason) }
     }
 
+    fun updateCopiesCount(count: Int) {
+        _uiState.update { it.copy(copiesCount = count) }
+    }
     fun updateDeliveryMethod(method: String) {
         _uiState.update { it.copy(deliveryMethod = method) }
     }
 
-    fun updateCopiesCount(count: Int) {
-        _uiState.update { it.copy(copiesCount = count) }
-    }
+
 
     fun saveServiceRequest(onSuccess: () -> Unit) {
         viewModelScope.launch {

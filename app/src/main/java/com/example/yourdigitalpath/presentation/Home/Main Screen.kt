@@ -45,7 +45,7 @@ fun MainScreen(
 
             EventSection(navController)
         }
-        BottomNavBar()
+        BottomNavBar(navController)
 
 
     }

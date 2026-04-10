@@ -16,12 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 // هنا تعريف اللون
 val primary = Color(0xFF3D5A80)
 
 @Composable
-fun BottomNavBar() {
+fun BottomNavBar(
+    navController: NavController
+) {
     CompositionLocalProvider(
         LocalLayoutDirection provides LayoutDirection.Rtl
     ) {
@@ -44,7 +48,9 @@ fun BottomNavBar() {
 
             NavigationBarItem(
                 selected = false,
-                onClick = {},
+                onClick = {
+                    navController.navigate("notifications_screen")
+                },
                 icon = { Icon(Icons.Default.Person, contentDescription = null, tint = primary) },
                 label = { Text("إشعارات", color = primary) }
             )
@@ -62,5 +68,5 @@ fun BottomNavBar() {
 @Composable
 @Preview
 private fun BottomNavBarPrev() {
-    BottomNavBar()
+    BottomNavBar(navController = rememberNavController())
 }

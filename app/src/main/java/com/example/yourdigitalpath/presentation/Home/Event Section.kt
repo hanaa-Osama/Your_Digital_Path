@@ -48,7 +48,7 @@ fun EventSection(navController: NavController) {
 
 
             LazyVerticalGrid(
-                modifier = Modifier.weight(1f), // 🔥 أهم سطر
+                modifier = Modifier.weight(1f),
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)

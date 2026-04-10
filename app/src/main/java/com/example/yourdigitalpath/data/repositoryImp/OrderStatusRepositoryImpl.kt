@@ -23,23 +23,11 @@ class OrderRepositoryImpl @Inject constructor(
         }
 
     override fun getOrderByStatus(status: OrderStatus): Flow<List<OrderModel>> =
-
-    override suspend fun addNewOrder(order: OrderTrackingDetail) {
-        try {
-            firestore.collection("orders")
-                .document(order.orderId)
-                .set(order)
-                .await()
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override fun getOrderByStatus(status: OrderStatus): Flow<List<Order>> =
         orderDao.getOrdersByStatus(status.toDbStatus()).map {
             it.map { entity -> entity.toDomain() }
         }
 
     override suspend fun getOrderById(id: String): OrderModel? =
         orderDao.getOrderById(id)?.toDomain()
+
 }

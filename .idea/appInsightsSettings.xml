@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.yourdigitalpath" />
-                  <option name="mobileSdkAppId" value="1:123456789:android:abcdef123456" />
-                  <option name="projectId" value="your-digital-path-dummy" />
-                  <option name="projectNumber" value="123456789" />
+                  <option name="mobileSdkAppId" value="1:132381421860:android:e78f4bacf27aa4e5eb03b1" />
+                  <option name="projectId" value="yourdigitalpath-2bd93" />
+                  <option name="projectNumber" value="132381421860" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

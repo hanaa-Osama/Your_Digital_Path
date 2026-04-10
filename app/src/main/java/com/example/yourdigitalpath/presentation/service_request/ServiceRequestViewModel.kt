@@ -3,6 +3,7 @@ package com.example.yourdigitalpath.presentation.service_request
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.domain.model.ServiceRequestModel
+import com.example.yourdigitalpath.domain.usecase.GetLastServiceRequestUseCase
 import com.example.yourdigitalpath.domain.usecase.SaveServiceRequestUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,11 +15,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ServiceRequestViewModel @Inject constructor(
-    private val saveServiceRequestUseCase: SaveServiceRequestUseCase
+    private val saveServiceRequestUseCase: SaveServiceRequestUseCase,
+    private val getLastServiceRequestUseCase: GetLastServiceRequestUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ServiceRequestModel())
     val uiState: StateFlow<ServiceRequestModel> = _uiState.asStateFlow()
+
+    init {
+        loadLastServiceRequest()
+    }
+
+    private fun loadLastServiceRequest() {
+        viewModelScope.launch {
+            getLastServiceRequestUseCase()?.let { lastRequest ->
+                _uiState.update { lastRequest }
+            }
+        }
+    }
 
     fun updateSelectedType(type: String) {
         _uiState.update { it.copy(selectedType = type) }

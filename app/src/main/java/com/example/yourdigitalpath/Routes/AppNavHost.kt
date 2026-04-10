@@ -74,7 +74,8 @@ fun AppNavHost(
             ServiceRequestScreen(
                 serviceName = serviceName,
                 onNext = { navController.navigate("data_entry_screen/$serviceName") },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                navController = navController
             )
         }
 

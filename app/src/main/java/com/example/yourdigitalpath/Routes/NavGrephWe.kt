@@ -15,7 +15,7 @@ import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
-import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
+import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
 fun AppNavGraph() {
@@ -41,7 +41,7 @@ fun AppNavGraph() {
         }
         // Home Screen
         composable("home_screen") {
-            MainScreen(navController)
+            MainScreen(navController = navController, onBack = {})
         }
         // Service Request Screen
         composable(
@@ -72,7 +72,8 @@ fun AppNavGraph() {
             val viewModel: NotificationViewModel = hiltViewModel()
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
-                notificationViewModel = viewModel
+                notificationViewModel = viewModel,
+                navController = navController
             )
         }
         

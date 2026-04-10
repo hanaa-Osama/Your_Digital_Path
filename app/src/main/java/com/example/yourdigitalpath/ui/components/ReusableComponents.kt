@@ -25,14 +25,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +51,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 // Color Constants
 val PrimaryBlue = Color(0xFF3D5A80)
@@ -344,7 +354,114 @@ fun SectionCard(
     }
 }
 
-// 7. Custom Dropdown
+// 7. CustomDatePickerField
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomDatePickerField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    placeholder: String = "",
+    leadingIcon: ImageVector? = null,
+    errorMessage: String? = null
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+    val isError = errorMessage != null
+
+    val selectedDateString = remember(datePickerState.selectedDateMillis) {
+        datePickerState.selectedDateMillis?.let {
+            val date = Date(it)
+            val format = SimpleDateFormat("yyyy / MM / dd", Locale.getDefault())
+            format.timeZone = TimeZone.getTimeZone("UTC")
+            format.format(date)
+        } ?: value
+    }
+
+    val confirmEnabled = remember {
+        derivedStateOf { datePickerState.selectedDateMillis != null }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = GrayText,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(UnselectedGray, RoundedCornerShape(12.dp))
+                .border(
+                    1.dp,
+                    if (isError) Color.Red else Color.Transparent,
+                    RoundedCornerShape(12.dp)
+                )
+                .clickable { showDatePicker = true }
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                leadingIcon?.let {
+                    Icon(it, contentDescription = null, tint = GrayText)
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
+                Text(
+                    text = value.ifEmpty { placeholder },
+                    color = if (value.isEmpty()) GrayText.copy(alpha = 0.7f) else DarkBlue,
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        if (isError) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 2.dp, start = 4.dp)
+            )
+        }
+    }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onValueChange(selectedDateString)
+                        showDatePicker = false
+                    },
+                    enabled = confirmEnabled.value
+                ) {
+                    Text("موافق")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("إلغاء")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
+// 8. CustomDropdown
 @Composable
 fun CustomDropdown(
     label: String,
@@ -368,31 +485,35 @@ fun CustomDropdown(
             color = GrayText,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-        Box {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(UnselectedGray, RoundedCornerShape(12.dp))
+                .border(
+                    1.dp,
+                    if (isError) Color.Red else Color.Transparent,
+                    RoundedCornerShape(12.dp)
+                )
+                .clickable { expanded = true }
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(UnselectedGray, RoundedCornerShape(12.dp))
-                    .border(
-                        1.dp,
-                        if (isError) Color.Red else Color.Transparent,
-                        RoundedCornerShape(12.dp)
-                    )
-                    .clickable { expanded = true }
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = selectedOption,
-                    color = if (selectedOption.contains("اختر")) GrayText else DarkBlue,
+                    color = if (selectedOption.contains("اختر")) GrayText.copy(alpha = 0.7f) else DarkBlue,
                     fontSize = 14.sp
                 )
                 Icon(
-                    Icons.Default.KeyboardArrowDown,
+                    imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = PrimaryBlue
+                    tint = GrayText
                 )
             }
 
@@ -405,7 +526,7 @@ fun CustomDropdown(
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = { Text(text = option) },
                         onClick = {
                             onOptionSelected(option)
                             expanded = false
@@ -414,6 +535,7 @@ fun CustomDropdown(
                 }
             }
         }
+
         if (isError) {
             Text(
                 text = errorMessage ?: "",

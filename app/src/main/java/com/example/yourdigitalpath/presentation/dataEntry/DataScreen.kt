@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.presentation.dataEntry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.BackgroundGray
+import com.example.yourdigitalpath.ui.components.CustomDatePickerField
 import com.example.yourdigitalpath.ui.components.CustomDropdown
 import com.example.yourdigitalpath.ui.components.CustomTextField
 import com.example.yourdigitalpath.ui.components.DarkBlue
@@ -52,7 +53,7 @@ fun DataScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: BirthCertificateViewModel = hiltViewModel()
+    viewModel: BirthCertificateViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val egyptGovernorates = listOf(
@@ -115,13 +116,12 @@ fun DataScreen(
                         errorMessage = uiState.fullNameError
                     )
 
-                    CustomTextField(
+                    CustomDatePickerField(
                         value = uiState.dateOfBirth,
                         onValueChange = { viewModel.updateDateOfBirth(it) },
                         label = "تاريخ الميلاد",
                         placeholder = "1990 / 01 / 15",
                         leadingIcon = Icons.Default.CalendarMonth,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         errorMessage = uiState.dateOfBirthError
                     )
 
@@ -180,8 +180,11 @@ fun DataScreen(
                 ActionButton(
                     text = "التالي",
                     onClick = {
-                        viewModel.submitForm(onSuccess = onNext)
+//                        viewModel.submitForm(onSuccess = onNext)
+
+
                     }
+
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

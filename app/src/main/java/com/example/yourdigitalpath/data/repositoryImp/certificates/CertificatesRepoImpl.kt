@@ -1,20 +1,20 @@
 package com.example.yourdigitalpath.data.repositoryImp.certificates
 
-import com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.BirthCertificateDao
-import com.example.yourdigitalpath.data.dataSource.local.Entity.certificates.BirthCertificateEntity
-import com.example.yourdigitalpath.domain.model.certificates.BirthCertificateForm
-import com.example.yourdigitalpath.domain.repository.certificates.BirthCertificateRepository
+import com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.CertificatesDao
+import com.example.yourdigitalpath.data.dataSource.local.Entity.certificates.CertificatesEntity
+import com.example.yourdigitalpath.domain.model.certificates.CertificatesForm
+import com.example.yourdigitalpath.domain.repository.certificates.CertificatesRepository
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class BirthCertificateRepoImpl @Inject constructor(
+class CertificatesRepoImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val birthCertificateDao: BirthCertificateDao
-) : BirthCertificateRepository {
+    private val certificatesDao: CertificatesDao
+) : CertificatesRepository {
 
-    override suspend fun saveBirthCertificate(form: BirthCertificateForm) {
+    override suspend fun saveBirthCertificate(form: CertificatesForm) {
         // Save to Firebase
         val data = hashMapOf(
             "fullName" to form.fullName,
@@ -28,12 +28,12 @@ class BirthCertificateRepoImpl @Inject constructor(
         firestore.collection("birth_certificates").add(data).await()
 
         // Clear local cache after successful remote save
-        birthCertificateDao.clearCache()
+        certificatesDao.clearCache()
     }
 
-    override suspend fun getCachedBirthCertificate(): BirthCertificateForm? {
-        return birthCertificateDao.getCachedForm()?.let {
-            BirthCertificateForm(
+    override suspend fun getCachedBirthCertificate(): CertificatesForm? {
+        return certificatesDao.getCachedForm()?.let {
+            CertificatesForm(
                 fullName = it.fullName,
                 dateOfBirth = it.dateOfBirth,
                 governorate = it.governorate,
@@ -44,9 +44,9 @@ class BirthCertificateRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun cacheBirthCertificate(form: BirthCertificateForm) {
-        birthCertificateDao.cacheForm(
-            BirthCertificateEntity(
+    override suspend fun cacheBirthCertificate(form: CertificatesForm) {
+        certificatesDao.cacheForm(
+            CertificatesEntity(
                 fullName = form.fullName,
                 dateOfBirth = form.dateOfBirth,
                 governorate = form.governorate,

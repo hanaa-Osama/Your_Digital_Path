@@ -2,10 +2,10 @@ package com.example.yourdigitalpath.presentation.dataEntry.certificates
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.yourdigitalpath.domain.model.certificates.BirthCertificateForm
-import com.example.yourdigitalpath.domain.usecase.certificates.CacheBirthCertificateUseCase
-import com.example.yourdigitalpath.domain.usecase.certificates.GetCachedBirthCertificateUseCase
-import com.example.yourdigitalpath.domain.usecase.certificates.SaveBirthCertificateUseCase
+import com.example.yourdigitalpath.domain.model.certificates.CertificatesForm
+import com.example.yourdigitalpath.domain.usecase.certificates.CacheCertificatesUseCase
+import com.example.yourdigitalpath.domain.usecase.certificates.GetCachedCertificatesUseCase
+import com.example.yourdigitalpath.domain.usecase.certificates.SaveCertificatesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,9 +33,9 @@ data class BirthCertificateUiState(
 
 @HiltViewModel
 class BirthCertificateViewModel @Inject constructor(
-    private val saveBirthCertificateUseCase: SaveBirthCertificateUseCase,
-    private val getCachedBirthCertificateUseCase: GetCachedBirthCertificateUseCase,
-    private val cacheBirthCertificateUseCase: CacheBirthCertificateUseCase
+    private val saveCertificatesUseCase: SaveCertificatesUseCase,
+    private val getCachedCertificatesUseCase: GetCachedCertificatesUseCase,
+    private val cacheCertificatesUseCase: CacheCertificatesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BirthCertificateUiState())
@@ -47,7 +47,7 @@ class BirthCertificateViewModel @Inject constructor(
 
     private fun loadCachedData() {
         viewModelScope.launch {
-            getCachedBirthCertificateUseCase()?.let { cached ->
+            getCachedCertificatesUseCase()?.let { cached ->
                 _uiState.update {
                     it.copy(
                         fullName = cached.fullName,
@@ -94,7 +94,7 @@ class BirthCertificateViewModel @Inject constructor(
 
     private fun autoCache() {
         val currentState = _uiState.value
-        val form = BirthCertificateForm(
+        val form = CertificatesForm(
             fullName = currentState.fullName,
             dateOfBirth = currentState.dateOfBirth,
             governorate = currentState.governorate,
@@ -103,7 +103,7 @@ class BirthCertificateViewModel @Inject constructor(
             relationship = currentState.relationship
         )
         viewModelScope.launch {
-            cacheBirthCertificateUseCase(form)
+            cacheCertificatesUseCase(form)
         }
     }
 
@@ -157,7 +157,7 @@ class BirthCertificateViewModel @Inject constructor(
         if (!validate()) return
 
         val currentState = _uiState.value
-        val form = BirthCertificateForm(
+        val form = CertificatesForm(
             fullName = currentState.fullName,
             dateOfBirth = currentState.dateOfBirth,
             governorate = currentState.governorate,
@@ -169,7 +169,7 @@ class BirthCertificateViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                saveBirthCertificateUseCase(form)
+                saveCertificatesUseCase(form)
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 onSuccess()
             } catch (e: Exception) {

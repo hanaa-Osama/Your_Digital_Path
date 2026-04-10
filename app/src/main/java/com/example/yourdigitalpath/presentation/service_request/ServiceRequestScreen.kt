@@ -13,9 +13,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -38,8 +41,10 @@ import com.example.yourdigitalpath.ui.components.SectionCard
 import com.example.yourdigitalpath.ui.components.SelectionChipGroup
 import com.example.yourdigitalpath.ui.components.StepperComponent
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceRequestScreen(
+    serviceName: String,
     onNext: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -55,36 +60,35 @@ fun ServiceRequestScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.Start
         ) {
-            // Header
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBackIos,
-                        contentDescription = "Back",
-                        tint = DarkBlue
-                    )
-                }
-
-                Column(horizontalAlignment = Alignment.Start) {
-                    Text(
-                        text = "شهادة الميلاد",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = DarkBlue
-                    )
-                    Text(
-                        text = "حدد نوع الطلب",
-                        fontSize = 12.sp,
-                        color = GrayText
-                    )
-                }
-            }
+            TopAppBar(
+                title = {
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = serviceName,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkBlue
+                        )
+                        Text(
+                            text = "حدد نوع الطلب",
+                            fontSize = 12.sp,
+                            color = GrayText
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBackIos,
+                            contentDescription = "Back",
+                            tint = DarkBlue
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = BackgroundGray
+                )
+            )
 
 
             StepperComponent(currentStep = 1)

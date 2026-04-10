@@ -2,15 +2,12 @@ package com.example.yourdigitalpath.di
 
 import android.content.Context
 import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
-import com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.BirthCertificateDao
 import com.example.yourdigitalpath.data.dataSource.local.Database
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
 import com.example.yourdigitalpath.data.repositoryImp.NotificationRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.TrackingRepositoryImpl
-import com.example.yourdigitalpath.data.repositoryImp.certificates.BirthCertificateRepoImpl
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
 import com.example.yourdigitalpath.domain.repository.TrackingRepository
-import com.example.yourdigitalpath.domain.repository.certificates.BirthCertificateRepository
 import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
 import com.example.yourdigitalpath.domain.usecase.ObserveOrderTrackingUseCase
@@ -47,15 +44,6 @@ object AppModule {
         firestore: FirebaseFirestore
     ): TrackingRepository {
         return TrackingRepositoryImpl(firestore)
-    }
-
-    @Provides
-    @Singleton
-    fun provideBirthCertificateRepository(
-        firestore: FirebaseFirestore,
-        birthCertificateDao: BirthCertificateDao
-    ): BirthCertificateRepository {
-        return BirthCertificateRepoImpl(firestore, birthCertificateDao)
     }
 
     @Provides

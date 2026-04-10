@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.dataEntry
+package com.example.yourdigitalpath.presentation.data_entry
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.dataEntry.certificates.BirthCertificateViewModel
+import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.BackgroundGray
 import com.example.yourdigitalpath.ui.components.CustomDatePickerField
@@ -180,11 +180,9 @@ fun DataScreen(
                 ActionButton(
                     text = "التالي",
                     onClick = {
-//                        viewModel.submitForm(onSuccess = onNext)
-
-
+                        viewModel.submitForm(onSuccess = onNext)
+//                        onNext()
                     }
-
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

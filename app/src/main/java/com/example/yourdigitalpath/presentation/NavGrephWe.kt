@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
+import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
+import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
 
 
@@ -24,31 +26,49 @@ fun AppNavGraph() {
         startDestination = "welcome_screen"
     ) {
 
-
+        // Welcome Screen
         composable("welcome_screen") {
             WelcomeScreen(navController)
         }
-
-        // 👇 شاشة تسجيل الدخول (placeholder)
+        // Login Screen
         composable("login_screen") {
             LoginScreen(navController)
         }
-
-        // 👇 شاشة إنشاء حساب (placeholder)
+        // Register Screen
         composable("register_screen") {
             PersonalDataScreen("register_screen")
         }
+        // Home Screen
         composable("home_screen") {
-            MainScreen("home_screen")
+            MainScreen(navController)
         }
-
-
-            // أضف المسارات هنا لتطابق الموجود في الـ Event
-            composable("id_details_screen") { /* الصفحة الخاصة بالبطاقة */ }
-            composable("birth_details_screen") { /* الصفحة الخاصة بشهادة الميلاد */ }
-            // ...
+        // Service Request Screen
+        composable("service_request_screen") {
+            ServiceRequestScreen(
+                onNext = { navController.navigate("data_entry_screen") },
+                onBack = { navController.popBackStack() }
+            )
         }
+        // Data Entry Screen
+        composable("data_entry_screen") {
+            DataScreen(
+                onNext = { navController.navigate("file_upload_screen") },
+                onBack = { navController.popBackStack() }
+            )
         }
+        // File Upload Screen
+        composable("file_upload_screen") {
+            FileUploadScreen(
+                onNext = {
+                    navController.navigate("home_screen") {
+                        popUpTo("home_screen") { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+    }
+}
 
 
 

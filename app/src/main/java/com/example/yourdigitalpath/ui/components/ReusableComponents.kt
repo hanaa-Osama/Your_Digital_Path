@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,7 +18,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,15 +43,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // Color Constants
 val PrimaryBlue = Color(0xFF3D5A80)
-val BackgroundGray = Color(0xFFF7F8FA)
-val SecondaryBlue = Color(0xFFF0F5FA)
-val UnselectedGray = Color(0xFFF0F2F5)
+val DarkBlue = Color(0xFF293241)
+val SecondaryBlue = Color(0xFFE0FBFC)
+val LightBlue = Color(0xFFEEF4F9)
+val GrayText = Color(0xFF98A2B3)
+val BackgroundGray = Color(0xFFF9FAFB)
+val UnselectedGray = Color(0xFFF2F4F7)
 
 // 1. StepperComponent
 @Composable
@@ -62,61 +64,43 @@ fun StepperComponent(currentStep: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(vertical = 16.dp, horizontal = 24.dp),
+            .padding(vertical = 16.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.CenterVertically
     ) {
         steps.forEachIndexed { index, title ->
             val stepNumber = index + 1
             val isSelected = stepNumber == currentStep
             val isCompleted = stepNumber < currentStep
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f, fill = index != steps.size - 1)
             ) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                    // Line behind the circles
-                    if (index < steps.size - 1) {
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .offset(x = 20.dp) // Adjust based on circle size
-                                .fillMaxWidth(0.5f),
-                            color = if (stepNumber < currentStep) PrimaryBlue else Color.LightGray.copy(
-                                alpha = 0.5f
-                            ),
-                            thickness = 2.dp
-                        )
-                    }
-                    if (index > 0) {
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .align(Alignment.CenterStart)
-                                .offset(x = (-20).dp)
-                                .fillMaxWidth(0.5f),
-                            color = if (isCompleted || isSelected) PrimaryBlue else Color.LightGray.copy(
-                                alpha = 0.5f
-                            ),
-                            thickness = 2.dp
-                        )
-                    }
-
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     StepCircle(
                         step = stepNumber,
                         isSelected = isSelected,
                         isCompleted = isCompleted
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = title,
+                        color = if (isSelected || isCompleted) DarkBlue else GrayText,
+                        fontSize = 12.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = title,
-                    color = if (isSelected) PrimaryBlue else Color.Gray,
-                    fontSize = 16.sp,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                )
+                if (index < steps.size - 1) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(bottom = 20.dp), // Align with circles
+                        color = if (stepNumber < currentStep) PrimaryBlue else Color(0xFFEAECF0),
+                        thickness = 2.dp
+                    )
+                }
             }
         }
     }
@@ -124,118 +108,71 @@ fun StepperComponent(currentStep: Int) {
 
 @Composable
 fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
-    val backgroundColor = if (isCompleted) PrimaryBlue else Color.White
-    val borderColor =
-        if (isSelected || isCompleted) PrimaryBlue else Color.LightGray.copy(alpha = 0.5f)
+    val backgroundColor = if (isSelected || isCompleted) PrimaryBlue else Color.White
+    val borderColor = if (isSelected || isCompleted) PrimaryBlue else Color(0xFFEAECF0)
     val textColor = when {
-        isCompleted -> Color.White
-        isSelected -> PrimaryBlue
-        else -> Color.Gray
+        isCompleted || isSelected -> Color.White
+        else -> GrayText
     }
 
     Box(
         modifier = Modifier
-            .size(36.dp)
-            .border(2.dp, borderColor, CircleShape)
+            .size(32.dp)
+            .border(1.dp, borderColor, CircleShape)
             .clip(CircleShape)
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
+        if (isCompleted) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        } else {
+            Text(
+                text = step.toString(),
+                color = textColor,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+// 2. Section Header
+@Composable
+fun SectionHeader(title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .width(4.dp)
+                .height(20.dp)
+                .background(PrimaryBlue, RoundedCornerShape(2.dp))
+        )
+        Spacer(modifier = Modifier.width(12.dp))
         Text(
-            text = step.toString(),
-            color = textColor,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
+            text = title,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = DarkBlue
         )
     }
 }
 
-// 2. SelectionChipGroup
+// 3. SelectionChipGroup
 @Composable
 fun SelectionChipGroup(
     items: List<String>,
     selectedItem: String,
     onItemSelected: (String) -> Unit,
-    title: String
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .width(4.dp)
-                    .height(18.dp)
-                    .background(PrimaryBlue, RoundedCornerShape(2.dp))
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = Color.Black
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Responsive grid using FlowRow or chunked rows
-        val chunkedItems = items.chunked(2)
-        chunkedItems.forEach { rowItems ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                rowItems.forEach { item ->
-                    val isSelected = item == selectedItem
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(52.dp)
-                            .border(
-                                width = 2.dp,
-                                color = if (isSelected) PrimaryBlue else Color.Transparent,
-                                shape = RoundedCornerShape(14.dp)
-                            )
-                            .background(
-                                color = if (isSelected) SecondaryBlue else UnselectedGray,
-                                shape = RoundedCornerShape(14.dp)
-                            )
-                            .clickable { onItemSelected(item) }
-                            .padding(horizontal = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = item,
-                            color = if (isSelected) PrimaryBlue else Color.Gray,
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
-                        )
-                    }
-                }
-                if (rowItems.size < 2) {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-    }
-}
-
-// 3. CustomTextField
-@Composable
-fun CustomTextField(
-    value: String?,
-    onValueChange: (String) -> Unit,
-    label: String,
-    placeholder: String = "",
-    leadingIcon: ImageVector? = null,
-    isError: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    title: String? = null
 ) {
     Column(
         modifier = Modifier
@@ -243,44 +180,112 @@ fun CustomTextField(
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.Start
     ) {
+        title?.let {
+            SectionHeader(it)
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items.forEach { item ->
+                val isSelected = item == selectedItem
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp)
+                        .border(
+                            width = 1.dp,
+                            color = if (isSelected) PrimaryBlue else Color.Transparent,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .background(
+                            color = if (isSelected) LightBlue else UnselectedGray,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .clickable { onItemSelected(item) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = item,
+                        color = if (isSelected) PrimaryBlue else DarkBlue,
+                        fontSize = 14.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                    )
+                }
+            }
+        }
+    }
+}
+
+// 4. CustomTextField
+@Composable
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    placeholder: String = "",
+    leadingIcon: ImageVector? = null,
+    isValid: Boolean = false,
+    errorMessage: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+) {
+    val isError = errorMessage != null
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
         Text(
             text = label,
-            fontSize = 13.sp,
-            color = Color.Gray,
-            modifier = Modifier.padding(bottom = 6.dp)
+            fontSize = 12.sp,
+            color = GrayText,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
-        if (value != null) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(placeholder, fontSize = 14.sp, color = Color.LightGray) },
-                shape = RoundedCornerShape(14.dp),
-                leadingIcon = leadingIcon?.let {
-                    {
-                        Icon(
-                            it,
-                            contentDescription = null,
-                            tint = PrimaryBlue
-                        )
-                    }
-                },
-                isError = isError,
-                keyboardOptions = keyboardOptions,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = UnselectedGray,
-                    unfocusedContainerColor = UnselectedGray,
-                    focusedBorderColor = PrimaryBlue,
-                    unfocusedBorderColor = Color.Transparent,
-                    cursorColor = PrimaryBlue,
-                    errorBorderColor = Color.Red
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text(
+                    placeholder,
+                    fontSize = 14.sp,
+                    color = GrayText.copy(alpha = 0.7f)
                 )
+            },
+            shape = RoundedCornerShape(12.dp),
+            leadingIcon = if (isValid) {
+                { Icon(Icons.Default.Check, contentDescription = null, tint = Color(0xFF10B981)) }
+            } else leadingIcon?.let {
+                { Icon(it, contentDescription = null, tint = GrayText) }
+            },
+            isError = isError,
+            keyboardOptions = keyboardOptions,
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = LightBlue,
+                unfocusedContainerColor = UnselectedGray,
+                focusedBorderColor = PrimaryBlue,
+                unfocusedBorderColor = Color.Transparent,
+                cursorColor = PrimaryBlue,
+                errorBorderColor = Color.Red,
+                errorContainerColor = UnselectedGray
+            )
+        )
+        if (isError) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 2.dp, start = 4.dp)
             )
         }
     }
 }
 
-// 4. ActionButton
+// 5. ActionButton
 @Composable
 fun ActionButton(
     text: String,
@@ -291,8 +296,8 @@ fun ActionButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp),
-        shape = RoundedCornerShape(18.dp),
+            .height(56.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
     ) {
         Row(
@@ -302,21 +307,21 @@ fun ActionButton(
             Text(
                 text = text,
                 color = Color.White,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = null,
-                tint = Color.White
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
             )
-
         }
     }
 }
 
-// 5. Section Card
+// 6. Section Card
 @Composable
 fun SectionCard(
     modifier: Modifier = Modifier,
@@ -326,55 +331,69 @@ fun SectionCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.2f))
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEAECF0))
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.Start,
             content = content
         )
     }
 }
 
-// 6. Custom Dropdown
+// 7. Custom Dropdown
 @Composable
 fun CustomDropdown(
     label: String,
     selectedOption: String,
     options: List<String>,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
+    errorMessage: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val isError = errorMessage != null
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
             text = label,
-            fontSize = 13.sp,
-            color = Color.Gray,
-            modifier = Modifier.padding(bottom = 6.dp)
+            fontSize = 12.sp,
+            color = GrayText,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
         Box {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .background(UnselectedGray, RoundedCornerShape(14.dp))
-                    .border(1.dp, PrimaryBlue, RoundedCornerShape(14.dp))
+                    .background(UnselectedGray, RoundedCornerShape(12.dp))
+                    .border(
+                        1.dp,
+                        if (isError) Color.Red else Color.Transparent,
+                        RoundedCornerShape(12.dp)
+                    )
                     .clickable { expanded = true }
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = selectedOption, color = Color.Black, fontSize = 15.sp)
-                Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, tint = PrimaryBlue)
+                Text(
+                    text = selectedOption,
+                    color = if (selectedOption.contains("اختر")) GrayText else DarkBlue,
+                    fontSize = 14.sp
+                )
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = PrimaryBlue
+                )
             }
 
             DropdownMenu(
@@ -394,6 +413,14 @@ fun CustomDropdown(
                     )
                 }
             }
+        }
+        if (isError) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 2.dp, start = 4.dp)
+            )
         }
     }
 }

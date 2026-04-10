@@ -12,14 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.HeaderSection
 
 
 @Composable
 fun MainScreen(
-
-    modifier: String
+    navController: NavController
 ) {
 
     Column(
@@ -43,7 +43,7 @@ fun MainScreen(
             modifier = Modifier.weight(1f)
         ) {
 
-            EventSection()
+            EventSection(navController)
         }
         BottomNavBar()
 
@@ -55,7 +55,7 @@ fun MainScreen(
 @Preview
 private fun MainScreenprev() {
     MainScreen(
-        modifier = Modifier.toString()
+        navController = androidx.navigation.compose.rememberNavController()
     )
 }
 

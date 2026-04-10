@@ -22,13 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.blqes.digi.presentation.EventCard
 import com.blqes.digi.presentation.LastOrdersSection
 import com.blqes.digi.presentation.SearchBar
 import com.blqes.digi.presentation.getEvents
 
 @Composable
-fun EventSection() {
+fun EventSection(navController: NavController) {
 
     CompositionLocalProvider(
         LocalLayoutDirection provides LayoutDirection.Rtl
@@ -66,7 +67,7 @@ fun EventSection() {
                 items(getEvents()) { event ->
                     EventCard(
                         event = event, price = "20egp",
-                        navController = "service_request_screen"
+                        navController = navController
                     )
 
                 }
@@ -86,5 +87,5 @@ fun EventSection() {
 @Composable
 @Preview
 private fun EventSectionprev() {
-    EventSection()
+    EventSection(navController = androidx.navigation.compose.rememberNavController())
 }

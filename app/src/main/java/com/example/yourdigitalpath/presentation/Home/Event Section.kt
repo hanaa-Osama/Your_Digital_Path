@@ -70,7 +70,7 @@ fun EventSection() {
                     )
 
                 }
-                item(span = { GridItemSpan(maxLineSpan) }) { // span علشان تاخد كل العمودين
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     LastOrdersSection()
                 }
             }

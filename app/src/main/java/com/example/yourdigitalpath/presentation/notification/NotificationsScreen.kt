@@ -24,12 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.blqes.digi.presentation.BottomNavBar
 import com.example.yourdigitalpath.data.mapper.toUiData
 import com.example.yourdigitalpath.presentation.notification.component.NotificationCard
 import com.example.yourdigitalpath.ui.theme.LightGrayBg
@@ -58,10 +55,13 @@ fun NotificationsScreen(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = {
+//                        notificationViewModel.clearAllNotifications()
+                    }) {
                         Icon(
-                            Icons.AutoMirrored.Default.ArrowBackIos,
-                            contentDescription = null
+                            Icons.Default.DeleteSweep,
+                            contentDescription = "مسح الكل",
+                            tint = Color.Red
                         )
                     }
                 },
@@ -73,10 +73,10 @@ fun NotificationsScreen(
                     )
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
-                            Icons.Default.DeleteSweep,
-                            contentDescription = null
+                            Icons.AutoMirrored.Default.ArrowBackIos,
+                            contentDescription = "رجوع"
                         )
                     }
                 },
@@ -85,10 +85,6 @@ fun NotificationsScreen(
                 )
             )
         },
-//        bottomBar = {
-//            BottomNavBar(navController)
-//        }
-
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -101,7 +97,6 @@ fun NotificationsScreen(
             items(notifications) { notification ->
                 NotificationCard(notification.toUiData())
             }
-
         }
     }
 }

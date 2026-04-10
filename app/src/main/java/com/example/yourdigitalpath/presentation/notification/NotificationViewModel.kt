@@ -30,4 +30,16 @@ class NotificationViewModel @Inject constructor(
             markNotificationAsReadUseCase(id)
         }
     }
+//    fun clearAllNotifications() {
+//        viewModelScope.launch {
+//            try {
+//                // 2. دلوقتي السطر ده هيشتغل صح لأن الكلاس بقا عارف يعني إيه clearNotificationsUseCase
+//
+//                ClearNotificationsUseCase(
+//                )
+//            } catch (e: Exception) {
+//                // يمكنك طباعة الخطأ هنا للتأكد (Log.e)
+//            }
+//        }
+//    }
 }

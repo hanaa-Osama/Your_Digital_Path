@@ -126,8 +126,8 @@ fun AppNavHost(
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
-                navController = navController
-            )
+
+                )
         }
 
         composable("file_upload_screen") {

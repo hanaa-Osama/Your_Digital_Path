@@ -43,7 +43,6 @@ fun AppNavGraph() {
         }
 
 
-//////////
             // أضف المسارات هنا لتطابق الموجود في الـ Event
             composable("id_details_screen") { /* الصفحة الخاصة بالبطاقة */ }
             composable("birth_details_screen") { /* الصفحة الخاصة بشهادة الميلاد */ }

@@ -5,13 +5,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
+
 class YourDigitalPathApp : Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        Firebase.firestore
     }
 
     private fun createNotificationChannel() {

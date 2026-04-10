@@ -1,6 +1,6 @@
 package com.example.yourdigitalpath.domain.model.certificates
 
-data class BirthCertificateForm(
+data class CertificatesForm(
     val fullName: String = "",
     val dateOfBirth: String = "",
     val governorate: String = "",

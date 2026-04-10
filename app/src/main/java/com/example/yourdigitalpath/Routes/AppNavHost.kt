@@ -2,8 +2,8 @@ package com.example.yourdigitalpath.Routes
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -13,11 +13,11 @@ import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
-import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.service_request.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceDataEntryScreen
+import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -27,15 +27,26 @@ fun AppNavHost(navController: NavHostController) {
         navController = navController,
         startDestination = "welcome_screen"
     ) {
-        composable("welcome_screen") { WelcomeScreen(navController) }
-        composable("login_screen") { LoginScreen(navController) }
-        composable("register_screen") { PersonalDataScreen("register_screen") }
-        composable("home_screen") { MainScreen(navController) }
+        composable("welcome_screen") {
+            WelcomeScreen(navController)
+        }
+
+        composable("login_screen") {
+            LoginScreen(navController)
+        }
+
+        composable("register_screen") {
+            PersonalDataScreen(string = "register_screen")
+        }
+
+        composable("home_screen") {
+            MainScreen(navController)
+        }
 
         composable("summary_screen") {
             ServiceSummaryScreen(
                 viewModel = viewModel,
-                onConfirm = { // تم التعديل هنا من onNext لـ onConfirm بناءً على الخطأ في الصورة
+                onConfirm = {
                     navController.navigate("data_screen")
                 }
             )
@@ -57,6 +68,7 @@ fun AppNavHost(navController: NavHostController) {
             val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
             ServiceRequestScreen(
                 serviceName = serviceName,
+                navController = navController, // تم إضافة الـ navController هنا لحل الـ Error الأخير
                 onNext = { navController.navigate("home_screen") },
                 onBack = { navController.popBackStack() }
             )

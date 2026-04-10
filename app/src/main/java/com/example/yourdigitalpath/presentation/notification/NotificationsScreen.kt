@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.blqes.digi.presentation.BottomNavBar
 import com.example.yourdigitalpath.data.mapper.toUiData
 import com.example.yourdigitalpath.presentation.notification.component.NotificationCard
 import com.example.yourdigitalpath.ui.theme.LightGrayBg

@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.welcomscreen
+package com.example.yourdigitalpath.presentation.welcom_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

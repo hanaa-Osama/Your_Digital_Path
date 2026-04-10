@@ -79,7 +79,7 @@ fun NotificationsScreen(
                     containerColor = Color.White
                 )
             )
-        }
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -92,6 +92,7 @@ fun NotificationsScreen(
             items(notifications) { notification ->
                 NotificationCard(notification.toUiData())
             }
+
         }
     }
 }

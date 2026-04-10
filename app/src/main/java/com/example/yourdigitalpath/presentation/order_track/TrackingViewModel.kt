@@ -43,5 +43,16 @@ class TrackingViewModel @Inject constructor(
             }
         }
     }
+    fun testMyFirebaseUpload() {
+        viewModelScope.launch {
+            try {
+                val testId = submitFinalOrderUseCase()
+                println("DEBUG: تم الرفع بنجاح بـ ID: $testId")
+                startTracking(testId) // جرب تعرضه كمان
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
 }

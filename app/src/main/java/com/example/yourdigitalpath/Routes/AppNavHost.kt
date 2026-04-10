@@ -2,8 +2,8 @@ package com.example.yourdigitalpath.Routes
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -15,7 +15,7 @@ import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
-import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
+import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
 fun AppNavHost(

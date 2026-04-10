@@ -39,7 +39,7 @@ fun EventCard(event: Event, price: String, navController: NavController) {
             .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
             .clickable {
-                navController.navigate(event.route)
+                navController.navigate("${event.route}/${event.title}")
 
             }
 

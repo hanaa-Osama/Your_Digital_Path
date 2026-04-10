@@ -2,9 +2,11 @@ package com.example.yourdigitalpath.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
@@ -41,15 +43,24 @@ fun AppNavGraph() {
             MainScreen(navController)
         }
         // Service Request Screen
-        composable("service_request_screen") {
+        composable(
+            "service_request_screen/{serviceName}",
+            arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
             ServiceRequestScreen(
-                onNext = { navController.navigate("data_entry_screen") },
+                serviceName = serviceName,
+                onNext = { navController.navigate("data_entry_screen/$serviceName") },
                 onBack = { navController.popBackStack() }
             )
         }
         // Data Entry Screen
-        composable("data_entry_screen") {
+        composable(
+            "data_entry_screen/{serviceName}",
+            arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+        ) {
             DataScreen(
+                serviceName = it.arguments?.getString("serviceName") ?: "",
                 onNext = { navController.navigate("file_upload_screen") },
                 onBack = { navController.popBackStack() }
             )

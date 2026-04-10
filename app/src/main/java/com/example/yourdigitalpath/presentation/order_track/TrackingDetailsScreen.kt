@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.yourdigitalpath.presentation.order_track.component.OrderTimelineSection
 import com.example.yourdigitalpath.ui.theme.PrimaryBlue
 import com.example.yourdigitalpath.ui.theme.SuccessGreen
@@ -49,7 +50,8 @@ import com.example.yourdigitalpath.ui.theme.SuccessGreen
 @Composable
 fun TrackingDetailsScreen(
     orderId: String,
-    trackingviewModel: TrackingViewModel = hiltViewModel()
+    trackingviewModel: TrackingViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state by trackingviewModel.state.collectAsState()
 
@@ -83,7 +85,7 @@ fun TrackingDetailsScreen(
                 },
                 navigationIcon = {
                     Surface(
-                        onClick = { /* Share logic */ },
+                        onClick = { },
                         shape = CircleShape,
                         color = Color(0xFFF2F4F7),
                         modifier = Modifier
@@ -105,9 +107,14 @@ fun TrackingDetailsScreen(
                 )
             )
         },
+
         bottomBar = {
             Button(
-                onClick = { /* New order logic */ },
+                onClick = {
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)

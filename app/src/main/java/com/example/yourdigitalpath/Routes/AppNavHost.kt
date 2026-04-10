@@ -11,9 +11,10 @@ import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
-import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
+import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
+import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
@@ -84,5 +85,16 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
+        composable(
+            route = "tracking_details/{orderId}",
+            arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
+            TrackingDetailsScreen(
+                orderId = orderId,
+                navController = navController
+            )
+        }
+
     }
 }

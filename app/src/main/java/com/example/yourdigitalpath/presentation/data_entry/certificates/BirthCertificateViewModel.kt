@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.dataEntry.certificates
+package com.example.yourdigitalpath.presentation.data_entry.certificates
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

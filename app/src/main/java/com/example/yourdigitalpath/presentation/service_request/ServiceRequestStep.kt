@@ -31,31 +31,42 @@ fun ServiceRequestScreen(
     ) {
         Column {
             Text(
-                text = "مراجعة طلب الخدمة",
+                text = "مراجعة طلب ${state.selectedType}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
             SectionCard {
-                SummaryDetailRow(label = "نوع الطلب", value = state.selectedType)
-                SummaryDetailRow(label = "سبب الطلب", value = state.requestReason)
-                SummaryDetailRow(label = "عدد النسخ", value = "${state.copiesCount}")
-                SummaryDetailRow(label = "طريقة الاستلام", value = state.deliveryMethod)
+                SummaryDetailRow(label = "نوع الخدمة", value = state.selectedType)
+
+                if (state.requestReason.isNotEmpty()) {
+                    SummaryDetailRow(label = "سبب الطلب", value = state.requestReason)
+                }
+
+                if (state.copiesCount > 0) {
+                    SummaryDetailRow(label = "عدد النسخ", value = "${state.copiesCount}")
+                }
+
+                if (state.deliveryMethod.isNotEmpty()) {
+                    SummaryDetailRow(label = "طريقة الاستلام", value = state.deliveryMethod)
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            SectionCard {
-                Text(
-                    text = "المستندات المرفقة",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Text(
-                    text = if (state.documentsUrls.isNotEmpty()) "تم رفع المستند بنجاح ✅" else "لم يتم رفع مستندات ❌",
-                    color = if (state.documentsUrls.isNotEmpty()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                )
+            if (state.documentsUrls.isNotEmpty()) {
+                SectionCard {
+                    Text(
+                        text = "المستندات المرفقة",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "تم رفع عدد (${state.documentsUrls.size}) مستند بنجاح ✅",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
 

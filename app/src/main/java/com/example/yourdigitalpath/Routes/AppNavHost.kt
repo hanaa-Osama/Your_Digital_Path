@@ -79,6 +79,36 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
+            composable("summary_screen") {
+                ServiceSummaryScreen(
+                    viewModel = viewModel,
+                    onConfirm = {
+                        navController.navigate("data_screen")
+                    }
+                )
+            }
+
+            composable("data_screen") {
+                ServiceDataEntryScreen(
+                    viewModel = viewModel,
+                    onNextClick = {
+                        navController.navigate("service_request_screen/default")
+                    }
+                )
+            }
+
+            composable(
+                "service_request_screen/{serviceName}",
+                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                ServiceRequestScreen(
+                    serviceName = serviceName,
+                    navController = navController,
+                    onNext = { navController.navigate("data_entry_screen/$serviceName") },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
         composable(
             "data_entry_screen/{serviceName}",

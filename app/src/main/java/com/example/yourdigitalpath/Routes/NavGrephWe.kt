@@ -51,6 +51,7 @@ fun AppNavGraph() {
             val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
             ServiceRequestScreen(
                 serviceName = serviceName,
+                navController = navController,
                 onNext = { navController.navigate("data_entry_screen/$serviceName") },
                 onBack = { navController.popBackStack() }
             )

@@ -4,7 +4,7 @@ import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.OrderTrackRepository
 import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
-import com.example.yourdigitalpath.domain.repository.certificates.BirthCertificateRepository
+import com.example.yourdigitalpath.domain.repository.certificates.CertificatesRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class SubmitFinalOrderUseCase @Inject constructor(
 
-    private val birthRepo: BirthCertificateRepository,
+    private val birthRepo: CertificatesRepository,
     private val serviceRepo: ServiceRequestRepository,
     private val firebaseRepo: OrderTrackRepository
 ) {

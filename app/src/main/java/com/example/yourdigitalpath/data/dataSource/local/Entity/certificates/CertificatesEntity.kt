@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "birth_certificate_cache")
-data class BirthCertificateEntity(
+data class CertificatesEntity(
     @PrimaryKey val id: Int = 0,
     val fullName: String,
     val dateOfBirth: String,

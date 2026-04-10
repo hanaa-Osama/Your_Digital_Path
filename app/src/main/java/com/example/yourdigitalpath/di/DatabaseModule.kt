@@ -34,7 +34,7 @@ object DatabaseModule {
         database.orderDao()
 
     @Provides
-    fun provideBirthCertificateDao(database: Database): com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.BirthCertificateDao =
+    fun provideBirthCertificateDao(database: Database): com.example.yourdigitalpath.data.dataSource.local.Dao.certificates.CertificatesDao =
         database.birthCertificateDao()
 
     @Provides

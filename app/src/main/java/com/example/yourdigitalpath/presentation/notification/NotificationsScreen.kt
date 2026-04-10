@@ -24,8 +24,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.blqes.digi.presentation.BottomNavBar
 import com.example.yourdigitalpath.data.mapper.toUiData
 import com.example.yourdigitalpath.presentation.notification.component.NotificationCard
@@ -43,7 +46,8 @@ data class NotificationItemData(
 @Composable
 fun NotificationsScreen(
     onBack: () -> Unit,
-    notificationViewModel: NotificationViewModel
+    notificationViewModel: NotificationViewModel,
+    navController: NavController
 ) {
 
     val notifications by notificationViewModel.notifications.collectAsState()
@@ -81,6 +85,10 @@ fun NotificationsScreen(
                 )
             )
         },
+//        bottomBar = {
+//            BottomNavBar(navController)
+//        }
+
     ) { padding ->
         LazyColumn(
             modifier = Modifier

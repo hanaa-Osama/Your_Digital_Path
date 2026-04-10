@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-// هنا تعريف اللون
+
 val primary = Color(0xFF3D5A80)
 
 @Composable
@@ -33,8 +33,10 @@ fun BottomNavBar(
             modifier = Modifier.background(Color.White)
         ) {
             NavigationBarItem(
-                selected = true,
-                onClick = {},
+                selected = false,
+                onClick = {
+                    navController.navigate("home_screen")
+                },
                 icon = { Icon(Icons.Default.Home, contentDescription = null, tint = primary) },
                 label = { Text("الرئيسية", color = primary) }
             )

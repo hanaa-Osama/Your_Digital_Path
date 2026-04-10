@@ -1,13 +1,14 @@
 package com.example.yourdigitalpath.presentation
 
 
+
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
-import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
@@ -39,7 +40,7 @@ fun AppNavGraph() {
         }
         // Home Screen
         composable("home_screen") {
-            MainScreen("home_screen")
+            MainScreen(navController)
         }
         // Service Request Screen
         composable("service_request_screen") {

@@ -5,9 +5,6 @@ import com.example.yourdigitalpath.domain.model.ServiceRequestModel
 
 interface ServiceRequestRepository {
     suspend fun saveServiceRequest(request: ServiceRequestModel)
-<<<<<<< HEAD
     suspend fun uploadDocument(fileUri: Uri): String
-=======
     suspend fun getLastServiceRequest(): ServiceRequestModel?
->>>>>>> master
 }

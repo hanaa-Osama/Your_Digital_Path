@@ -31,8 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.TrackingStep
-import com.example.yourdigitalpath.ui.theme.PrimaryBlue
-import com.example.yourdigitalpath.ui.theme.SuccessGreen
 
 @Composable
 fun OrderTimelineSection(steps: List<TrackingStep>) {
@@ -75,9 +73,6 @@ fun TimelineItem(
     stepStatus: String, // completed, current, or pending
     isLast: Boolean // عشان نعرف نوقف الخط ولا لأ
 ) {
-    // 1. نحدد الألوان بناءً على حالة الخطوة
-    val successColor = SuccessGreen // اللي إنتي معرفاه
-    val currentColor = PrimaryBlue // الأزرق الغامق
     val pendingColor = Color(0xFFF2F4F7) // الرمادي الفاتح للنقطة
     val lineColor = Color(0xFFEAECF0) // الرمادي الفاتح جداً للخط
 
@@ -103,8 +98,7 @@ fun TimelineItem(
                 fontSize = 14.sp,
                 fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
                 color = when (stepStatus) {
-                    "completed" -> successColor
-                    "current" -> currentColor
+
                     else -> Color.LightGray // لسه مجاش
                 },
                 textAlign = TextAlign.Right
@@ -127,7 +121,6 @@ fun TimelineItem(
                 // نقطة خضراء جواها علامة صح
                 Surface(
                     shape = CircleShape,
-                    color = successColor,
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
@@ -141,7 +134,6 @@ fun TimelineItem(
                 // نقطة بيضاء بكنار أزرق غامق
                 Surface(
                     shape = CircleShape,
-                    border = BorderStroke(2.dp, currentColor),
                     color = Color.White,
                     modifier = Modifier.size(24.dp)
                 ) {}
@@ -161,9 +153,7 @@ fun TimelineItem(
                         .width(2.dp)
                         .weight(1f) // بيملا المساحة بين النقط
                         .padding(vertical = 4.dp)
-                        .background(
-                            if (stepStatus == "completed") successColor else lineColor
-                        )
+                        .background(lineColor)
                 )
             } else {
                 // لو آخر واحد، بنحط مساحة فاضية عشان الـ UI يتظبط

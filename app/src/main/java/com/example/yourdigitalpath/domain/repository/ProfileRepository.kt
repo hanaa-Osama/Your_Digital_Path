@@ -1,10 +1,10 @@
 package com.example.yourdigitalpath.domain.repository
 
-import com.example.yourdigitalpath.domain.model.UserProfile
+import com.example.yourdigitalpath.domain.model.UserProfileModel
 
 interface ProfileRepository {
-    suspend fun getUserProfile(): UserProfile
-    suspend fun updateProfile(profile: UserProfile): Boolean
+    suspend fun getUserProfile(): UserProfileModel?
+    suspend fun updateProfile(profile: UserProfileModel): Boolean
 
     suspend fun clearUserData()
 }

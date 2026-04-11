@@ -14,6 +14,7 @@ import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
+import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
@@ -90,3 +91,6 @@ fun AppNavGraph() {
         }
     }
 }
+
+
+

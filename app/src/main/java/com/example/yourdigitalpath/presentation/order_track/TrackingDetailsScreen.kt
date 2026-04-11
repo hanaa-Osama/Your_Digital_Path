@@ -43,8 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yourdigitalpath.presentation.order_track.component.OrderTimelineSection
-import com.example.yourdigitalpath.ui.theme.PrimaryBlue
-import com.example.yourdigitalpath.ui.theme.SuccessGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,7 +118,7 @@ fun TrackingDetailsScreen(
                     .padding(16.dp)
                     .height(56.dp),
                 shape = RoundedCornerShape(28.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+                colors = ButtonDefaults.buttonColors()
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Add, contentDescription = null)
@@ -145,13 +143,11 @@ fun TrackingDetailsScreen(
             Surface(
                 modifier = Modifier.size(100.dp),
                 shape = CircleShape,
-                color = SuccessGreen.copy(alpha = 0.1f)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         Icons.Default.Check,
                         contentDescription = null,
-                        tint = SuccessGreen,
                         modifier = Modifier.size(48.dp)
                     )
                 }
@@ -182,7 +178,7 @@ fun TrackingDetailsScreen(
             if (state != null) {
                 OrderTimelineSection(state!!.steps)
             } else {
-                CircularProgressIndicator(color = PrimaryBlue, modifier = Modifier.padding(32.dp))
+                CircularProgressIndicator(modifier = Modifier.padding(32.dp))
             }
 
             Spacer(modifier = Modifier.height(32.dp))

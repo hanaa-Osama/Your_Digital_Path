@@ -23,10 +23,4 @@ object FirebaseModule {
     fun provideStorage(): FirebaseStorage {
         return FirebaseStorage.getInstance()
     }
-
-    @Provides
-    @Singleton
-    fun provideFirebaseStorage(): FirebaseStorage {
-        return FirebaseStorage.getInstance()
-    }
 }

@@ -18,9 +18,12 @@ import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
-import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
+import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
+import com.example.yourdigitalpath.presentation.service_request.ServiceDataEntryScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
+import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
+import com.example.yourdigitalpath.presentation.service_request.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 
@@ -80,6 +83,7 @@ fun AppNavHost(
             )
         }
             composable("summary_screen") {
+                val viewModel: ServiceRequestViewModel = hiltViewModel()
                 ServiceSummaryScreen(
                     viewModel = viewModel,
                     onConfirm = {
@@ -89,6 +93,7 @@ fun AppNavHost(
             }
 
             composable("data_screen") {
+                val viewModel: ServiceRequestViewModel = hiltViewModel()
                 ServiceDataEntryScreen(
                     viewModel = viewModel,
                     onNextClick = {
@@ -123,10 +128,11 @@ fun AppNavHost(
 
         composable("notifications_screen") {
             val viewModel: NotificationViewModel = hiltViewModel()
+
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
-
+                navController = navController
                 )
         }
 

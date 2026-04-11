@@ -34,4 +34,8 @@ class NotificationRepositoryImpl(
         )
         dao.insertNotification(entity)
     }
+
+    override suspend fun clearAllNotifications() {
+        dao.clearAll()
+    }
 }

@@ -29,8 +29,17 @@ class ServiceRequestRepoImpl @Inject constructor(
         )
 
         // Save to Firebase
+        val data = hashMapOf(
+            "selectedType" to request.selectedType,
+            "requestReason" to request.requestReason,
+            "otherReason" to request.otherReason,
+            "deliveryMethod" to request.deliveryMethod,
+            "copiesCount" to request.copiesCount,
+            "timestamp" to com.google.firebase.Timestamp.now()
+        )
+
         firestore.collection("service_requests")
-            .add(request)
+            .add(data)
             .await()
     }
 

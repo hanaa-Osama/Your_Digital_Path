@@ -1,6 +1,6 @@
 package com.example.yourdigitalpath.domain.model
 
-data class OrderDetails(
+data class OrderModel(
     val id: String,
     val serviceName: String,
     val requestDate: Long,
@@ -8,5 +8,5 @@ data class OrderDetails(
     val totalFee: Int,
     val copiesCount: Int,
     val deliveryMethod: String,
-    val progressPercent: Int,
+    val progressPercent: Int
 )

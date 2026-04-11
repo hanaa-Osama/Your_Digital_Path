@@ -17,4 +17,7 @@ interface NotificationDao {
 
     @Query("UPDATE notifications SET isRead = 1 WHERE id = :id")
     suspend fun markAsRead(id: String)
+
+    @Query("DELETE FROM notifications")
+    suspend fun clearAll()
 }

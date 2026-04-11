@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
-import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
@@ -21,6 +20,7 @@ import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
 import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
+import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable

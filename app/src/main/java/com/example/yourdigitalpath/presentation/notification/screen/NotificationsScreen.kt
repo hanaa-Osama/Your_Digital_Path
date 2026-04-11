@@ -1,6 +1,5 @@
 package com.example.yourdigitalpath.presentation.notification.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -57,7 +55,7 @@ fun NotificationsScreen(
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = {
-//                        notificationViewModel.clearAllNotifications()
+                        notificationViewModel.clearAllNotifications()
                     }) {
                         Icon(
                             Icons.Default.DeleteSweep,

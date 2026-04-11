@@ -1,9 +1,7 @@
 package com.example.yourdigitalpath.data.mapper
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Notifications
-
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
 import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity

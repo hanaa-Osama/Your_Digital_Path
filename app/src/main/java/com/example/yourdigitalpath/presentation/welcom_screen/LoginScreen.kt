@@ -81,7 +81,7 @@ fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
                     .clip(RoundedCornerShape(20.dp))
 
                 )
-
+//PHOTO
 
             Spacer(modifier = Modifier.height(16.dp))
             LoginHeader()

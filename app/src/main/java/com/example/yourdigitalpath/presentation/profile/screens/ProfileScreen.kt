@@ -23,11 +23,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.presentation.profile.component.MenuItemRow
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
-
 @Composable
 fun ProfileScreen(
     onNavigateToEditProfile: () -> Unit,
     onNavigateToOrders: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+    onNavigateToSecurity: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onLogout: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
@@ -48,7 +49,6 @@ fun ProfileScreen(
             .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -61,7 +61,6 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .padding(top = 20.dp)
             ) {
-
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -111,7 +110,6 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-
         MenuGroup {
             MenuItemRow(
                 title = "بياناتي الشخصية",
@@ -134,24 +132,29 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-
         MenuGroup {
             MenuItemRow(
                 title = "الإشعارات",
                 subtitle = "تفعيل / إيقاف التنبيهات",
                 icon = Icons.Outlined.Notifications,
-                onClick = onNavigateToSettings
+                onClick = onNavigateToNotifications
             )
-            HorizontalDivider(color = AppColors.Border, thickness = 0.5.dp,
-                modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(
+                color = AppColors.Border,
+                thickness = 0.5.dp,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
             MenuItemRow(
                 title = "الأمان والخصوصية",
                 subtitle = "كلمة المرور — البصمة",
                 icon = Icons.Outlined.Lock,
-                onClick = onNavigateToSettings
+                onClick = onNavigateToSecurity
             )
-            HorizontalDivider(color = AppColors.Border, thickness = 0.5.dp,
-                modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(
+                color = AppColors.Border,
+                thickness = 0.5.dp,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
             MenuItemRow(
                 title = "الإعدادات",
                 subtitle = "اللغة — الوحدات",
@@ -161,7 +164,6 @@ fun ProfileScreen(
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-
 
         MenuGroup {
             MenuItemRow(
@@ -178,7 +180,6 @@ fun ProfileScreen(
                 showArrow = false
             )
         }
-
     }
 }
 
@@ -203,6 +204,8 @@ fun PreviewProfileScreen() {
     ProfileScreen(
         onNavigateToEditProfile = {},
         onNavigateToOrders = {},
+        onNavigateToNotifications = {},
+        onNavigateToSecurity = {},
         onNavigateToSettings = {},
         onLogout = {}
     )

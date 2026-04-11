@@ -14,6 +14,12 @@ import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
+import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
+import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
+import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
+import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
+import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
+import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
@@ -27,23 +33,22 @@ fun AppNavGraph() {
         startDestination = "welcome_screen"
     ) {
 
-        // Welcome Screen
         composable("welcome_screen") {
             WelcomeScreen(navController)
         }
-        // Login Screen
+
         composable("login_screen") {
             LoginScreen(navController)
         }
-        // Register Screen
+
         composable("register_screen") {
             PersonalDataScreen("register_screen")
         }
-        // Home Screen
+
         composable("home_screen") {
             MainScreen(navController = navController, onBack = {})
         }
-        // Service Request Screen
+
         composable(
             "service_request_screen/{serviceName}",
             arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
@@ -56,7 +61,7 @@ fun AppNavGraph() {
                 onBack = { navController.popBackStack() }
             )
         }
-        // Data Entry Screen
+
         composable(
             "data_entry_screen/{serviceName}",
             arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
@@ -77,7 +82,6 @@ fun AppNavGraph() {
             )
         }
 
-        // File Upload Screen
         composable("file_upload_screen") {
             FileUploadScreen(
                 onNext = {
@@ -88,8 +92,48 @@ fun AppNavGraph() {
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable("profile_screen") {
+            ProfileScreen(
+                onNavigateToEditProfile = { navController.navigate("edit_profile_screen") },
+                onNavigateToOrders = { navController.navigate("my_orders_screen") },
+                onNavigateToNotifications = { navController.navigate("notifications_settings_screen") },
+                onNavigateToSecurity = { navController.navigate("security_screen") },
+                onNavigateToSettings = { navController.navigate("settings_screen") },
+                onLogout = {
+                    navController.navigate("welcome_screen") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable("edit_profile_screen") {
+            EditProfileScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable("notifications_settings_screen") {
+            NotificationsSettingScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable("security_screen") {
+            SecurityScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable("settings_screen") {
+            SettingsScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable("my_orders_screen") {
+            MyOrdersScreen()
+        }
     }
 }
-
-
-

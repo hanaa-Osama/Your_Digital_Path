@@ -61,7 +61,7 @@ fun WelcomeScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .size(180.dp)
-                        .offset(x = (240).dp, y = -40.dp)
+                        .offset(x = (290).dp, y = -40.dp)
                         .background(
                             color = Color(0x334A6D9E),
                             shape = CircleShape
@@ -69,9 +69,9 @@ fun WelcomeScreen(navController: NavController) {
                 )
                 Box(
                     modifier = Modifier
-                        .size(140.dp)
+                        .size(160.dp)
                         .align(Alignment.BottomEnd)
-                        .offset(x = -290.dp, y = -30.dp)
+                        .offset(x = -340.dp, y = -30.dp)
                         .background(
                             color = Color(0x334A6D9E),
                             shape = CircleShape

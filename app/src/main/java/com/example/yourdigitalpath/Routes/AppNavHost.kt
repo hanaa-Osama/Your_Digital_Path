@@ -16,6 +16,8 @@ import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
+import com.example.yourdigitalpath.presentation.ServiceDataEntryScreen
+import com.example.yourdigitalpath.presentation.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
@@ -26,10 +28,8 @@ import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSet
 import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
-import com.example.yourdigitalpath.presentation.service_request.ServiceDataEntryScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
-import com.example.yourdigitalpath.presentation.service_request.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 
@@ -152,7 +152,6 @@ fun AppNavHost(
             )
         }
 
-        // ── Profile ────────────────────────────────
         composable("profile_screen") {
             ProfileScreen(
                 onNavigateToEditProfile = { navController.navigate("edit_profile_screen") },

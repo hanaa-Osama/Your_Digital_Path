@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.features
+package com.example.yourdigitalpath.presentation.profile.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.components.profile_component.MenuItemRow
+import com.example.yourdigitalpath.presentation.profile.component.MenuItemRow
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 

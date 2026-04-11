@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.components.order_component
+package com.example.yourdigitalpath.presentation.orders_history.order_component
 
 
 import androidx.compose.foundation.background

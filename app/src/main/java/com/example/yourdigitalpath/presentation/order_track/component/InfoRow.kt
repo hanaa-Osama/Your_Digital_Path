@@ -10,8 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.yourdigitalpath.ui.theme.PrimaryBlue
-import com.example.yourdigitalpath.ui.theme.SuccessGreen
 
 @Composable
 fun InfoRow(label: String, value: String, isAmount: Boolean = false) {
@@ -24,7 +22,6 @@ fun InfoRow(label: String, value: String, isAmount: Boolean = false) {
         Text(
             value,
             fontWeight = FontWeight.Medium,
-            color = if (isAmount) SuccessGreen else PrimaryBlue
         )
         Text(label, color = Color.Gray)
     }

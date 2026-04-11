@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.components.profile_component
+package com.example.yourdigitalpath.presentation.profile.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

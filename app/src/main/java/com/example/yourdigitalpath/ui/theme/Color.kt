@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.ui.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -47,21 +48,21 @@ val LightAppColors = AppColorScheme(
 )
 
 val DarkAppColors = AppColorScheme(
-    Primary = Color(0xFF6B9AC4), // Lighter for dark
-    PrimaryLight = Color(0xFF2A3B4D),
-    PrimaryMid = Color(0xFF5A7A99),
-    Background = Color(0xFF121212),
-    Surface = Color(0xFF1E1E1E),
-    Border = Color(0xFF333333),
-    TextPrimary = Color(0xFFFFFFFF),
-    TextSecond = Color(0xFFB0B0B0),
-    TextHint = Color(0xFF808080),
-    Success = Color(0xFF4CAF50),
-    SuccessBg = Color(0xFF1B3A1F),
-    Warning = Color(0xFFFFC107),
-    WarningBg = Color(0xFF3A2A0A),
-    Danger = Color(0xFFF44336),
-    DangerBg = Color(0xFF3A0A0A)
+    Primary      = Color(0xFF7BA7C9),
+    PrimaryLight = Color(0xFF1E2D3D),
+    PrimaryMid   = Color(0xFF4A7A9B),
+    Background   = Color(0xFF0F1418),
+    Surface      = Color(0xFF1A2332),
+    Border       = Color(0xFF2A3A4A),
+    TextPrimary  = Color(0xFFE8EDF2),
+    TextSecond   = Color(0xFF8FA8C0),
+    TextHint     = Color(0xFF506070),
+    Success      = Color(0xFF5DBF85),
+    SuccessBg    = Color(0xFF0D2A1A),
+    Warning      = Color(0xFFD4A843),
+    WarningBg    = Color(0xFF2A1F08),
+    Danger       = Color(0xFFE06B6B),
+    DangerBg     = Color(0xFF2A0D0D)
 )
 
 @Composable

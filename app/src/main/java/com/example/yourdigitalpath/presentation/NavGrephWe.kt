@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
+import com.example.yourdigitalpath.Routes.NavController
 import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcomscreen.WelcomeScreen
@@ -45,8 +46,9 @@ fun AppNavGraph() {
         // Service Request Screen
         composable("service_request_screen") {
             ServiceRequestScreen(
+                serviceName = " ",
                 onNext = { navController.navigate("data_entry_screen") },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
         // Data Entry Screen

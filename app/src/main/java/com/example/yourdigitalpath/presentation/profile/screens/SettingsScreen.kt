@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.screens
+package com.example.yourdigitalpath.presentation.profile.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.components.profile_component.ActionButton
-import com.example.yourdigitalpath.presentation.components.profile_component.ProfileSimpleTopBar
-import com.example.yourdigitalpath.presentation.components.profile_component.SettingItem
+import com.example.yourdigitalpath.presentation.profile.component.ActionButton
+import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleTopBar
+import com.example.yourdigitalpath.presentation.profile.component.SettingItem
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 

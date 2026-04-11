@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.features
+package com.example.yourdigitalpath.presentation.orders_history.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
-import com.example.yourdigitalpath.presentation.components.order_component.OrderCard
+import com.example.yourdigitalpath.presentation.orders_history.order_component.OrderCard
 import com.example.yourdigitalpath.presentation.viewModel.OrdersViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 

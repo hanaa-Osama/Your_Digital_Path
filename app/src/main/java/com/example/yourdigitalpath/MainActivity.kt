@@ -8,8 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.screens.NotificationsScreen
-import com.example.yourdigitalpath.presentation.screens.SettingsScreen
+import com.example.yourdigitalpath.presentation.profile.screens.NotificationsScreen
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
 import androidx.compose.foundation.layout.fillMaxSize

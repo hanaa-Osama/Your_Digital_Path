@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.screens
+package com.example.yourdigitalpath.presentation.profile.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,9 +14,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
-import com.example.yourdigitalpath.presentation.components.profile_component.ActionButton
-import com.example.yourdigitalpath.presentation.components.profile_component.PasswordField
-import com.example.yourdigitalpath.presentation.components.profile_component.ProfileSimpleTopBar
+import com.example.yourdigitalpath.presentation.profile.component.ActionButton
+import com.example.yourdigitalpath.presentation.profile.component.PasswordField
+import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleTopBar
 import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable

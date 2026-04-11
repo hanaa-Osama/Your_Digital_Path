@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.components.profile_component
+package com.example.yourdigitalpath.presentation.profile.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

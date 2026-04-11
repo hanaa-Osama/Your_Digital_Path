@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.screens
+package com.example.yourdigitalpath.presentation.profile.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.components.profile_component.NotificationSwitchItem
-import com.example.yourdigitalpath.presentation.components.profile_component.ProfileSimpleTopBar
+import com.example.yourdigitalpath.presentation.profile.component.NotificationSwitchItem
+import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleTopBar
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 

@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.components.profile_component
+package com.example.yourdigitalpath.presentation.profile.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

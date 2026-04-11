@@ -1,6 +1,5 @@
-package com.example.yourdigitalpath.presentation.screens
+package com.example.yourdigitalpath.presentation.profile.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -11,9 +10,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.Scaffold
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.components.profile_component.ActionButton
-import com.example.yourdigitalpath.presentation.components.profile_component.ProfileSimpleTopBar
-import com.example.yourdigitalpath.presentation.components.profile_component.ProfileTextField
+import com.example.yourdigitalpath.presentation.profile.component.ActionButton
+import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleTopBar
+import com.example.yourdigitalpath.presentation.profile.component.ProfileTextField
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 

@@ -10,7 +10,7 @@ import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEnti
 import com.example.yourdigitalpath.data.model.TrackingFirebaseDto
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.model.TrackingStep
-import com.example.yourdigitalpath.presentation.notification.NotificationItemData
+import com.example.yourdigitalpath.presentation.notification.screen.NotificationItemData
 
 fun NotificationEntity.toDomain(): NotificationItem {
     return NotificationItem(

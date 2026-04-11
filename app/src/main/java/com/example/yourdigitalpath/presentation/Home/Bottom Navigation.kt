@@ -2,9 +2,9 @@ package com.blqes.digi.presentation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -37,18 +37,22 @@ fun BottomNavBar(
         ) {
             val items = listOf(
                 BottomNavItem("الرئيسية", Icons.Default.Home, "home_screen"),
-                BottomNavItem("طلباتي", Icons.Default.ShoppingBag, "orders_screen"),
+                BottomNavItem("طلباتي", Icons.Default.InsertDriveFile, "orders_screen"),
                 BottomNavItem("إشعارات", Icons.Default.Notifications, "notifications_screen"),
                 BottomNavItem("حسابي", Icons.Default.Person, "profile_screen")
             )
 
             items.forEach { item ->
-                val isSelected = currentRoute == item.route
+                val isSelected = currentRoute == item.route ||
+                        (item.label == "طلباتي" && (
+                                currentRoute?.startsWith("service_request_screen") == true ||
+                                        currentRoute?.startsWith("data_entry_screen") == true ||
+                                        currentRoute == "file_upload_screen"
+                                ))
 
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = {
-                        // التنقل فقط إذا كان المسار مختلفاً ولتجنب تكرار الصفحات
                         if (currentRoute != item.route) {
                             navController.navigate(item.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

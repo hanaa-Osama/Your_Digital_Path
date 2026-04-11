@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.notification
+package com.example.yourdigitalpath.presentation.notification.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -24,15 +25,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.blqes.digi.presentation.BottomNavBar
 import com.example.yourdigitalpath.data.mapper.toUiData
+import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.component.NotificationCard
-import com.example.yourdigitalpath.ui.theme.LightGrayBg
 
 data class NotificationItemData(
     val title: String,
@@ -58,10 +56,13 @@ fun NotificationsScreen(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = {
+//                        notificationViewModel.clearAllNotifications()
+                    }) {
                         Icon(
-                            Icons.AutoMirrored.Default.ArrowBackIos,
-                            contentDescription = null
+                            Icons.Default.DeleteSweep,
+                            contentDescription = "مسح الكل",
+                            tint = Color.Red
                         )
                     }
                 },
@@ -73,10 +74,10 @@ fun NotificationsScreen(
                     )
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
-                            Icons.Default.DeleteSweep,
-                            contentDescription = null
+                            Icons.AutoMirrored.Default.ArrowBackIos,
+                            contentDescription = "رجوع"
                         )
                     }
                 },
@@ -85,23 +86,17 @@ fun NotificationsScreen(
                 )
             )
         },
-//        bottomBar = {
-//            BottomNavBar(navController)
-//        }
-
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize()
-                .background(LightGrayBg),
+                .fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(notifications) { notification ->
                 NotificationCard(notification.toUiData())
             }
-
         }
     }
 }

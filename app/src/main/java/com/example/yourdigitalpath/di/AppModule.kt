@@ -23,10 +23,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
     @Provides
     fun provideNotificationDao(db: Database): NotificationDao {
         return db.notificationDao()
     }
+
 
     @Provides
     @Singleton
@@ -43,8 +45,6 @@ object AppModule {
     ): TrackingRepository {
         return TrackingRepositoryImpl(firestore)
     }
-
-    // تم حذف provideBirthCertificateRepository من هنا لمنع التكرار
 
     @Provides
     fun provideGetNotificationsUseCase(
@@ -76,4 +76,5 @@ object AppModule {
     ): FirestoreNotificationListener {
         return FirestoreNotificationListener(firestore, dao, context)
     }
+
 }

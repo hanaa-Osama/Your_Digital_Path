@@ -16,9 +16,10 @@ import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
-import com.example.yourdigitalpath.presentation.dataEntry.DataScreen
+import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationsScreen
+import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
@@ -73,11 +74,41 @@ fun AppNavHost(
             val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
             ServiceRequestScreen(
                 serviceName = serviceName,
+                navController = navController,
                 onNext = { navController.navigate("data_entry_screen/$serviceName") },
-                onBack = { navController.popBackStack() },
-                navController = navController
+                onBack = { navController.popBackStack() }
             )
         }
+            composable("summary_screen") {
+                ServiceSummaryScreen(
+                    viewModel = viewModel,
+                    onConfirm = {
+                        navController.navigate("data_screen")
+                    }
+                )
+            }
+
+            composable("data_screen") {
+                ServiceDataEntryScreen(
+                    viewModel = viewModel,
+                    onNextClick = {
+                        navController.navigate("service_request_screen/default")
+                    }
+                )
+            }
+
+            composable(
+                "service_request_screen/{serviceName}",
+                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                ServiceRequestScreen(
+                    serviceName = serviceName,
+                    navController = navController,
+                    onNext = { navController.navigate("data_entry_screen/$serviceName") },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
         composable(
             "data_entry_screen/{serviceName}",
@@ -95,8 +126,8 @@ fun AppNavHost(
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
-                navController = navController
-            )
+
+                )
         }
 
         composable("file_upload_screen") {
@@ -109,5 +140,16 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
+        composable(
+            route = "tracking_details/{orderId}",
+            arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
+            TrackingDetailsScreen(
+                orderId = orderId,
+                navController = navController
+            )
+        }
+
     }
 }}

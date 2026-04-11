@@ -83,7 +83,7 @@ fun DataScreen(
                             color = DarkBlue
                         )
                         Text(
-                            text = "حدد نوع الطلب",
+                            text = "الخطوة 2 - بيانات صاحب الوثيقة",
                             fontSize = 12.sp,
                             color = GrayText
                         )

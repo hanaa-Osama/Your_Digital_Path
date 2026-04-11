@@ -118,17 +118,24 @@ fun StepperComponent(currentStep: Int) {
 
 @Composable
 fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
-    val backgroundColor = if (isSelected || isCompleted) PrimaryBlue else Color.White
-    val borderColor = if (isSelected || isCompleted) PrimaryBlue else Color(0xFFEAECF0)
+    val backgroundColor = when {
+        isCompleted -> PrimaryBlue
+        else -> Color.White
+    }
+    val borderColor = when {
+        isCompleted || isSelected -> PrimaryBlue
+        else -> Color(0xFFEAECF0)
+    }
     val textColor = when {
-        isCompleted || isSelected -> Color.White
+        isCompleted -> Color.White
+        isSelected -> PrimaryBlue
         else -> GrayText
     }
 
     Box(
         modifier = Modifier
-            .size(32.dp)
-            .border(1.dp, borderColor, CircleShape)
+            .size(36.dp)
+            .border(if (isSelected) 2.dp else 1.dp, borderColor, CircleShape)
             .clip(CircleShape)
             .background(backgroundColor),
         contentAlignment = Alignment.Center
@@ -138,7 +145,7 @@ fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(18.dp)
             )
         } else {
             Text(

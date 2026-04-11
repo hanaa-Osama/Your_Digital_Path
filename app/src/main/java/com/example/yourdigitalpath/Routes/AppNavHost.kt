@@ -75,7 +75,8 @@ fun AppNavHost(
         }
 
         composable("home_screen") {
-            MainScreen(navController = navController, onBack = {})
+            MainScreen(navController = navController,
+                onBack = { navController.navigate("main_screen")})
         }
 
         composable(
@@ -90,38 +91,25 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
-            composable("summary_screen") {
-                val viewModel: ServiceRequestViewModel = hiltViewModel()
-                ServiceSummaryScreen(
-                    viewModel = viewModel,
-                    onConfirm = {
-                        navController.navigate("data_screen")
-                    }
-                )
-            }
+        composable("summary_screen") {
+            val viewModel: ServiceRequestViewModel = hiltViewModel()
+            ServiceSummaryScreen(
+                viewModel = viewModel,
+                onConfirm = {
+                    navController.navigate("data_screen")
+                }
+            )
+        }
 
-            composable("data_screen") {
-                val viewModel: ServiceRequestViewModel = hiltViewModel()
-                ServiceDataEntryScreen(
-                    viewModel = viewModel,
-                    onNextClick = {
-                        navController.navigate("service_request_screen/default")
-                    }
-                )
-            }
-
-            composable(
-                "service_request_screen/{serviceName}",
-                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-                ServiceRequestScreen(
-                    serviceName = serviceName,
-                    navController = navController,
-                    onNext = { navController.navigate("data_entry_screen/$serviceName") },
-                    onBack = { navController.popBackStack() }
-                )
-            }
+        composable("data_screen") {
+            val viewModel: ServiceRequestViewModel = hiltViewModel()
+            ServiceDataEntryScreen(
+                viewModel = viewModel,
+                onNextClick = {
+                    navController.navigate("service_request_screen/default")
+                }
+            )
+        }
 
         composable(
             "data_entry_screen/{serviceName}",
@@ -136,12 +124,11 @@ fun AppNavHost(
 
         composable("notifications_screen") {
             val viewModel: NotificationViewModel = hiltViewModel()
-
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
                 navController = navController
-                )
+            )
         }
 
         composable("file_upload_screen") {

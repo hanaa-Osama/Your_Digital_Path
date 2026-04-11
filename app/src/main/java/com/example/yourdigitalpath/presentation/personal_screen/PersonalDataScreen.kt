@@ -1,49 +1,45 @@
 package com.blqes.digi.presentation.personalscreen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.app.DatePickerDialog
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import java.util.Calendar
+import androidx.compose.ui.platform.LocalContext
 
-
+// Colors
 val BackgroundBlue = Color(0xFF1E3A5F)
-val CardBackground = Color(0xFFFFFFFF)
 val InputBorder = Color(0xFF90CAF9)
 val WarningYellow = Color(0xFFFFF9C4)
 val HintColor = Color(0xFFB0BEC5)
 
 @Composable
 fun PersonalDataScreen(string: String) {
+
+    // ✅ STATES
+    var fullName by remember { mutableStateOf("") }
+    var nationalId by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,34 +58,118 @@ fun PersonalDataScreen(string: String) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.End
         ) {
-            // العنوان الرئيسي
+
             SectionHeader(title = "البيانات الشخصية")
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // الحقول
+            // الاسم
             CustomInputField(
                 label = "الاسم الكامل",
-                value = "سارة محمد عبد الله",
-                isVerified = true
+                value = fullName,
+                onValueChange = { fullName = it },
+                isVerified = fullName.trim().split(" ").size >= 3
             )
+
+            // الرقم القومي
             CustomInputField(
                 label = "الرقم القومي (14 رقم)",
-                value = "2990115012345XX",
-                isVerified = true
+                value = nationalId,
+                onValueChange = {
+                    if (it.length <= 14 && it.all { ch -> ch.isDigit() }) {
+                        nationalId = it
+                    }
+                },
+                isVerified = nationalId.length == 14
             )
-            CustomInputField(label = "تاريخ الميلاد", value = "1990 / 01 / 15", isDate = true)
-            CustomInputField(label = "رقم الهاتف", value = "010XXXXXXXX", isEnabled = false)
+
+            // تاريخ الميلاد
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+
+
+                Text(
+                    text = "تاريخ الميلاد",
+                    color = HintColor,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+
+                Box(
+                    modifier = Modifier
+                        .width(380.dp)
+
+
+                        .border(
+                            width = 1.dp,
+                            color = InputBorder,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .clickable {
+
+                            DatePickerDialog(
+                                context,
+                                { _, year, month, dayOfMonth ->
+                                    birthDate = "$dayOfMonth/${month + 1}/$year"
+                                },
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH)
+                            ).show()
+
+                        }
+                        .padding(16.dp)
+                ) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+
+                        Text(
+                            text = if (birthDate.isEmpty()) "اختار التاريخ" else birthDate,
+                            color = if (birthDate.isEmpty()) HintColor else Color.Black
+                        )
+
+                        Icon(
+                            Icons.Default.DateRange,
+                            contentDescription = null,
+                            tint = Color.Gray
+                        )
+                    }
+                }
+            }
+
+            // الهاتف
+            CustomInputField(
+                label = "رقم الهاتف",
+                value = phone,
+                onValueChange = {
+                    if (it.length <= 11 && it.all { ch -> ch.isDigit() }) {
+                        phone = it
+                    }
+                },
+                isVerified = phone.length == 11,
+
+
+                isError = phone.isNotEmpty() && phone.length != 11,
+                errorMessage = "رقم الهاتف غير صحيح"
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // صندوق التنبيه (Warning Box)
-            WarningBox(text = "تأكد من إدخال بياناتك كما هي في بطاقة الهوية الوطنية لضمان صحة الطلبات")
+            WarningBox("تأكد من إدخال بياناتك كما هي في بطاقة الهوية الوطنية لضمان صحة الطلبات")
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // الزر السفلي
-            NextButton(text = "التالي ")
+            NextButton("التالي")
         }
     }
 }
@@ -97,14 +177,13 @@ fun PersonalDataScreen(string: String) {
 @Composable
 fun SectionHeader(title: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
-        modifier = Modifier.fillMaxWidth()
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = title,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
             color = BackgroundBlue
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -112,7 +191,7 @@ fun SectionHeader(title: String) {
             modifier = Modifier
                 .width(4.dp)
                 .height(24.dp)
-                .background(BackgroundBlue, RoundedCornerShape(2.dp))
+                .background(BackgroundBlue)
         )
     }
 }
@@ -121,57 +200,53 @@ fun SectionHeader(title: String) {
 fun CustomInputField(
     label: String,
     value: String,
+    onValueChange: (String) -> Unit = {},
     isVerified: Boolean = false,
     isDate: Boolean = false,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    isError: Boolean = false,
+    errorMessage: String = ""
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
+
         Text(text = label, color = HintColor, fontSize = 14.sp)
+
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedCard(
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.outlinedCardColors(
-                containerColor = if (isEnabled) Color.White else Color(0xFFF5F5F5)
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isEnabled,
+            singleLine = true,
+            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = InputBorder,
+                unfocusedBorderColor = InputBorder,
+                disabledBorderColor = Color.Transparent
             ),
-            border = CardDefaults.outlinedCardBorder(isEnabled).copy(
-                brush = androidx.compose.ui.graphics.SolidColor(if (isEnabled) InputBorder else Color.Transparent)
-            ),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = value,
-                    color = if (isEnabled) Color.Black else HintColor,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End
-                )
+            trailingIcon = {
 
                 if (isVerified) {
-                    Icon(
-                        Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        tint = Color(0xFF4CAF50)
-                    )
+                    Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF4CAF50))
                 } else if (isDate) {
-                    Icon(
-                        Icons.Default.DateRange,
-                        contentDescription = null,
-                        tint = Color(0xFF4CAF50)
-                    )
+                    Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.Gray)
                 }
             }
+        )
+        if (isError && value.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
     }
 }
@@ -179,27 +254,23 @@ fun CustomInputField(
 @Composable
 fun WarningBox(text: String) {
     Surface(
-        color = WarningYellow.copy(alpha = 0.3f),
+        color = WarningYellow.copy(alpha = 0.4f),
         shape = RoundedCornerShape(12.dp),
-        border = CardDefaults.outlinedCardBorder().copy(
-            brush = androidx.compose.ui.graphics.SolidColor(Color(0xFFFFD54F))
-        ),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = text,
                 fontSize = 12.sp,
-                color = Color(0xFF827717),
-                textAlign = TextAlign.End,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Icon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFFFFD54F))
+            Icon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFFFFC107))
         }
     }
 }
@@ -207,7 +278,7 @@ fun WarningBox(text: String) {
 @Composable
 fun NextButton(text: String) {
     Button(
-        onClick = { /* Navigate */ },
+        onClick = {},
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
@@ -215,27 +286,17 @@ fun NextButton(text: String) {
         colors = ButtonDefaults.buttonColors(containerColor = BackgroundBlue)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(Icons.Default.KeyboardArrowRight, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = text, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            Text(text = text, fontSize = 18.sp)
         }
     }
 }
 
-@Preview(
-    name = "Personal Data Screen",
-    showBackground = true,
-    showSystemUi = true,
-    device = "spec:width=411dp,height=891dp,dpi=420"
-)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun FullPersonalDataScreenPreview() {
-    MaterialTheme {
-        Surface {
-            PersonalDataScreen("register_screen")
-        }
-    }
+fun PreviewScreen() {
+    PersonalDataScreen("register_screen")
 }

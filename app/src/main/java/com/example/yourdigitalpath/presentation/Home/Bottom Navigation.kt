@@ -53,13 +53,20 @@ fun BottomNavBar(
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = {
-                        if (currentRoute != item.route) {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                        if (item.route == "home_screen") {
+                            navController.navigate("home_screen") {
+                                popUpTo(0)
                                 launchSingleTop = true
-                                restoreState = true
+                            }
+                        } else {
+                            if (currentRoute != item.route) {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     },
@@ -77,7 +84,7 @@ fun BottomNavBar(
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        // هذا السطر هو المسؤول عن إزالة الظل/الخلفية الملونة عند اختيار الأيقونة
+
                         indicatorColor = Color.Transparent 
                     )
                 )

@@ -67,7 +67,8 @@ fun AppNavHost(
         }
 
         composable("home_screen") {
-            MainScreen(navController = navController, onBack = {})
+            MainScreen(navController = navController,
+                onBack = { navController.navigate("main_screen")})
         }
 
         composable(

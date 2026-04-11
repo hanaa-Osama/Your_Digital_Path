@@ -25,7 +25,7 @@ import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
-fun NotificationsScreen(
+fun NotificationsSettingScreen(
     onBackClick: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -108,6 +108,6 @@ fun NotificationsScreen(
 
 @Preview(showBackground = true, locale = "ar")
 @Composable
-fun PreviewNotificationsScreen() {
-    NotificationsScreen(onBackClick = {})
+fun PreviewNotificationsSettingScreen() {
+    NotificationsSettingScreen(onBackClick = {})
 }

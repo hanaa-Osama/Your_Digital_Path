@@ -37,7 +37,7 @@ fun BottomNavBar(
         ) {
             val items = listOf(
                 BottomNavItem("الرئيسية", Icons.Default.Home, "home_screen"),
-                BottomNavItem("طلباتي", Icons.Default.InsertDriveFile, "orders_screen"),
+                BottomNavItem("طلباتي", Icons.Default.InsertDriveFile, "my_orders_screen"),
                 BottomNavItem("إشعارات", Icons.Default.Notifications, "notifications_screen"),
                 BottomNavItem("حسابي", Icons.Default.Person, "profile_screen")
             )
@@ -47,7 +47,8 @@ fun BottomNavBar(
                         (item.label == "طلباتي" && (
                                 currentRoute?.startsWith("service_request_screen") == true ||
                                         currentRoute?.startsWith("data_entry_screen") == true ||
-                                        currentRoute == "file_upload_screen"
+                                        currentRoute == "file_upload_screen"||
+                                        currentRoute == "my_orders_screen"
                                 ))
 
                 NavigationBarItem(

@@ -49,5 +49,5 @@ fun ServiceIconBadge(serviceName: String) {
 @Preview
 @Composable
 fun PreviewServiceIconBadge(modifier: Modifier = Modifier) {
-    ServiceIconBadge(serviceName = "طلاق")
+    ServiceIconBadge(serviceName = "ميلاد")
 }

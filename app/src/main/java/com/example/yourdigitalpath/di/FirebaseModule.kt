@@ -17,7 +17,7 @@ object FirebaseModule {
     fun provideFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
-    
+
 
     @Provides
     @Singleton

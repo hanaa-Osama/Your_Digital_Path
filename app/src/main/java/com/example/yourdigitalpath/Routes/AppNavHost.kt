@@ -73,7 +73,6 @@ fun AppNavHost(
         composable("register_screen") {
             PersonalDataScreen("register_screen")
         }
-
         composable("home_screen") {
             MainScreen(navController = navController,
                 onBack = { navController.navigate("main_screen")})

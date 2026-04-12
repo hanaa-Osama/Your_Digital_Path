@@ -14,10 +14,7 @@ import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.presentation.welcomscreen.LoginScreen
-import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
-import com.example.yourdigitalpath.presentation.ServiceDataEntryScreen
-import com.example.yourdigitalpath.presentation.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel

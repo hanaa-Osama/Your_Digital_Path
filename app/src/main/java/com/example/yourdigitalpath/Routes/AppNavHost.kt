@@ -1,4 +1,5 @@
 package com.example.yourdigitalpath.Routes
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,7 +14,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
-
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel

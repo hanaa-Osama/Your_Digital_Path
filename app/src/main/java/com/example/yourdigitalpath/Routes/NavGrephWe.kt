@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
+import com.blqes.digi.presentation.welcomscreen.LoginScreen
+import com.example.yourdigitalpath.presentation.FileUploadScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
@@ -41,7 +43,7 @@ fun AppNavGraph() {
         }
 
         composable("register_screen") {
-            PersonalDataScreen("register_screen")
+            PersonalDataScreen("register_screen", navController)
         }
 
         composable("home_screen") {

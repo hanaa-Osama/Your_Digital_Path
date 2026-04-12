@@ -13,11 +13,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
-import com.example.yourdigitalpath.presentation.FileUploadScreen
+import com.blqes.digi.presentation.welcomscreen.LoginScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
-import com.example.yourdigitalpath.presentation.ServiceDataEntryScreen
-import com.example.yourdigitalpath.presentation.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
+import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
@@ -29,7 +28,8 @@ import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
-import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
+import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
+import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 
@@ -56,143 +56,145 @@ fun AppNavHost(
         }
     ) { padding ->
 
-    NavHost(
-        navController = navController,
-        startDestination = "welcome_screen",
-                modifier = Modifier.padding(padding)
-    ) {
-
-        composable("welcome_screen") {
-            WelcomeScreen(navController)
-        }
-
-        composable("login_screen") {
-            LoginScreen(navController)
-        }
-
-        composable("register_screen") {
-            PersonalDataScreen("register_screen")
-        }
-
-        composable("home_screen") {
-            MainScreen(navController = navController,
-                onBack = { navController.navigate("main_screen")})
-        }
-
-        composable(
-            "service_request_screen/{serviceName}",
-            arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-            ServiceRequestScreen(
-                serviceName = serviceName,
-                navController = navController,
-                onNext = { navController.navigate("data_entry_screen/$serviceName") },
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable("summary_screen") {
-            val viewModel: ServiceRequestViewModel = hiltViewModel()
-            ServiceSummaryScreen(
-                viewModel = viewModel,
-                onConfirm = {
-                    navController.navigate("data_screen")
-                }
-            )
-        }
-
-        composable("data_screen") {
-            val viewModel: ServiceRequestViewModel = hiltViewModel()
-            ServiceDataEntryScreen(
-                viewModel = viewModel,
-                onNextClick = {
-                    navController.navigate("service_request_screen/default")
-                }
-            )
-        }
-
-        composable(
-            "data_entry_screen/{serviceName}",
-            arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+        NavHost(
+            navController = navController,
+            startDestination = "welcome_screen",
+            modifier = Modifier.padding(padding)
         ) {
-            DataScreen(
-                serviceName = it.arguments?.getString("serviceName") ?: "",
-                onNext = { navController.navigate("file_upload_screen") },
-                onBack = { navController.popBackStack() }
-            )
-        }
 
-        composable("notifications_screen") {
-            val viewModel: NotificationViewModel = hiltViewModel()
-            NotificationsScreen(
-                onBack = { navController.popBackStack() },
-                notificationViewModel = viewModel,
-                navController = navController
-            )
-        }
+            composable("welcome_screen") {
+                WelcomeScreen(navController)
+            }
 
-        composable("file_upload_screen") {
-            FileUploadScreen(
-                onNext = {
-                    navController.navigate("home_screen") {
-                        popUpTo("home_screen") { inclusive = true }
+            composable("login_screen") {
+                LoginScreen(navController)
+            }
+
+            composable("register_screen") {
+                PersonalDataScreen("register_screen")
+            }
+
+            composable("home_screen") {
+                MainScreen(
+                    navController = navController,
+                    onBack = { navController.navigate("home_screen") }
+                )
+            }
+
+            composable(
+                "service_request_screen/{serviceName}",
+                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                ServiceRequestScreen(
+                    serviceName = serviceName,
+                    navController = navController,
+                    onNext = { navController.navigate("data_entry_screen/$serviceName") },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                "data_entry_screen/{serviceName}",
+                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                DataScreen(
+                    serviceName = serviceName,
+                    onNext = { navController.navigate("file_upload_screen/$serviceName") },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                "file_upload_screen/{serviceName}",
+                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                val viewModel: ServiceRequestViewModel = hiltViewModel()
+                UploudFilesScreens(
+                    serviceName = serviceName,
+                    viewModel = viewModel,
+                    onNextClick = {
+                        navController.navigate("summary_screen/$serviceName")
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                "summary_screen/{serviceName}",
+                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                val viewModelService: ServiceRequestViewModel = hiltViewModel()
+                val viewModelBirth: BirthCertificateViewModel = hiltViewModel()
+                ServiceSummaryScreen(
+                    serviceName = serviceName,
+                    serviceRequestViewModel = viewModelService,
+                    birthCertificateViewModel = viewModelBirth,
+                    onConfirm = {
+                        navController.navigate("home_screen") {
+                            popUpTo("home_screen") { inclusive = true }
+                        }
                     }
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(
-            route = "tracking_details/{orderId}",
-            arguments = listOf(navArgument("orderId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-            TrackingDetailsScreen(
-                orderId = orderId,
-                navController = navController
-            )
-        }
+                )
+            }
 
-        composable("profile_screen") {
-            ProfileScreen(
-                onNavigateToEditProfile = { navController.navigate("edit_profile_screen") },
-                onNavigateToOrders = { navController.navigate("my_orders_screen") },
-                onNavigateToNotifications = { navController.navigate("notifications_settings_screen") },
-                onNavigateToSecurity = { navController.navigate("security_screen") },
-                onNavigateToSettings = { navController.navigate("settings_screen") },
-                onLogout = {
-                    navController.navigate("welcome_screen") {
-                        popUpTo(0) { inclusive = true }
+            composable("notifications_screen") {
+                val viewModel: NotificationViewModel = hiltViewModel()
+                NotificationsScreen(
+                    onBack = { navController.popBackStack() },
+                    notificationViewModel = viewModel,
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = "tracking_details/{orderId}",
+                arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
+                TrackingDetailsScreen(
+                    orderId = orderId,
+                    navController = navController
+                )
+            }
+
+            composable("profile_screen") {
+                ProfileScreen(
+                    onNavigateToEditProfile = { navController.navigate("edit_profile_screen") },
+                    onNavigateToOrders = { navController.navigate("my_orders_screen") },
+                    onNavigateToNotifications = { navController.navigate("notifications_settings_screen") },
+                    onNavigateToSecurity = { navController.navigate("security_screen") },
+                    onNavigateToSettings = { navController.navigate("settings_screen") },
+                    onLogout = {
+                        navController.navigate("welcome_screen") {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable("edit_profile_screen") {
-            EditProfileScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
+            composable("edit_profile_screen") {
+                EditProfileScreen(onBackClick = { navController.popBackStack() })
+            }
 
-        composable("notifications_settings_screen") {
-            NotificationsSettingScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
+            composable("notifications_settings_screen") {
+                NotificationsSettingScreen(onBackClick = { navController.popBackStack() })
+            }
 
-        composable("security_screen") {
-            SecurityScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
+            composable("security_screen") {
+                SecurityScreen(onBackClick = { navController.popBackStack() })
+            }
 
-        composable("settings_screen") {
-            SettingsScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
+            composable("settings_screen") {
+                SettingsScreen(onBackClick = { navController.popBackStack() })
+            }
 
-        composable("my_orders_screen") {
-            MyOrdersScreen()
+            composable("my_orders_screen") {
+                MyOrdersScreen()
+            }
         }
     }
-}}
+}

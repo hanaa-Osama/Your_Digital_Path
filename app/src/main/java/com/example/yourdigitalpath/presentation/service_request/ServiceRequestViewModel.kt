@@ -24,12 +24,24 @@ class ServiceRequestViewModel @Inject constructor(
     private val _isUploading = MutableStateFlow(false)
     val isUploading: StateFlow<Boolean> = _isUploading.asStateFlow()
 
-    fun uploadDocument(uri: Uri) {
+    fun uploadNationalId(uri: Uri) {
         viewModelScope.launch {
             _isUploading.value = true
             try {
-                val fakeUrl = "https://firebasestorage.com/${uri.lastPathSegment}"
-                _uiState.update { it.copy(documentsUrls = it.documentsUrls + fakeUrl) }
+                val fakeUrl = "https://firebasestorage.com/national_id_${uri.lastPathSegment}"
+                _uiState.update { it.copy(nationalIdUrl = fakeUrl) }
+            } finally {
+                _isUploading.value = false
+            }
+        }
+    }
+
+    fun uploadServiceDocument(uri: Uri) {
+        viewModelScope.launch {
+            _isUploading.value = true
+            try {
+                val fakeUrl = "https://firebasestorage.com/service_doc_${uri.lastPathSegment}"
+                _uiState.update { it.copy(serviceDocumentUrl = fakeUrl) }
             } finally {
                 _isUploading.value = false
             }

@@ -66,7 +66,7 @@ fun ServiceRequestScreen(
                                 color = AppColors.PrimaryLight
                             )
                             Text(
-                                text = "الخطوة 1 - حدد نوع الطلب",
+                                text = "حدد نوع الطلب",
                                 fontSize = 12.sp,
                                 color = AppColors.PrimaryLight
                             )
@@ -101,7 +101,7 @@ fun ServiceRequestScreen(
             ) {
 
 
-                StepperComponent(currentStep = 1)
+                StepperComponent(currentStep = 2)
                 Column(modifier = Modifier.padding(16.dp)) {
                     SectionCard {
                         SelectionChipGroup(

@@ -3,6 +3,7 @@ package com.example.yourdigitalpath.presentation.notification
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.domain.model.NotificationItem
+import com.example.yourdigitalpath.domain.usecase.ClearNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
-    private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase
+    private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase,
+    private val clearNotificationsUseCase: ClearNotificationsUseCase
 ) : ViewModel() {
 
     val notifications: StateFlow<List<NotificationItem>> = getNotificationsUseCase()
@@ -30,16 +32,9 @@ class NotificationViewModel @Inject constructor(
             markNotificationAsReadUseCase(id)
         }
     }
-//    fun clearAllNotifications() {
-//        viewModelScope.launch {
-//            try {
-//                // 2. دلوقتي السطر ده هيشتغل صح لأن الكلاس بقا عارف يعني إيه clearNotificationsUseCase
-//
-//                ClearNotificationsUseCase(
-//                )
-//            } catch (e: Exception) {
-//                // يمكنك طباعة الخطأ هنا للتأكد (Log.e)
-//            }
-//        }
-//    }
+    fun clearAllNotifications() {
+        viewModelScope.launch {
+            clearNotificationsUseCase()
+        }
+    }
 }

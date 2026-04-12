@@ -110,7 +110,7 @@ fun DataScreen(
                         value = uiState.fullName,
                         onValueChange = { viewModel.updateFullName(it) },
                         label = "الاسم الكامل (عربي فقط)",
-                        placeholder = "أحمد محمد علي حسن",
+                        placeholder = "الاسم رباعي",
                         isValid = uiState.fullName.trim().split(" ").size >= 4,
                         errorMessage = uiState.fullNameError
                     )

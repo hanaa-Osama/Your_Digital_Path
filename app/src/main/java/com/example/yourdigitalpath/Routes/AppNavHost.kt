@@ -195,7 +195,9 @@ fun AppNavHost(navController: NavHostController) {
                 SettingsScreen(onBackClick = { navController.popBackStack() })
             }
 
-            composable("my_orders_screen") { MyOrdersScreen() }
+            composable("my_orders_screen") {
+                MyOrdersScreen()
+            }
         }
     }
 }

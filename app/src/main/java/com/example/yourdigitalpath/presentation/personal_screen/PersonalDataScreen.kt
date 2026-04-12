@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import com.example.yourdigitalpath.ui.components.CustomDatePickerField
 import com.example.yourdigitalpath.ui.components.PrimaryBlue
 import java.util.Calendar
 
@@ -158,40 +160,14 @@ fun PersonalDataScreen(
                 ) {
                     Text(text = "تاريخ الميلاد", color = HintColor, fontSize = 13.sp)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, InputBorder, RoundedCornerShape(10.dp))
-                            .clickable {
-                                DatePickerDialog(
-                                    context,
-                                    { _, year, month, day ->
-                                        birthDate = "$year / ${month + 1} / $day"
-                                    },
-                                    calendar.get(Calendar.YEAR),
-                                    calendar.get(Calendar.MONTH),
-                                    calendar.get(Calendar.DAY_OF_MONTH)
-                                ).show()
-                            }
-                            .padding(14.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                Icons.Outlined.DateRange,
-                                contentDescription = null,
-                                tint = HintColor,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Text(
-                                text = if (birthDate.isEmpty()) "1990 / 01 / 15" else birthDate,
-                                color = if (birthDate.isEmpty()) HintColor else Color(0xFF1A1D23)
-                            )
-                        }
-                    }
+                    CustomDatePickerField(
+                        value = birthDate,
+                        onValueChange = { birthDate = it },
+                        leadingIcon = Icons.Outlined.DateRange,
+                        label = "تاريخ الميلاد",
+                        placeholder = "1990 / 01 / 15",
+                        errorMessage = ""
+                    )
                 }
 
                 RegisterInputField(
@@ -302,6 +278,7 @@ fun RegisterInputField(
     isError: Boolean = false,
     errorMessage: String = ""
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()

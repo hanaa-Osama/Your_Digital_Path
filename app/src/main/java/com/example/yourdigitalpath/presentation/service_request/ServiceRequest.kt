@@ -152,7 +152,11 @@ fun ServiceRequestScreen(
                             },
                             options = options,
                             onOptionSelected = { option ->
-                                val count = option.split(" ")[0].toIntOrNull() ?: 1
+                                val count = when (option) {
+                                    "نسخة واحدة" -> 1
+                                    "نسختان" -> 2
+                                    else -> option.split(" ")[0].toIntOrNull() ?: 1
+                                }
                                 viewModel.updateCopiesCount(count)
                             }
                         )

@@ -166,7 +166,6 @@ fun PersonalDataScreen(
                         leadingIcon = Icons.Outlined.DateRange,
                         label = "تاريخ الميلاد",
                         placeholder = "1990 / 01 / 15",
-                        errorMessage = ""
                     )
                 }
 

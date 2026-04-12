@@ -36,10 +36,10 @@ import com.example.yourdigitalpath.ui.components.BackgroundGray
 import com.example.yourdigitalpath.ui.components.CustomDropdown
 import com.example.yourdigitalpath.ui.components.CustomTextField
 import com.example.yourdigitalpath.ui.components.DarkBlue
-import com.example.yourdigitalpath.ui.components.GrayText
 import com.example.yourdigitalpath.ui.components.SectionCard
 import com.example.yourdigitalpath.ui.components.SelectionChipGroup
 import com.example.yourdigitalpath.ui.components.StepperComponent
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,12 +63,12 @@ fun ServiceRequestScreen(
                                 text = serviceName,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = DarkBlue
+                                color = AppColors.PrimaryLight
                             )
                             Text(
                                 text = "حدد نوع الطلب",
                                 fontSize = 12.sp,
-                                color = GrayText
+                                color = AppColors.PrimaryLight
                             )
                         }
                     },
@@ -77,12 +77,12 @@ fun ServiceRequestScreen(
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBackIos,
                                 contentDescription = "Back",
-                                tint = DarkBlue
+                                tint = AppColors.PrimaryLight
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = BackgroundGray
+                        containerColor = AppColors.Primary
                     )
                 )
             },

@@ -7,8 +7,9 @@ import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class NotificationRepositoryImpl(
+class NotificationRepositoryImpl @Inject constructor(
     private val dao: NotificationDao
 ) : NotificationRepository {
 

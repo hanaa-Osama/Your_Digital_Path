@@ -1,64 +1,51 @@
 package com.example.yourdigitalpath.presentation.Home
 
-
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.blqes.digi.presentation.BottomNavBar
+import androidx.navigation.compose.rememberNavController
 import com.blqes.digi.presentation.HeaderSection
-
+import com.example.yourdigitalpath.domain.model.OrderModel
 
 @Composable
 fun MainScreen(
     onBack: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    userName: String = "هناء اسامة",
+    ordersList: List<OrderModel> = emptyList()
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(2.dp)
-            .background(
-                Color(0XFF3D5A80)
-            )
-
-
+            .background(Color(0XFF3D5A80))
     ) {
-
-        HeaderSection()
-
+        HeaderSection(
+            userName = userName,
+            orders = ordersList
+        )
         Spacer(modifier = Modifier.height(16.dp))
-
-
-
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
         ) {
-
             EventSection(navController)
         }
-
-
-
     }
 }
 
 @Composable
 @Preview
-private fun MainScreenprev() {
+private fun MainScreenPreview() {
     MainScreen(
-        navController = androidx.navigation.compose.rememberNavController(),
-        onBack = {}
+        navController = rememberNavController(),
+        onBack = {},
+        userName = "هناء اسامة",
+        ordersList = emptyList()
     )
 }
-
-

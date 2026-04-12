@@ -20,6 +20,9 @@ import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSet
 import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
+import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
+import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
+import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
@@ -43,11 +46,19 @@ fun AppNavGraph() {
         }
 
         composable("register_screen") {
-            PersonalDataScreen("register_screen", navController)
+            PersonalDataScreen(
+                onNext = {
+                    navController.navigate("account_data_screen")
+                }
+            )
         }
 
         composable("home_screen") {
-            MainScreen(navController = navController, onBack = {})
+            MainScreen(
+                navController = navController,
+                onBack = {},
+                userName = ""
+            )
         }
 
         composable(
@@ -60,6 +71,15 @@ fun AppNavGraph() {
                 navController = navController,
                 onNext = { navController.navigate("data_entry_screen/$serviceName") },
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("account_data_screen") {
+            AccountDataScreen(
+                onBack = { navController.popBackStack() },
+                onRegister = { navController.navigate("home_screen") {
+                    popUpTo(0) { inclusive = true }
+                }}
             )
         }
 
@@ -82,7 +102,6 @@ fun AppNavGraph() {
                 navController = navController
             )
         }
-
 
         composable("profile_screen") {
             ProfileScreen(

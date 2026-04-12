@@ -24,7 +24,7 @@ fun LoginForm(
         CustomTextField(
             value = phone,
             onValueChange = onPhoneChange,
-            hint = "01012345678"
+            hint = "رقم الهاتف"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -36,7 +36,7 @@ fun LoginForm(
         CustomTextField(
             value = password,
             onValueChange = onPasswordChange,
-            hint = "********",
+            hint = "كلمه المرور",
             isPassword = true
         )
 

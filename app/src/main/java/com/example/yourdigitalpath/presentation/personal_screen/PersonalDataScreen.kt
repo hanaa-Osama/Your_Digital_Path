@@ -1,232 +1,280 @@
 package com.blqes.digi.presentation.personalscreen
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.app.DatePickerDialog
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import java.util.Calendar
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavHostController
+import com.example.yourdigitalpath.ui.components.CustomDatePickerField
+import com.example.yourdigitalpath.ui.components.PrimaryBlue
+import java.util.Calendar
 
-// Colors
-val BackgroundBlue = Color(0xFF1E3A5F)
-val InputBorder = Color(0xFF90CAF9)
-val WarningYellow = Color(0xFFFFF9C4)
-val HintColor = Color(0xFFB0BEC5)
+val InputBorder = Color(0xFFE4E8ED)
+val HintColor = Color(0xFF9BA3B2)
+val WarningYellow = Color(0xFFFDF5E0)
 
 @Composable
-fun PersonalDataScreen(string: String, navController: NavHostController) {
-
-
-    // ✅ STATES
+fun PersonalDataScreen(
+    onBack: () -> Unit = {},
+    onNext: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
     var fullName by remember { mutableStateOf("") }
     var nationalId by remember { mutableStateOf("") }
     var birthDate by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundBlue)
-            .padding(top = 40.dp)
+            .background(Color(0xFF435D82))
     ) {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-                )
-                .padding(24.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-
-            SectionHeader(title = "البيانات الشخصية")
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // الاسم
-            CustomInputField(
-                label = "الاسم الكامل",
-                value = fullName,
-                onValueChange = {
-
-                    val filtered = it.filter { ch ->
-                        ch in '\u0600'..'\u06FF' || ch == ' '
-                    }
-
-                    fullName = filtered
-                },
-                isVerified = fullName.trim().split(" ").size >= 3
-            )
-
-            // الرقم القومي
-            CustomInputField(
-                label = "الرقم القومي (14 رقم)",
-                value = nationalId,
-                onValueChange = {
-                    if (it.length <= 14 && it.all { ch -> ch.isDigit() }) {
-                        nationalId = it
-                    }
-                },
-                isVerified = nationalId.length == 14
-            )
-
-            // تاريخ الميلاد
-            Column(
-                horizontalAlignment = Alignment.End,
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(top = 40.dp, start = 16.dp, end = 16.dp, bottom = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-
-
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color.White.copy(alpha = 0.15f),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable { onBack() }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "رجوع",
+                        tint = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
                 Text(
-                    text = "تاريخ الميلاد",
-                    color = HintColor,
-                    fontSize = 14.sp
+                    text = "إنشاء حساب",
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White
+                )
+                Spacer(modifier = Modifier.width(40.dp))
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "البيانات الشخصية",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .background(Color.White)
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "بيانات الحساب",
+                        color = Color.White.copy(alpha = 0.6f),
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Color.White.copy(alpha = 0.3f))
+                    )
+                }
+            }
+        }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White, RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                RegisterSectionHeader(title = "البيانات الشخصية")
+                Spacer(modifier = Modifier.height(20.dp))
+
+                RegisterInputField(
+                    label = "الاسم الكامل",
+                    value = fullName,
+                    onValueChange = { fullName = it },
+                    isVerified = fullName.trim().split(" ").size >= 3
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                RegisterInputField(
+                    label = "الرقم القومي (14 رقم)",
+                    value = nationalId,
+                    onValueChange = {
+                        if (it.length <= 14 && it.all { ch -> ch.isDigit() })
+                            nationalId = it
+                    },
+                    isVerified = nationalId.length == 14
+                )
 
-
-                Box(
+                Column(
+                    horizontalAlignment = Alignment.End,
                     modifier = Modifier
-                        .width(380.dp)
-
-
-                        .border(
-                            width = 1.dp,
-                            color = InputBorder,
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .clickable {
-
-                            DatePickerDialog(
-                                context,
-                                { _, year, month, dayOfMonth ->
-                                    birthDate = "$dayOfMonth/${month + 1}/$year"
-                                },
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH)
-                            ).show()
-
-                        }
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
                 ) {
+                    Text(text = "تاريخ الميلاد", color = HintColor, fontSize = 13.sp)
+                    Spacer(modifier = Modifier.height(6.dp))
+                    CustomDatePickerField(
+                        value = birthDate,
+                        onValueChange = { birthDate = it },
+                        leadingIcon = Icons.Outlined.DateRange,
+                        label = "تاريخ الميلاد",
+                        placeholder = "1990 / 01 / 15",
+                        errorMessage = ""
+                    )
+                }
 
+                RegisterInputField(
+                    label = "رقم الهاتف",
+                    value = phone,
+                    onValueChange = {
+                        if (it.length <= 11 && it.all { ch -> ch.isDigit() })
+                            phone = it
+                    },
+                    placeholder = "010XXXXXXXX",
+                    isVerified = phone.length == 11,
+                    isError = phone.isNotEmpty() && phone.length != 11,
+                    errorMessage = "رقم الهاتف غير صحيح"
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Surface(
+                    color = WarningYellow,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Text(
+                            text = "تأكد من إدخال بياناتك كما هي في بطاقة الهوية الوطنية لضمان صحة الطلبات",
+                            fontSize = 12.sp,
+                            color = Color(0xFF8A6A1F),
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            Icons.Outlined.Info,
+                            contentDescription = null,
+                            tint = Color(0xFF8A6A1F),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = onNext,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.Center
                     ) {
-
-                        Text(
-                            text = if (birthDate.isEmpty()) "اختار التاريخ" else birthDate,
-                            color = if (birthDate.isEmpty()) HintColor else Color.Black
-                        )
-
                         Icon(
-                            Icons.Default.DateRange,
+                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = null,
-                            tint = Color.Gray
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "التالي — بيانات الحساب",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
                     }
                 }
             }
 
-            // الهاتف
-            CustomInputField(
-                label = "رقم الهاتف",
-                value = phone,
-                onValueChange = {
-                    if (it.length <= 11 && it.all { ch -> ch.isDigit() }) {
-                        phone = it
-                    }
-                },
-                isVerified = phone.length == 11,
-
-
-                isError = phone.isNotEmpty() && phone.length != 11,
-                errorMessage = "رقم الهاتف غير صحيح"
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            WarningBox("تأكد من إدخال بياناتك كما هي في بطاقة الهوية الوطنية لضمان صحة الطلبات")
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            val isFormValid =
-                fullName.trim().split(" ").size >= 3 &&
-                        nationalId.length == 14 &&
-                        birthDate.isNotEmpty() &&
-                        phone.length == 11
-
-            NextButton(
-                text = "التالي",
-                enabled = isFormValid,
-                onClick = {
-                    navController.navigate("home_screen") {
-                        popUpTo("register_screen") { inclusive = true }
-                    }
-                }
-            )
-        }
     }
 }
 
 @Composable
-fun SectionHeader(title: String) {
+fun RegisterSectionHeader(title: String) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = title,
-            fontSize = 20.sp,
-            color = BackgroundBlue
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = PrimaryBlue
         )
         Spacer(modifier = Modifier.width(8.dp))
         Box(
             modifier = Modifier
-                .width(4.dp)
-                .height(24.dp)
-                .background(BackgroundBlue)
+                .width(3.dp)
+                .height(20.dp)
+                .background(PrimaryBlue, RoundedCornerShape(2.dp))
         )
     }
 }
 
 @Composable
-fun CustomInputField(
+fun RegisterInputField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit = {},
+    placeholder: String = "",
     isVerified: Boolean = false,
-    isDate: Boolean = false,
-    isEnabled: Boolean = true,
     isError: Boolean = false,
     errorMessage: String = ""
 ) {
@@ -237,94 +285,46 @@ fun CustomInputField(
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
-
-        Text(text = label, color = HintColor, fontSize = 14.sp)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
+        Text(text = label, color = HintColor, fontSize = 13.sp)
+        Spacer(modifier = Modifier.height(6.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            enabled = isEnabled,
             singleLine = true,
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = HintColor,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
+            shape = RoundedCornerShape(10.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = InputBorder,
+                focusedBorderColor = PrimaryBlue,
                 unfocusedBorderColor = InputBorder,
-                disabledBorderColor = Color.Transparent
+                errorBorderColor = Color(0xFFE24B4A)
             ),
+            isError = isError,
             trailingIcon = {
-
                 if (isVerified) {
-                    Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF4CAF50))
-                } else if (isDate) {
-                    Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.Gray)
+                    Icon(
+                        Icons.Outlined.CheckCircle,
+                        contentDescription = null,
+                        tint = Color(0xFF3A7D5A)
+                    )
                 }
             }
         )
         if (isError && value.isNotEmpty()) {
             Text(
                 text = errorMessage,
-                color = Color.Red,
-                fontSize = 12.sp,
+                color = Color(0xFFE24B4A),
+                fontSize = 11.sp,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
-}
-
-@Composable
-fun WarningBox(text: String) {
-    Surface(
-        color = WarningYellow.copy(alpha = 0.4f),
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = text,
-                fontSize = 12.sp,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.End
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFFFFC107))
-        }
-    }
-}
-
-@Composable
-fun NextButton(
-    text: String,
-    enabled: Boolean,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (enabled) BackgroundBlue else Color.Gray
-        )
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.KeyboardArrowRight, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = text, fontSize = 18.sp)
-        }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewScreen() {
-    PersonalDataScreen("register_screen", navController = NavHostController(LocalContext.current))
 }

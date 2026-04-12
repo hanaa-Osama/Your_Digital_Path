@@ -2,8 +2,7 @@ package com.example.yourdigitalpath.Routes
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -14,6 +13,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
+import com.blqes.digi.viewmodel.AuthViewModel
+import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
@@ -21,11 +22,8 @@ import com.example.yourdigitalpath.presentation.notification.NotificationViewMod
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
-import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
-import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
-import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
-import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
-import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
+import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
+import com.example.yourdigitalpath.presentation.profile.screens.*
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
@@ -35,9 +33,16 @@ import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 
 @Composable
-fun AppNavHost(
-    navController: NavHostController
-) {
+fun AppNavHost(navController: NavHostController) {
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+
+    val userName by remember {
+        derivedStateOf {
+            val state = authViewModel.loginState
+            if (state is LoginState.Success) state.userName else ""
+        }
+    }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -62,23 +67,33 @@ fun AppNavHost(
             startDestination = "welcome_screen",
             modifier = Modifier.padding(padding)
         ) {
+            composable("welcome_screen") { WelcomeScreen(navController) }
 
-            composable("welcome_screen") {
-                WelcomeScreen(navController)
-            }
-
-            composable("login_screen") {
-                LoginScreen(navController)
-            }
+            composable("login_screen") { LoginScreen(navController) }
 
             composable("register_screen") {
-                PersonalDataScreen("register_screen")
+                PersonalDataScreen(
+                    onBack = { navController.popBackStack() },
+                    onNext = { navController.navigate("account_data_screen") }
+                )
+            }
+
+            composable("account_data_screen") {
+                AccountDataScreen(
+                    onBack = { navController.popBackStack() },
+                    onRegister = {
+                        navController.navigate("home_screen") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
 
             composable("home_screen") {
                 MainScreen(
                     navController = navController,
-                    onBack = { navController.navigate("home_screen") }
+                    onBack = { navController.navigate("home_screen") },
+                    userName = userName
                 )
             }
 
@@ -116,9 +131,7 @@ fun AppNavHost(
                 UploudFilesScreens(
                     serviceName = serviceName,
                     viewModel = viewModel,
-                    onNextClick = {
-                        navController.navigate("summary_screen/$serviceName")
-                    },
+                    onNextClick = { navController.navigate("summary_screen/$serviceName") },
                     onBack = { navController.popBackStack() }
                 )
             }

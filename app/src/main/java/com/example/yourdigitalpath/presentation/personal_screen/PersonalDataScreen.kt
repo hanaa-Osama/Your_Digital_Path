@@ -69,7 +69,14 @@ fun PersonalDataScreen(string: String, navController: NavHostController) {
             CustomInputField(
                 label = "الاسم الكامل",
                 value = fullName,
-                onValueChange = { fullName = it },
+                onValueChange = {
+
+                    val filtered = it.filter { ch ->
+                        ch in '\u0600'..'\u06FF' || ch == ' '
+                    }
+
+                    fullName = filtered
+                },
                 isVerified = fullName.trim().split(" ").size >= 3
             )
 

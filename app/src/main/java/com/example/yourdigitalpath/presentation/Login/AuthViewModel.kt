@@ -24,7 +24,7 @@ class AuthViewModel : ViewModel() {
 
     fun login(nationalId: String, password: String) {
         if (!NationalIdValidator.isValid(nationalId)) {
-            loginState = LoginState.Error("رقم قومي غير صالح")
+            loginState = LoginState.Error("الرقم القومي غير صالح")
             return
         }
 

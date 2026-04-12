@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.Database
 import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationListener
-import com.example.yourdigitalpath.data.repositoryImp.NotificationRepositoryImpl
 import com.example.yourdigitalpath.data.repositoryImp.TrackingRepositoryImpl
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
 import com.example.yourdigitalpath.domain.repository.TrackingRepository
@@ -29,14 +28,6 @@ object AppModule {
         return db.notificationDao()
     }
 
-
-    @Provides
-    @Singleton
-    fun provideNotificationRepository(
-        dao: NotificationDao
-    ): NotificationRepository {
-        return NotificationRepositoryImpl(dao)
-    }
 
     @Provides
     @Singleton

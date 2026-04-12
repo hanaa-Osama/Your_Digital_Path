@@ -68,7 +68,6 @@ fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
             .padding(16.dp)
             ,
         verticalArrangement = Arrangement.Center,
-        //horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
 
 

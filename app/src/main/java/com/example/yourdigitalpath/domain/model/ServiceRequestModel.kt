@@ -7,5 +7,7 @@ data class ServiceRequestModel(
     val otherReason: String? = "",
     val deliveryMethod: String = "",
     val copiesCount: Int = 1,
+    val nationalIdUrl: String? = null,
+    val serviceDocumentUrl: String? = null,
     val documentsUrls: List<String> = emptyList()
 )

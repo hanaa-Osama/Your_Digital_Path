@@ -171,8 +171,15 @@ fun PersonalDataScreen(string: String, navController: NavHostController) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val isFormValid =
+                fullName.trim().split(" ").size >= 3 &&
+                        nationalId.length == 14 &&
+                        birthDate.isNotEmpty() &&
+                        phone.length == 11
+
             NextButton(
                 text = "التالي",
+                enabled = isFormValid,
                 onClick = {
                     navController.navigate("home_screen") {
                         popUpTo("register_screen") { inclusive = true }
@@ -287,15 +294,19 @@ fun WarningBox(text: String) {
 @Composable
 fun NextButton(
     text: String,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = BackgroundBlue)
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (enabled) BackgroundBlue else Color.Gray
+        )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Default.KeyboardArrowRight, contentDescription = null)

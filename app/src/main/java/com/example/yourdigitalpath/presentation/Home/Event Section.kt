@@ -1,52 +1,40 @@
 package com.example.yourdigitalpath.presentation.Home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavController
-import com.blqes.digi.presentation.EventCard
+import androidx.navigation.NavHostController
 import com.blqes.digi.presentation.LastOrdersSection
-import com.blqes.digi.presentation.SearchBar
-import com.blqes.digi.presentation.getEvents
+import com.example.yourdigitalpath.presentation.SearchBar
 
 @Composable
 fun EventSection(navController: NavController) {
+    var searchQuery by remember { mutableStateOf("") }
 
-    CompositionLocalProvider(
-        LocalLayoutDirection provides LayoutDirection.Rtl
-    ) {
+    val allEvents = getEvents()
+    val filteredEvents = remember(searchQuery) {
+        if (searchQuery.isBlank()) allEvents
+        else allEvents.filter { it.title.contains(searchQuery) }
+    }
 
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                //.padding(vertical = 25.dp, horizontal = 20.dp)
-
-                .background(color = Color.White)
+                .background(Color.White)
                 .padding(vertical = 20.dp, horizontal = 14.dp)
-
-        )
-        {
-
-
+        ) {
             LazyVerticalGrid(
                 modifier = Modifier.weight(1f),
                 columns = GridCells.Fixed(2),
@@ -54,38 +42,42 @@ fun EventSection(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    SearchBar()
+                    SearchBar(
+                        query = searchQuery,
+                        onQueryChange = { searchQuery = it }
+                    )
                 }
+
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
-                        "الخدمات الرسمية",
+                        text = "الخدمات الرسمية",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
-                items(getEvents()) { event ->
-                    EventCard(
-                        event = event, price = "20egp",
-                        navController = navController
-                    )
 
+                if (filteredEvents.isEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            text = "لا توجد نتائج",
+                            color = Color(0xFF9BA3B2),
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
+                    }
+                } else {
+                    items(filteredEvents) { event ->
+                        EventCard(
+                            event = event,
+                            navController = navController as NavHostController
+                        )
+                    }
                 }
+
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     LastOrdersSection()
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-
         }
-
     }
-}
-
-@Composable
-@Preview
-private fun EventSectionprev() {
-    EventSection(navController = androidx.navigation.compose.rememberNavController())
 }

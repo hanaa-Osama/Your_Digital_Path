@@ -1,10 +1,12 @@
 package com.blqes.digi.presentation
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.blqes.digi.model.Order
 import com.blqes.digi.model.OrderStatus
 import com.blqes.digi.ui.components.OrderCard
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun LastOrdersSection() {

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
-    data class Success(val token: String) : LoginState()
+    data class Success(val token: String, val userName: String) : LoginState()
     data class Error(val message: String) : LoginState()
 }
 
@@ -31,9 +31,9 @@ class AuthViewModel : ViewModel() {
         loginState = LoginState.Loading
 
         viewModelScope.launch {
-            delay(2000) // Simulate network delay
+            delay(2000)
             if (nationalId == "12345678901234" && password == "1234") {
-                loginState = LoginState.Success("FakeToken123")
+                loginState = LoginState.Success(token = "FakeToken123", userName = "هناء اسامة")
             } else {
                 loginState = LoginState.Error("بيانات الدخول غير صحيحة")
             }

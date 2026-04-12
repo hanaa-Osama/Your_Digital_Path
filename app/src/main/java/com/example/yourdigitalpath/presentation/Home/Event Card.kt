@@ -1,20 +1,12 @@
-package com.blqes.digi.presentation
+package com.example.yourdigitalpath.presentation.Home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,86 +18,74 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun EventCard(event: Event, price: String, navController: NavController) {
-
-    Card(
-
+fun EventCard(
+    event: Event,
+    navController: NavHostController
+) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                navController.navigate("${event.route}/${event.title}")
-
-            }
-
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color.White)
+            .border(0.5.dp, Color(0xFFE4E8ED), RoundedCornerShape(14.dp))
+            .clickable { navController.navigate(event.route) }
+            .padding(12.dp)
     ) {
-
-        Column(
+        Box(
             modifier = Modifier
-                .background(Color.White)
-                .fillMaxSize()
-                .padding(12.dp)
+                .size(40.dp)
+                .background(Color(0xFFEBF0F7), RoundedCornerShape(10.dp)),
+            contentAlignment = Alignment.Center
         ) {
-
-            Box(
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(event.color, RoundedCornerShape(10.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(event.icon, contentDescription = null)
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(event.title, fontWeight = FontWeight.Bold)
-
-            Text(
-                event.subtitle,
-                fontSize = 12.sp,
-                color = Color.Gray
+            Icon(
+                imageVector = event.icon,
+                contentDescription = null,
+                tint = Color(0xFF3D5A80),
+                modifier = Modifier.size(22.dp)
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .background(
-                        Color(0xfFEBF0F7),
-                        RoundedCornerShape(8.dp)
-                    ) // لون الخلفية وشكل الحواف
-                    .padding(horizontal = 8.dp, vertical = 4.dp) // padding جوا المربع
-                    .align(Alignment.Start) // لو عايزة يكون على الشمال
-            ) {
-                Text(
-                    text = price,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(
-                        0XFF3D5A80
-                    ), // لون الخط
-                    fontSize = 14.sp
-                )
-            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = event.title,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            color = Color(0xFF1A1D23)
+        )
+        Text(
+            text = event.subtitle,
+            fontSize = 11.sp,
+            color = Color(0xFF9BA3B2)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .background(Color(0xFFEBF0F7), RoundedCornerShape(8.dp))
+                .padding(horizontal = 8.dp, vertical = 3.dp)
+        ) {
+            Text(
+                text = event.price,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF3D5A80),
+                fontSize = 12.sp
+            )
         }
     }
 }
 
 @Composable
 @Preview
-private fun EventCardprev() {
+private fun EventCardPreview() {
     val sampleEvent = Event(
         title = "UI Design",
         subtitle = "3 tasks remaining",
-
         color = Color(0xFF2ED1C0),
         icon = Icons.Default.Star,
         price = "20egp",
         route = ""
     )
-
-    EventCard(event = sampleEvent, price = "$25", navController = rememberNavController())
+    EventCard(event = sampleEvent, navController = rememberNavController())
 }

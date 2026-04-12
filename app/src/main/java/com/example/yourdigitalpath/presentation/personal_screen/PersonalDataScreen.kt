@@ -22,6 +22,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import java.util.Calendar
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 
 // Colors
 val BackgroundBlue = Color(0xFF1E3A5F)
@@ -30,7 +31,8 @@ val WarningYellow = Color(0xFFFFF9C4)
 val HintColor = Color(0xFFB0BEC5)
 
 @Composable
-fun PersonalDataScreen(string: String) {
+fun PersonalDataScreen(string: String, navController: NavHostController) {
+
 
     // ✅ STATES
     var fullName by remember { mutableStateOf("") }
@@ -169,7 +171,14 @@ fun PersonalDataScreen(string: String) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            NextButton("التالي")
+            NextButton(
+                text = "التالي",
+                onClick = {
+                    navController.navigate("home_screen") {
+                        popUpTo("register_screen") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
@@ -276,18 +285,19 @@ fun WarningBox(text: String) {
 }
 
 @Composable
-fun NextButton(text: String) {
+fun NextButton(
+    text: String,
+    onClick: () -> Unit
+) {
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(containerColor = BackgroundBlue)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Default.KeyboardArrowRight, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = text, fontSize = 18.sp)
@@ -298,5 +308,5 @@ fun NextButton(text: String) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewScreen() {
-    PersonalDataScreen("register_screen")
+    PersonalDataScreen("register_screen", navController = NavHostController(LocalContext.current))
 }

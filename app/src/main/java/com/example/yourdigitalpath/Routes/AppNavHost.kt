@@ -13,6 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
+
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
@@ -71,9 +72,11 @@ fun AppNavHost(
             }
 
             composable("register_screen") {
-                PersonalDataScreen("register_screen")
+                PersonalDataScreen("register_screen", navController)
             }
-
+//            composable("register_screen") {
+//                PersonalDataScreen(navController, "register_screen")
+//            }
             composable("home_screen") {
                 MainScreen(
                     navController = navController,

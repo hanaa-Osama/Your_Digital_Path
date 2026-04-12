@@ -41,7 +41,7 @@ fun AppNavGraph() {
         }
 
         composable("register_screen") {
-            PersonalDataScreen("register_screen")
+            PersonalDataScreen("register_screen", navController)
         }
 
         composable("home_screen") {

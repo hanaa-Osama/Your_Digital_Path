@@ -164,8 +164,10 @@ fun AppNavHost(navController: NavHostController) {
                         serviceName = serviceName,
                         serviceRequestViewModel = viewModel,
                         onConfirm = {
-                            navController.navigate("tracking_details") {
-                                popUpTo("home_screen") { inclusive = true }
+                            viewModel.saveServiceRequest { orderId ->
+                                navController.navigate("tracking_details/$orderId") {
+                                    popUpTo("home_screen") { inclusive = true }
+                                }
                             }
                         }
                     )

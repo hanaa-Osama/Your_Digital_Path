@@ -100,11 +100,11 @@ class ServiceRequestViewModel @Inject constructor(
         }
     }
 
-    fun saveServiceRequest(onSuccess: () -> Unit) {
+    fun saveServiceRequest(onSuccess: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                saveServiceRequestUseCase(_uiState.value)
-                onSuccess()
+                val orderId = saveServiceRequestUseCase(_uiState.value)
+                onSuccess(orderId)
             } catch (e: Exception) {
             }
         }

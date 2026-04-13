@@ -71,12 +71,12 @@ fun TrackingDetailsScreen(
                             fontSize = 20.sp
                         )
                         trackingstate?.let {
-                            Text(
-                                it.orderId,
-                                color = Color(0xFF98A2B3),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal
-                            )
+//                            Text(
+//                                it.orderId,
+//                                color = Color(0xFF98A2B3),
+//                                fontSize = 14.sp,
+//                                fontWeight = FontWeight.Normal
+//                            )
                         }
                     }
                 },

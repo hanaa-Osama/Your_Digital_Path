@@ -7,7 +7,7 @@ import javax.inject.Inject
 class SaveServiceRequestUseCase @Inject constructor(
     private val repository: ServiceRequestRepository
 ) {
-    suspend operator fun invoke(request: ServiceRequestModel) {
-        repository.saveServiceRequest(request)
+    suspend operator fun invoke(request: ServiceRequestModel): String {
+        return repository.saveServiceRequest(request)
     }
 }

@@ -16,7 +16,7 @@ class ServiceRequestRepoImpl @Inject constructor(
     private val serviceRequestDao: ServiceRequestDao
 ) : ServiceRequestRepository {
 
-    override suspend fun saveServiceRequest(request: ServiceRequestModel) {
+    override suspend fun saveServiceRequest(request: ServiceRequestModel): String {
         // Save to Room for caching
         serviceRequestDao.saveServiceRequest(
             ServiceRequestEntity(
@@ -28,19 +28,30 @@ class ServiceRequestRepoImpl @Inject constructor(
             )
         )
 
-        // Save to Firebase
+        // Save to Firebase in "orders" collection to match TrackingRepository
+        val initialSteps = listOf(
+            mapOf("status" to "PENDING", "title" to "تم استلام الطلب", "timestamp" to "الآن"),
+            mapOf("status" to "PROCESSING", "title" to "جاري مراجعة البيانات", "timestamp" to ""),
+            mapOf("status" to "COMPLETED", "title" to "تم التنفيذ", "timestamp" to "")
+        )
+
         val data = hashMapOf(
             "selectedType" to request.selectedType,
+            "serviceType" to request.selectedType,
             "requestReason" to request.requestReason,
             "otherReason" to request.otherReason,
             "deliveryMethod" to request.deliveryMethod,
             "copiesCount" to request.copiesCount,
+            "price" to request.totalFees.toString(),
+            "date" to "اليوم",
+            "steps" to initialSteps,
             "timestamp" to com.google.firebase.Timestamp.now()
         )
 
-        firestore.collection("service_requests")
+        val result = firestore.collection("orders")
             .add(data)
             .await()
+        return result.id
     }
 
     override suspend fun uploadDocument(fileUri: Uri): String {

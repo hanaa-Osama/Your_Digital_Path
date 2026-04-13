@@ -4,7 +4,7 @@ import android.net.Uri
 import com.example.yourdigitalpath.domain.model.ServiceRequestModel
 
 interface ServiceRequestRepository {
-    suspend fun saveServiceRequest(request: ServiceRequestModel)
+    suspend fun saveServiceRequest(request: ServiceRequestModel): String
     suspend fun uploadDocument(fileUri: Uri): String
     suspend fun getLastServiceRequest(): ServiceRequestModel?
 }

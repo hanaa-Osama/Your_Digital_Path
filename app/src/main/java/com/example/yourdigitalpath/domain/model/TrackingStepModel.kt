@@ -13,5 +13,6 @@ data class OrderTrackingDetail(
     val serviceType: String = "",
     val date: String = "",
     val price: String = "",
+    val deliveryMethod: String = "توصيل للمنزل",
     val steps: List<TrackingStep> = emptyList()
 )

@@ -1,6 +1,9 @@
 package com.example.yourdigitalpath.presentation.order_track
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,18 +19,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,22 +67,19 @@ fun TrackingDetailsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            "حالة الطلب",
+                            "تفاصيل الطلب",
                             color = Color(0xFF1D2939),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
                         )
-                        if (state != null) {
+                        state?.let {
                             Text(
-                                "رقم الطلب: ${state!!.orderId}",
-                                color = Color.Gray,
+                                it.orderId,
+                                color = Color(0xFF98A2B3),
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal
                             )
@@ -82,48 +87,71 @@ fun TrackingDetailsScreen(
                     }
                 },
                 navigationIcon = {
-                    Surface(
-                        onClick = { },
-                        shape = CircleShape,
-                        color = Color(0xFFF2F4F7),
+                    IconButton(
+                        onClick = { navController.popBackStack() },
                         modifier = Modifier
                             .padding(8.dp)
                             .size(40.dp)
+                            .background(Color(0xFFF9FAFB), CircleShape)
+                            .border(BorderStroke(1.dp, Color(0xFFEAECF0)), CircleShape)
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Default.Share,
-                                contentDescription = "Share",
-                                tint = Color.Gray,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color(0xFF667085)
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                )
+                actions = {
+                    IconButton(
+                        onClick = { /* More actions */ },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(40.dp)
+                            .background(Color(0xFFF9FAFB), CircleShape)
+                            .border(BorderStroke(1.dp, Color(0xFFEAECF0)), CircleShape)
+                    ) {
+                        Icon(
+                            Icons.Default.MoreHoriz,
+                            contentDescription = "More",
+                            tint = Color(0xFF667085)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
             )
         },
-
         bottomBar = {
-            Button(
-                onClick = {
-                    navController.navigate("home") {
-                        popUpTo("home") { inclusive = true }
-                    }
-                },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .height(56.dp),
-                shape = RoundedCornerShape(28.dp),
-                colors = ButtonDefaults.buttonColors()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("تقديم طلب جديد", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                OutlinedButton(
+                    onClick = { /* Inquiry */ },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, Color(0xFFEAECF0))
+                ) {
+                    Text("استفسار", color = Color(0xFF344054), fontSize = 16.sp)
+                }
+                Button(
+                    onClick = { /* Track Shipping */ },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0EAF5))
+                ) {
+                    Text(
+                        "تتبع الشحن",
+                        color = Color(0xFF3B5474),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -132,59 +160,158 @@ fun TrackingDetailsScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFF9FAFB))
+                .background(Color(0xFFFDFDFD))
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Large Success Icon
-            Surface(
-                modifier = Modifier.size(100.dp),
-                shape = CircleShape,
+            // Status Highlight Card
+            val currentOrder = state
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9EB)),
+                border = BorderStroke(1.dp, Color(0xFFFFE4A0))
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = null,
-                        modifier = Modifier.size(48.dp)
+                Row(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            currentOrder?.steps?.findLast { it.status == "current" || it.status == "completed" }?.title
+                                ?: "قيد المراجعة",
+                            color = Color(0xFFB54708),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                        Text(
+                            "مراجعة المستندات - 45%",
+                            color = Color(0xFFD48D3B),
+                            fontSize = 12.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .background(Color.White, RoundedCornerShape(14.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Outlined.AccessTime,
+                            contentDescription = null,
+                            tint = Color(0xFFB54708),
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+                // Optional "Ongoing" badge
+                Box(modifier = Modifier.padding(start = 20.dp, bottom = 20.dp)) {
+                    Surface(
+                        color = Color(0xFF937126),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text(
+                            "جاري",
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Details Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(1.dp, Color(0xFFEAECF0))
+            ) {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    DetailRow("رقم الطلب", currentOrder?.orderId ?: orderId)
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = Color(0xFFF2F4F7)
+                    )
+                    DetailRow("نوع الخدمة", currentOrder?.serviceType ?: "تجديد بطاقة الهوية")
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = Color(0xFFF2F4F7)
+                    )
+                    DetailRow("تاريخ التقديم", currentOrder?.date ?: "2 أبريل 2025")
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = Color(0xFFF2F4F7)
+                    )
+                    DetailRow("طريقة الاستلام", currentOrder?.deliveryMethod ?: "توصيل للمنزل")
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = Color(0xFFF2F4F7)
+                    )
+                    DetailRow(
+                        "المبلغ المدفوع",
+                        "${currentOrder?.price ?: "35"} جنيه",
+                        valueColor = Color(0xFF067647)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Text(
-                "تم تقديم الطلب بنجاح",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1D2939),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                "سيتم إخطارك فور جاهزية\nالمستند عبر الرسائل والتطبيق",
-                fontSize = 14.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Center,
-                lineHeight = 20.sp
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            if (state != null) {
-                OrderTimelineSection(state!!.steps)
+            // Timeline Section
+            if (currentOrder != null) {
+                OrderTimelineSection(currentOrder.steps)
             } else {
-                CircularProgressIndicator(modifier = Modifier.padding(32.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color(0xFF3B5474))
+                }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
-
     }
+}
 
-
+@Composable
+fun DetailRow(label: String, value: String, valueColor: Color = Color(0xFF1D2939)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = value,
+            color = valueColor,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Left,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = label,
+            color = Color(0xFF98A2B3),
+            fontSize = 14.sp,
+            textAlign = TextAlign.Right,
+            modifier = Modifier.width(100.dp)
+        )
+    }
 }

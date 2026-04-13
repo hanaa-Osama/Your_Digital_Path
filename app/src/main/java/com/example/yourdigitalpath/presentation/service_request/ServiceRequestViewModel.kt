@@ -7,8 +7,11 @@ import com.example.yourdigitalpath.domain.model.ServiceRequestModel
 import com.example.yourdigitalpath.domain.usecase.SaveServiceRequestUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,13 +21,16 @@ class ServiceRequestViewModel @Inject constructor(
     private val saveServiceRequestUseCase: SaveServiceRequestUseCase
 ) : ViewModel() {
 
+    private val PRICE_PER_COPY = 20.0
+
     private val _uiState = MutableStateFlow(
         ServiceRequestModel(
             selectedType = "",
             requestReason = "",
             otherReason = "",
             deliveryMethod = "",
-            copiesCount = 0
+            copiesCount = 1, // عدد النسخ
+            totalFees = 20.0 // سعر النسخة الواحدة
         )
     )
 
@@ -33,28 +39,40 @@ class ServiceRequestViewModel @Inject constructor(
     private val _isUploading = MutableStateFlow(false)
     val isUploading: StateFlow<Boolean> = _isUploading.asStateFlow()
 
+    val isAllRequiredFilesUploaded: StateFlow<Boolean> = _uiState.map { state ->
+        state.nationalIdUrls.isNotEmpty() && state.serviceDocumentUrl != null
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     fun uploadNationalId(uri: Uri) {
+        if (_uiState.value.nationalIdUrls.size >= 2) return
         viewModelScope.launch {
             _isUploading.value = true
             try {
-                val fakeUrl = "https://firebasestorage.com/national_id_${uri.lastPathSegment}"
-                _uiState.update { it.copy(nationalIdUrl = fakeUrl) }
+                val fileUriString = uri.toString()
+                _uiState.update { it.copy(nationalIdUrls = it.nationalIdUrls + fileUriString) }
             } finally {
                 _isUploading.value = false
             }
         }
     }
 
+    fun removeNationalId(url: String) {
+        _uiState.update { it.copy(nationalIdUrls = it.nationalIdUrls.filter { item -> item != url }) }
+    }
+
     fun uploadServiceDocument(uri: Uri) {
         viewModelScope.launch {
             _isUploading.value = true
             try {
-                val fakeUrl = "https://firebasestorage.com/service_doc_${uri.lastPathSegment}"
-                _uiState.update { it.copy(serviceDocumentUrl = fakeUrl) }
+                _uiState.update { it.copy(serviceDocumentUrl = uri.toString()) }
             } finally {
                 _isUploading.value = false
             }
         }
+    }
+
+    fun removeServiceDocument() {
+        _uiState.update { it.copy(serviceDocumentUrl = null) }
     }
 
     fun updateSelectedType(type: String) {
@@ -74,7 +92,12 @@ class ServiceRequestViewModel @Inject constructor(
     }
 
     fun updateCopiesCount(count: Int) {
-        _uiState.update { it.copy(copiesCount = count) }
+        _uiState.update {
+            it.copy(
+                copiesCount = count,
+                totalFees = count * PRICE_PER_COPY
+            )
+        }
     }
 
     fun saveServiceRequest(onSuccess: () -> Unit) {

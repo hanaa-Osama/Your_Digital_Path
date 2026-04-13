@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.blqes.digi.presentation.BottomNavBar
 import com.example.yourdigitalpath.ui.components.ActionButton
@@ -46,10 +45,10 @@ import com.example.yourdigitalpath.ui.theme.AppColors
 fun ServiceRequestScreen(
     serviceName: String,
     navController: NavController,
+    viewModel: ServiceRequestViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: ServiceRequestViewModel = hiltViewModel()
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -99,7 +98,6 @@ fun ServiceRequestScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.Start
             ) {
-
 
                 StepperComponent(currentStep = 1)
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -190,6 +188,5 @@ fun ServiceRequestScreen(
                 }
             }
         }
-
     }
 }

@@ -81,34 +81,53 @@ fun ServiceDataUploadComponent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // National ID Section
+            Text(
+                text = "صورة البطاقة القومية (وجه وظهر)",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkBlue,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
-            if (uiState.nationalIdUrl == null) {
+            uiState.nationalIdUrls.forEachIndexed { index, url ->
+                UploadedDocumentItem(
+                    name = "البطاقة القومية - صورة ${index + 1}",
+                    fileName = url.substringAfterLast("_"),
+                    onDelete = { viewModel.removeNationalId(url) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            if (uiState.nationalIdUrls.size < 2) {
                 UploadBox(
-                    title = "صورة البطاقة القومية",
+                    title = if (uiState.nationalIdUrls.isEmpty()) "اضغط لرفع صورة البطاقة (وجه)" else "اضغط لرفع صورة البطاقة (ظهر)",
                     subtitle = "تنبيه: يجب رفع صورة البطاقة (وجه وظهر)",
                     isUploading = isUploading,
                     backgroundColor = Color(0xFFFDF5E0),
                     borderColor = Color(0xFFD4A843),
                     onUploadClick = { nationalIdLauncher.launch("image/*") }
                 )
-            } else {
-                UploadedDocumentItem(
-                    name = "البطاقة القومية – وجه وظهر",
-                    fileName = "national_id.jpg",
-                    onDelete = { /* نضيف هنا اننا نمسح */ }
-                )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-
+            // Service Document Section
             val docTitle =
                 if (serviceName.contains("ميلاد")) "شهادة الميلاد القديمة" else "أصل المستند المطلوب ($serviceName)"
 
+            Text(
+                text = docTitle,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkBlue,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
             if (uiState.serviceDocumentUrl == null) {
                 UploadBox(
-                    title = docTitle,
-                    subtitle = "اضغط لرفع الملف - PDF / JPG / PNG\nالحد الأقصى 5 ميغابايت",
+                    title = "اضغط لرفع الملف",
+                    subtitle = "PDF / JPG / PNG - الحد الأقصى 5 ميغابايت",
                     isUploading = isUploading,
                     backgroundColor = Color(0xFFEEF4F9),
                     borderColor = Color(0xFF98C1D9),
@@ -119,7 +138,7 @@ fun ServiceDataUploadComponent(
                     name = docTitle,
                     fileName = uiState.serviceDocumentUrl?.substringAfterLast("/")
                         ?: "document.jpg",
-                    onDelete = { /*   نضيف هنا اننا نمسح */ }
+                    onDelete = { viewModel.removeServiceDocument() }
                 )
             }
 
@@ -150,7 +169,7 @@ fun UploadedDocumentItem(
             Icon(
                 imageVector = Icons.Default.DeleteOutline,
                 contentDescription = null,
-                tint = GrayText
+                tint = Color.Red.copy(alpha = 0.7f)
             )
         }
 
@@ -167,7 +186,8 @@ fun UploadedDocumentItem(
             Text(
                 text = fileName,
                 fontSize = 12.sp,
-                color = GrayText
+                color = GrayText,
+                maxLines = 1
             )
         }
 
@@ -194,7 +214,7 @@ fun UploadBox(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(120.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
             .clickable(enabled = !isUploading) { onUploadClick() },
@@ -212,7 +232,7 @@ fun UploadBox(
         }
 
         if (isUploading) {
-            CircularProgressIndicator(color = PrimaryBlue)
+            CircularProgressIndicator(color = PrimaryBlue, modifier = Modifier.size(30.dp))
         } else {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -222,9 +242,9 @@ fun UploadBox(
                     imageVector = Icons.Default.CloudUpload,
                     contentDescription = null,
                     tint = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFFD4A843) else PrimaryBlue,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(32.dp)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = title,
                     fontWeight = FontWeight.Bold,

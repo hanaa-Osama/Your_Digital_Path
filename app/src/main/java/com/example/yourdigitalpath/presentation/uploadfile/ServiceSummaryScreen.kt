@@ -57,9 +57,6 @@ fun ServiceSummaryScreen(
     val requestState by serviceRequestViewModel.uiState.collectAsState()
     val personalState by birthCertificateViewModel.uiState.collectAsState()
 
-    // حسبة الرسوم الاجمالية
-    val totalFees = requestState.copiesCount * 20
-
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Scaffold(
             bottomBar = {
@@ -90,7 +87,6 @@ fun ServiceSummaryScreen(
                     .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
             ) {
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -119,9 +115,7 @@ fun ServiceSummaryScreen(
                                 modifier = Modifier.size(16.dp)
                             )
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = "ملخص الطلب",
                             fontSize = 28.sp,
@@ -137,7 +131,6 @@ fun ServiceSummaryScreen(
                 }
 
                 Column(modifier = Modifier.padding(16.dp)) {
-
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -150,7 +143,7 @@ fun ServiceSummaryScreen(
                             HorizontalDivider(color = Color(0xFFF2F4F7))
                             SummaryRow(
                                 label = "نوع الطلب",
-                                value = "${requestState.selectedType} – عادي"
+                                value = requestState.selectedType.ifEmpty { "غير محدد" }
                             )
                             HorizontalDivider(color = Color(0xFFF2F4F7))
                             SummaryRow(
@@ -167,7 +160,11 @@ fun ServiceSummaryScreen(
                             HorizontalDivider(color = Color(0xFFF2F4F7))
                             SummaryRow(
                                 label = "عدد النسخ",
-                                value = if (requestState.copiesCount == 2) "نسختان" else "${requestState.copiesCount} نسخ"
+                                value = when (requestState.copiesCount) {
+                                    1 -> "نسخة واحدة"
+                                    2 -> "نسختان"
+                                    else -> "${requestState.copiesCount} نسخ"
+                                }
                             )
                             HorizontalDivider(color = Color(0xFFF2F4F7))
                             SummaryRow(
@@ -184,7 +181,6 @@ fun ServiceSummaryScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -192,6 +188,8 @@ fun ServiceSummaryScreen(
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                         border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF2F4F7))
                     ) {
+
+
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = "المستندات المرفوعة",
@@ -200,21 +198,24 @@ fun ServiceSummaryScreen(
                             )
                             Spacer(modifier = Modifier.height(12.dp))
 
-                            if (requestState.nationalIdUrl != null) {
-                                DocumentCheckItem(name = "البطاقة القومية – وجه وظهر")
+                            requestState.nationalIdUrls.forEachIndexed { index, _ ->
+                                DocumentCheckItem(
+                                    name = "صورة البطاقة الشخصية - ${index + 1}",
+                                    count = 1
+                                )
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
 
-                            if (requestState.serviceDocumentUrl != null) {
+                            requestState.serviceDocumentUrl?.let {
                                 val docName =
                                     if (serviceName.contains("ميلاد")) "شهادة الميلاد القديمة" else "أصل المستند المطلوب"
-                                DocumentCheckItem(name = docName)
+                                DocumentCheckItem(name = docName, count = 1)
                             }
+
                         }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-
 
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -231,7 +232,7 @@ fun ServiceSummaryScreen(
                         ) {
                             Column(horizontalAlignment = Alignment.Start) {
                                 Text(
-                                    text = totalFees.toString(),
+                                    text = "${requestState.totalFees}",
                                     fontSize = 36.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = PrimaryBlue
@@ -245,7 +246,7 @@ fun ServiceSummaryScreen(
                                     color = DarkBlue
                                 )
                                 Text(
-                                    text = if (requestState.copiesCount == 2) "نسختان × 20 جنيه" else "${requestState.copiesCount} نسخ × 20 جنيه",
+                                    text = "عدد ${requestState.copiesCount} نسخ × 20 جنيه",
                                     fontSize = 12.sp,
                                     color = GrayText
                                 )
@@ -273,12 +274,19 @@ fun SummaryRow(label: String, value: String, valueColor: Color = DarkBlue) {
 }
 
 @Composable
-fun DocumentCheckItem(name: String) {
+fun DocumentCheckItem(name: String, count: Int) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Text(
+            text = "($count)",
+            color = PrimaryBlue,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(end = 4.dp)
+        )
         Text(text = name, color = GrayText, fontSize = 13.sp)
         Spacer(modifier = Modifier.width(12.dp))
         Box(

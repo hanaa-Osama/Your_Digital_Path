@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
@@ -20,11 +21,7 @@ import com.blqes.digi.viewmodel.AuthViewModel
 import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
-import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
-import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
-import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
-import com.example.yourdigitalpath.presentation.order_track.TrackingViewModel
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
 import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
 import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
@@ -38,7 +35,6 @@ import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
 import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
-
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -105,73 +101,75 @@ fun AppNavHost(navController: NavHostController) {
                 )
             }
 
-            composable(
-                "service_request_screen/{serviceName}",
-                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-                ServiceRequestScreen(
-                    serviceName = serviceName,
-                    navController = navController,
-                    onNext = { navController.navigate("data_entry_screen/$serviceName") },
-                    onBack = { navController.popBackStack() }
-                )
-            }
+            navigation(
+                startDestination = "service_request_screen/{serviceName}",
+                route = "service_root"
+            ) {
+                composable(
+                    "service_request_screen/{serviceName}",
+                    arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
 
-            composable(
-                "data_entry_screen/{serviceName}",
-                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-                DataScreen(
-                    serviceName = serviceName,
-                    onNext = { navController.navigate("file_upload_screen/$serviceName") },
-                    onBack = { navController.popBackStack() }
-                )
-            }
+                    // تصليح الـ getBackStackEntry باستخدام remember
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("service_root")
+                    }
+                    val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
 
-            composable(
-                "file_upload_screen/{serviceName}",
-                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-                val viewModel: ServiceRequestViewModel = hiltViewModel()
-                UploudFilesScreens(
-                    serviceName = serviceName,
-                    viewModel = viewModel,
-                    onNextClick = { navController.navigate("summary_screen/$serviceName") },
-                    onBack = { navController.popBackStack() }
-                )
-            }
+                    ServiceRequestScreen(
+                        serviceName = serviceName,
+                        navController = navController,
+                        viewModel = viewModel,
+                        onNext = { navController.navigate("data_entry_screen/$serviceName") },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
 
-            composable(
-                "summary_screen/{serviceName}",
-                arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-                val viewModelService: ServiceRequestViewModel = hiltViewModel()
-                val viewModelBirth: BirthCertificateViewModel = hiltViewModel()
-                val trackingViewModel: TrackingViewModel = hiltViewModel()
-                ServiceSummaryScreen(
-                    serviceName = serviceName,
-                    serviceRequestViewModel = viewModelService,
-                    birthCertificateViewModel = viewModelBirth,
-                    onConfirm = {
-                        trackingViewModel.confirmAndSubmitOrder { orderId ->
-                            navController.navigate("tracking_details/$orderId") {
-                                popUpTo("home_screen") { inclusive = false }
+                composable(
+                    "data_entry_screen/{serviceName}",
+                    arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                    DataScreen(
+                        serviceName = serviceName,
+                        onNext = { navController.navigate("file_upload_screen/$serviceName") },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable("file_upload_screen/{serviceName}") { backStackEntry ->
+                    val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("service_root")
+                    }
+                    val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
+
+                    UploudFilesScreens(
+                        serviceName = serviceName,
+                        viewModel = viewModel,
+                        onNextClick = { navController.navigate("summary_screen/$serviceName") },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable("summary_screen/{serviceName}") { backStackEntry ->
+                    val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("service_root")
+                    }
+                    val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
+
+                    ServiceSummaryScreen(
+                        serviceName = serviceName,
+                        serviceRequestViewModel = viewModel,
+                        onConfirm = {
+                            navController.navigate("tracking_details") {
+                                popUpTo("home_screen") { inclusive = true }
                             }
                         }
-                    }
-                )
-            }
-
-            composable("notifications_screen") {
-                val viewModel: NotificationViewModel = hiltViewModel()
-                NotificationsScreen(
-                    onBack = { navController.popBackStack() },
-                    notificationViewModel = viewModel,
-                )
+                    )
+                }
             }
 
             composable(

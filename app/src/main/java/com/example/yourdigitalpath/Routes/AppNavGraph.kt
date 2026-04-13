@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
+import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
@@ -20,19 +21,18 @@ import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
+import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
 fun AppNavGraph() {
-
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
         startDestination = "welcome_screen"
     ) {
-
         composable("welcome_screen") {
             WelcomeScreen(navController)
         }
@@ -43,9 +43,7 @@ fun AppNavGraph() {
 
         composable("register_screen") {
             PersonalDataScreen(
-                onNext = {
-                    navController.navigate("account_data_screen")
-                }
+                onNext = { navController.navigate("account_data_screen") }
             )
         }
 
@@ -53,7 +51,7 @@ fun AppNavGraph() {
             MainScreen(
                 navController = navController,
                 onBack = {},
-                userName = ""
+                userName = "Hala"
             )
         }
 
@@ -62,9 +60,11 @@ fun AppNavGraph() {
             arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
         ) { backStackEntry ->
             val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+            val viewModel: ServiceRequestViewModel = hiltViewModel()
             ServiceRequestScreen(
                 serviceName = serviceName,
                 navController = navController,
+                viewModel = viewModel,
                 onNext = { navController.navigate("data_entry_screen/$serviceName") },
                 onBack = { navController.popBackStack() }
             )
@@ -73,18 +73,23 @@ fun AppNavGraph() {
         composable("account_data_screen") {
             AccountDataScreen(
                 onBack = { navController.popBackStack() },
-                onRegister = { navController.navigate("home_screen") {
-                    popUpTo(0) { inclusive = true }
-                }}
+                onRegister = {
+                    navController.navigate("home_screen") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
 
         composable(
             "data_entry_screen/{serviceName}",
             arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
-        ) {
+        ) { backStackEntry ->
+            val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+            val viewModel: BirthCertificateViewModel = hiltViewModel()
             DataScreen(
-                serviceName = it.arguments?.getString("serviceName") ?: "",
+                serviceName = serviceName,
+                viewModel = viewModel,
                 onNext = { navController.navigate("file_upload_screen") },
                 onBack = { navController.popBackStack() }
             )
@@ -95,6 +100,7 @@ fun AppNavGraph() {
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
+                //navController = navController
             )
         }
 
@@ -113,32 +119,10 @@ fun AppNavGraph() {
             )
         }
 
-        composable("edit_profile_screen") {
-            EditProfileScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        composable("notifications_settings_screen") {
-            NotificationsSettingScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        composable("security_screen") {
-            SecurityScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        composable("settings_screen") {
-            SettingsScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        composable("my_orders_screen") {
-            MyOrdersScreen()
-        }
+        composable("edit_profile_screen") { EditProfileScreen(onBackClick = { navController.popBackStack() }) }
+        composable("notifications_settings_screen") { NotificationsSettingScreen(onBackClick = { navController.popBackStack() }) }
+        composable("security_screen") { SecurityScreen(onBackClick = { navController.popBackStack() }) }
+        composable("settings_screen") { SettingsScreen(onBackClick = { navController.popBackStack() }) }
+        composable("my_orders_screen") { MyOrdersScreen() }
     }
 }

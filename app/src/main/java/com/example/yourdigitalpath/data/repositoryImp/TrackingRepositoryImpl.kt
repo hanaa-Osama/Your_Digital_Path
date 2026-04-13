@@ -46,7 +46,8 @@ class TrackingRepositoryImpl(
                         steps = domainSteps,
                         serviceType = snapshot.getString("serviceType") ?: "خدمة غير معروفة",
                         date = snapshot.getString("date") ?: "",
-                        price = snapshot.getString("price") ?: "0"
+                        price = snapshot.getString("price") ?: "0",
+                        deliveryMethod = snapshot.getString("deliveryMethod") ?: "توصيل للمنزل"
                     )
 
                     trySend(detail) // بنبعت البيانات للـ ViewModel

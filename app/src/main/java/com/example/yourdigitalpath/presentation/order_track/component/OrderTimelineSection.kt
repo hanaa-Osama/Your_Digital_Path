@@ -1,6 +1,5 @@
 package com.example.yourdigitalpath.presentation.order_track.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,11 +37,12 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F4F7).copy(alpha = 0.5f))
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEAECF0))
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                "تتبع حالة الطلب",
+                "مسار الطلب",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = Color(0xFF1D2939),
@@ -50,114 +51,126 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // جوه OrderTimelineSection.kt
             steps.forEachIndexed { index, step ->
                 TimelineItem(
                     status = step.title,
                     date = step.timestamp,
-                    stepStatus = step.status, // بنباصي الحالة دي علطول
+                    stepStatus = step.status,
                     isLast = index == steps.size - 1
                 )
-                // مسافة بسيطة بين كل خطوة والتانية
-                if (index != steps.size - 1) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
             }
         }
     }
 }
+
 @Composable
 fun TimelineItem(
-    status: String, // "تم استلام الطلب"، "قيد المراجعة"...
-    date: String, // "5 أبريل"، "الآن"، "قريباً"...
+    status: String,
+    date: String,
     stepStatus: String, // completed, current, or pending
-    isLast: Boolean // عشان نعرف نوقف الخط ولا لأ
+    isLast: Boolean
 ) {
-    val pendingColor = Color(0xFFF2F4F7) // الرمادي الفاتح للنقطة
-    val lineColor = Color(0xFFEAECF0) // الرمادي الفاتح جداً للخط
-
-    val dateColor =
-        if (stepStatus == "completed" || stepStatus == "current") Color.Gray else Color.LightGray
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.End // عشان الكلام يبقى يمين
+        horizontalArrangement = Arrangement.End
     ) {
-        // --- النص (على اليمين) ---
-        Column(
-            horizontalAlignment = Alignment.End,
+        // Left side: Date/Time
+        Text(
+            text = if (date.isEmpty()) "-" else date,
+            fontSize = 13.sp,
+            color = Color(0xFF98A2B3),
             modifier = Modifier
-                .weight(1f)
-                .padding(end = 16.dp)
-        ) {
-            Text(
-                text = status,
-                fontSize = 14.sp,
-                fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
-                color = when (stepStatus) {
+                .padding(top = 2.dp)
+                .weight(1f),
+            textAlign = TextAlign.Right
+        )
 
-                    else -> Color.LightGray // لسه مجاش
-                },
-                textAlign = TextAlign.Right
-            )
-            Text(
-                text = date,
-                fontSize = 12.sp,
-                color = dateColor,
-                textAlign = TextAlign.Right
-            )
-        }
+        Spacer(modifier = Modifier.width(16.dp))
 
-        // --- النقطة والخط (على اليسار) ---
+        // Center: Status Text
+        Text(
+            text = status,
+            fontSize = 14.sp,
+            fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
+            color = when (stepStatus) {
+                "completed" -> Color(0xFF067647)
+                "current" -> Color(0xFF1D2939)
+                else -> Color(0xFF98A2B3)
+            },
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .weight(2f),
+            textAlign = TextAlign.Right
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Right side: Indicator (Dot and Line)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(24.dp)
+            modifier = Modifier.width(30.dp)
         ) {
-            // النقطة
-            if (stepStatus == "completed") {
-                // نقطة خضراء جواها علامة صح
-                Surface(
-                    shape = CircleShape,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.padding(4.dp)
+            Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.weight(1f)) {
+                if (!isLast) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 24.dp)
+                            .width(3.dp)
+                            .fillMaxHeight()
+                            .background(
+                                if (stepStatus == "completed") Color(0xFF067647) else Color(
+                                    0xFFF2F4F7
+                                ),
+                                shape = RoundedCornerShape(2.dp)
+                            )
                     )
                 }
-            } else if (stepStatus == "current") {
-                // نقطة بيضاء بكنار أزرق غامق
-                Surface(
-                    shape = CircleShape,
-                    color = Color.White,
-                    modifier = Modifier.size(24.dp)
-                ) {}
-            } else {
-                // نقطة رمادي فاتح (Pending)
-                Surface(
-                    shape = CircleShape,
-                    color = pendingColor,
-                    modifier = Modifier.size(24.dp)
-                ) {}
-            }
 
-            // الخط
+                when (stepStatus) {
+                    "completed" -> {
+                        Surface(
+                            shape = CircleShape,
+                            color = Color(0xFFE7F4EE),
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color(0xFF067647),
+                                modifier = Modifier.padding(6.dp)
+                            )
+                        }
+                    }
+
+                    "current" -> {
+                        Surface(
+                            shape = CircleShape,
+                            color = Color.White,
+                            border = androidx.compose.foundation.BorderStroke(
+                                2.dp,
+                                Color(0xFF3B5474)
+                            ),
+                            modifier = Modifier.size(28.dp)
+                        ) {}
+                    }
+
+                    else -> {
+                        Surface(
+                            shape = CircleShape,
+                            color = Color.White,
+                            border = androidx.compose.foundation.BorderStroke(
+                                1.dp,
+                                Color(0xFFF2F4F7)
+                            ),
+                            modifier = Modifier.size(28.dp)
+                        ) {}
+                    }
+                }
+            }
             if (!isLast) {
-                Box(
-                    modifier = Modifier
-                        .width(2.dp)
-                        .weight(1f) // بيملا المساحة بين النقط
-                        .padding(vertical = 4.dp)
-                        .background(lineColor)
-                )
-            } else {
-                // لو آخر واحد، بنحط مساحة فاضية عشان الـ UI يتظبط
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

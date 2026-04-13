@@ -95,7 +95,6 @@ fun AppNavGraph() {
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
-                navController = navController
             )
         }
 

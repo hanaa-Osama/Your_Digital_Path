@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.yourdigitalpath.data.mapper.toUiData
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.component.NotificationCard
@@ -46,7 +45,6 @@ data class NotificationItemData(
 fun NotificationsScreen(
     onBack: () -> Unit,
     notificationViewModel: NotificationViewModel,
-    navController: NavController
 ) {
 
     val notifications by notificationViewModel.notifications.collectAsState()

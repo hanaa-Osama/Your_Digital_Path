@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.blqes.digi.presentation.personalscreen.HintColor
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.BackgroundGray
@@ -114,11 +115,11 @@ fun DataScreen(
                         isValid = uiState.fullName.trim().split(" ").size >= 4,
                         errorMessage = uiState.fullNameError
                     )
-
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = "تاريخ الميلاد", color = HintColor, fontSize = 13.sp)
                     CustomDatePickerField(
                         value = uiState.dateOfBirth,
                         onValueChange = { viewModel.updateDateOfBirth(it) },
-                        label = "تاريخ الميلاد",
                         placeholder = "1990 / 01 / 15",
                         leadingIcon = Icons.Default.CalendarMonth,
                         errorMessage = uiState.dateOfBirthError

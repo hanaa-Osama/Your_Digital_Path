@@ -167,7 +167,6 @@ fun AppNavHost(navController: NavHostController) {
                 NotificationsScreen(
                     onBack = { navController.popBackStack() },
                     notificationViewModel = viewModel,
-                    navController = navController
                 )
             }
 

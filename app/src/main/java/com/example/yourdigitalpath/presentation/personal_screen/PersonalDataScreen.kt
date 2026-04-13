@@ -164,7 +164,6 @@ fun PersonalDataScreen(
                         value = birthDate,
                         onValueChange = { birthDate = it },
                         leadingIcon = Icons.Outlined.DateRange,
-                        label = "تاريخ الميلاد",
                         placeholder = "1990 / 01 / 15",
                     )
                 }

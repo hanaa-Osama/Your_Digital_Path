@@ -24,6 +24,7 @@ import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCer
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
+import com.example.yourdigitalpath.presentation.order_track.TrackingViewModel
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
 import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
 import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
@@ -142,13 +143,16 @@ fun AppNavHost(navController: NavHostController) {
                 val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
                 val viewModelService: ServiceRequestViewModel = hiltViewModel()
                 val viewModelBirth: BirthCertificateViewModel = hiltViewModel()
+                val trackingViewModel: TrackingViewModel = hiltViewModel()
                 ServiceSummaryScreen(
                     serviceName = serviceName,
                     serviceRequestViewModel = viewModelService,
                     birthCertificateViewModel = viewModelBirth,
                     onConfirm = {
-                        navController.navigate("home_screen") {
-                            popUpTo("home_screen") { inclusive = true }
+                        trackingViewModel.confirmAndSubmitOrder { orderId ->
+                            navController.navigate("tracking_details/$orderId") {
+                                popUpTo("home_screen") { inclusive = false }
+                            }
                         }
                     }
                 )

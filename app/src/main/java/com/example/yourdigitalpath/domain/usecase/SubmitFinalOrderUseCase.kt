@@ -17,7 +17,6 @@ class SubmitFinalOrderUseCase @Inject constructor(
     private val firebaseRepo: OrderTrackRepository
 ) {
     suspend operator fun invoke(): String {
-        // استلام الداتا من هالة (لسه)
         val certificate = birthRepo.getCachedBirthCertificate()
             ?: throw Exception("لم يتم العثور على بيانات الشهادة")
         val requestDetails = serviceRepo.getLastServiceRequest()
@@ -26,7 +25,7 @@ class SubmitFinalOrderUseCase @Inject constructor(
         val orderId = "REQ-${System.currentTimeMillis()}"
         val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        val totalPrice = (requestDetails.copiesCount * 50).toString()
+        val totalPrice = (requestDetails.copiesCount * 20).toString()
 
         val initialSteps = listOf(
             TrackingStep(
@@ -40,6 +39,24 @@ class SubmitFinalOrderUseCase @Inject constructor(
                 status = "current",
                 title = "قيد المراجعة",
                 timestamp = "جاري التأكد من البيانات"
+            ),
+            TrackingStep(
+                id = 3,
+                status = "pending",
+                title = "جاري استخراج الوثيقة",
+                timestamp = ""
+            ),
+            TrackingStep(
+                id = 4,
+                status = "pending",
+                title = "تم الشحن",
+                timestamp = ""
+            ),
+            TrackingStep(
+                id = 5,
+                status = "pending",
+                title = "تم التسليم",
+                timestamp = ""
             )
         )
 
@@ -48,6 +65,7 @@ class SubmitFinalOrderUseCase @Inject constructor(
             serviceType = "شهادة ميلاد - " + requestDetails.selectedType,
             date = date,
             price = totalPrice,
+            deliveryMethod = requestDetails.deliveryMethod.ifEmpty { "توصيل للمنزل" },
             steps = initialSteps
         )
 

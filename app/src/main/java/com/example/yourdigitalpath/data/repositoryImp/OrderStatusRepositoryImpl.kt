@@ -7,9 +7,11 @@ import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.repository.OrderRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
@@ -17,10 +19,36 @@ class OrderRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : OrderRepository {
 
-    override fun getAllOrders(): Flow<List<OrderModel>> =
-        orderDao.getAllOrders().map {
-            it.map { entity -> entity.toDomain() }
+    override fun getAllOrders(): Flow<List<OrderModel>> {
+        val localOrders = orderDao.getAllOrders().map { it.map { entity -> entity.toDomain() } }
+
+        val remoteOrders = callbackFlow {
+            val listener = firestore.collection("orders")
+                .addSnapshotListener { snapshot, _ ->
+                    val orders = snapshot?.documents?.mapNotNull { doc ->
+                        val steps = doc.get("steps") as? List<Map<String, Any>> ?: emptyList()
+                        val isCompleted = steps.all { it["status"] == "completed" }
+
+                        OrderModel(
+                            id = doc.id,
+                            serviceName = doc.getString("serviceType") ?: "خدمة",
+                            requestDate = System.currentTimeMillis(), // Default for simplicity
+                            status = if (isCompleted) OrderStatus.Completed else OrderStatus.InProgress,
+                            totalFee = doc.getString("price")?.toIntOrNull() ?: 0,
+                            copiesCount = 1,
+                            deliveryMethod = doc.getString("deliveryMethod") ?: "توصيل",
+                            progressPercent = if (isCompleted) 100 else 45
+                        )
+                    } ?: emptyList()
+                    trySend(orders)
+                }
+            awaitClose { listener.remove() }
         }
+
+        return combine(localOrders, remoteOrders) { local, remote ->
+            (local + remote).sortedByDescending { it.id }
+        }
+    }
 
     override fun getOrderByStatus(status: OrderStatus): Flow<List<OrderModel>> =
         orderDao.getOrdersByStatus(status.toDbStatus()).map {

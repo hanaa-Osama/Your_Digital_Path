@@ -76,7 +76,7 @@ fun TimelineItem(
             .height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.End
     ) {
-        // Left side: Date/Time
+
         Text(
             text = if (date.isEmpty()) "-" else date,
             fontSize = 13.sp,
@@ -89,7 +89,6 @@ fun TimelineItem(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Center: Status Text
         Text(
             text = status,
             fontSize = 14.sp,
@@ -107,7 +106,7 @@ fun TimelineItem(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Right side: Indicator (Dot and Line)
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.width(30.dp)
@@ -161,7 +160,7 @@ fun TimelineItem(
                             shape = CircleShape,
                             color = Color.White,
                             border = androidx.compose.foundation.BorderStroke(
-                                1.dp,
+                                3.dp,
                                 Color(0xFFF2F4F7)
                             ),
                             modifier = Modifier.size(28.dp)

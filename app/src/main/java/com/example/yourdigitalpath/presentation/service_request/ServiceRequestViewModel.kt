@@ -18,7 +18,16 @@ class ServiceRequestViewModel @Inject constructor(
     private val saveServiceRequestUseCase: SaveServiceRequestUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ServiceRequestModel())
+    private val _uiState = MutableStateFlow(
+        ServiceRequestModel(
+            selectedType = "",
+            requestReason = "",
+            otherReason = "",
+            deliveryMethod = "",
+            copiesCount = 0
+        )
+    )
+
     val uiState: StateFlow<ServiceRequestModel> = _uiState.asStateFlow()
 
     private val _isUploading = MutableStateFlow(false)

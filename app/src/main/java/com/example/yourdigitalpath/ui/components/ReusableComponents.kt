@@ -380,7 +380,6 @@ fun SectionCard(
 fun CustomDatePickerField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
     placeholder: String = "",
     leadingIcon: ImageVector? = null,
     errorMessage: String? = null
@@ -408,12 +407,6 @@ fun CustomDatePickerField(
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = GrayText,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
 
         Box(
             modifier = Modifier

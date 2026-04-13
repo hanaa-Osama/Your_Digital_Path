@@ -12,13 +12,13 @@ import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
+import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
+import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
 import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
+import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
 import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
-import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
-import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
-import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
@@ -95,7 +95,6 @@ fun AppNavGraph() {
             NotificationsScreen(
                 onBack = { navController.popBackStack() },
                 notificationViewModel = viewModel,
-                navController = navController
             )
         }
 

@@ -48,7 +48,7 @@ class TrackingViewModel @Inject constructor(
             try {
                 val testId = submitFinalOrderUseCase()
                 println("DEBUG: تم الرفع بنجاح بـ ID: $testId")
-                startTracking(testId) // جرب تعرضه كمان
+                startTracking(testId)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

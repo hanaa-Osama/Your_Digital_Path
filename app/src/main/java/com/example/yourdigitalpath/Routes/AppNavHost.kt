@@ -2,7 +2,10 @@ package com.example.yourdigitalpath.Routes
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -23,7 +26,11 @@ import com.example.yourdigitalpath.presentation.notification.screen.Notification
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
 import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
-import com.example.yourdigitalpath.presentation.profile.screens.*
+import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
+import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
+import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
+import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
+import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
@@ -152,7 +159,6 @@ fun AppNavHost(navController: NavHostController) {
                 NotificationsScreen(
                     onBack = { navController.popBackStack() },
                     notificationViewModel = viewModel,
-                    navController = navController
                 )
             }
 

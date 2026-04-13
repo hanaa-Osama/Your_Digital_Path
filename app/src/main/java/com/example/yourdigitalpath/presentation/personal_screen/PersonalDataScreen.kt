@@ -158,13 +158,12 @@ fun PersonalDataScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(text = "تاريخ الميلاد", color = HintColor, fontSize = 13.sp)
-                    Spacer(modifier = Modifier.height(6.dp))
                     CustomDatePickerField(
                         value = birthDate,
                         onValueChange = { birthDate = it },
                         leadingIcon = Icons.Outlined.DateRange,
-                        label = "تاريخ الميلاد",
                         placeholder = "1990 / 01 / 15",
                     )
                 }

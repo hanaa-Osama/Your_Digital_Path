@@ -170,7 +170,7 @@ fun AccountDataScreen(
                         focusedBorderColor = PrimaryBlue,
                         unfocusedBorderColor = InputBorder
                     ),
-                    trailingIcon = {
+                    leadingIcon = {
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Outlined.Visibility
@@ -180,7 +180,7 @@ fun AccountDataScreen(
                             )
                         }
                     },
-                    leadingIcon = if (isPasswordValid) {
+                    trailingIcon = if (isPasswordValid) {
                         {
                             Icon(
                                 Icons.Outlined.CheckCircle,
@@ -223,7 +223,7 @@ fun AccountDataScreen(
                         unfocusedBorderColor = InputBorder,
                         errorBorderColor = Color(0xFFE24B4A)
                     ),
-                    trailingIcon = {
+                    leadingIcon = {
                         IconButton(onClick = { showConfirm = !showConfirm }) {
                             Icon(
                                 imageVector = if (showConfirm) Icons.Outlined.Visibility
@@ -233,7 +233,7 @@ fun AccountDataScreen(
                             )
                         }
                     },
-                    leadingIcon = if (passwordsMatch) {
+                    trailingIcon = if (passwordsMatch) {
                         {
                             Icon(
                                 Icons.Outlined.CheckCircle,

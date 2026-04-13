@@ -76,7 +76,7 @@ fun StepperComponent(currentStep: Int) {
             .background(Color.White)
             .padding(vertical = 16.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         steps.forEachIndexed { index, title ->
             val stepNumber = index + 1
@@ -84,8 +84,8 @@ fun StepperComponent(currentStep: Int) {
             val isCompleted = stepNumber < currentStep
 
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f, fill = index != steps.size - 1)
+                verticalAlignment = Alignment.Top,
+                modifier = if (index < steps.size - 1) Modifier.weight(1f) else Modifier
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     StepCircle(
@@ -93,7 +93,7 @@ fun StepperComponent(currentStep: Int) {
                         isSelected = isSelected,
                         isCompleted = isCompleted
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = title,
                         color = if (isSelected || isCompleted) DarkBlue else GrayText,
@@ -103,13 +103,18 @@ fun StepperComponent(currentStep: Int) {
                 }
 
                 if (index < steps.size - 1) {
-                    HorizontalDivider(
+                    Box(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(bottom = 20.dp), // Align with circles
-                        color = if (stepNumber < currentStep) PrimaryBlue else Color(0xFFEAECF0),
-                        thickness = 2.dp
-                    )
+                            .height(36.dp), // Match StepCircle height for centering
+                        contentAlignment = Alignment.Center
+                    ) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            color = if (stepNumber < currentStep) PrimaryBlue else Color(0xFFEAECF0),
+                            thickness = 2.dp
+                        )
+                    }
                 }
             }
         }
@@ -120,11 +125,12 @@ fun StepperComponent(currentStep: Int) {
 fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
     val backgroundColor = when {
         isCompleted -> PrimaryBlue
-        else -> Color.White
+        isSelected -> Color.White
+        else -> Color(0xFFF2F4F7)
     }
     val borderColor = when {
         isCompleted || isSelected -> PrimaryBlue
-        else -> Color(0xFFEAECF0)
+        else -> Color.Transparent
     }
     val textColor = when {
         isCompleted -> Color.White
@@ -135,9 +141,16 @@ fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
     Box(
         modifier = Modifier
             .size(36.dp)
-            .border(if (isSelected) 2.dp else 1.dp, borderColor, CircleShape)
-            .clip(CircleShape)
-            .background(backgroundColor),
+            .background(backgroundColor, CircleShape)
+            .then(
+                if (isSelected || isCompleted) Modifier.border(
+                    if (isSelected) 2.dp else 1.dp,
+                    borderColor,
+                    CircleShape
+                )
+                else Modifier
+            )
+            .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
         if (isCompleted) {

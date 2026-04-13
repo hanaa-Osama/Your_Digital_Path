@@ -101,7 +101,7 @@ fun ServiceRequestScreen(
             ) {
 
 
-                StepperComponent(currentStep = 2)
+                StepperComponent(currentStep = 1)
                 Column(modifier = Modifier.padding(16.dp)) {
                     SectionCard {
                         SelectionChipGroup(

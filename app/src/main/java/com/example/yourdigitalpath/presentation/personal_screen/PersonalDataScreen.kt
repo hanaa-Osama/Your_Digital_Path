@@ -160,12 +160,14 @@ fun PersonalDataScreen(
                 ) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(text = "تاريخ الميلاد", color = HintColor, fontSize = 13.sp)
-                    CustomDatePickerField(
-                        value = birthDate,
-                        onValueChange = { birthDate = it },
-                        leadingIcon = Icons.Outlined.DateRange,
-                        placeholder = "1990 / 01 / 15",
-                    )
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                        CustomDatePickerField(
+                            value = birthDate,
+                            onValueChange = { birthDate = it },
+                            leadingIcon = Icons.Outlined.DateRange,
+                            placeholder = "1990 / 01 / 15",
+                        )
+                    }
                 }
 
                 RegisterInputField(

@@ -81,13 +81,13 @@ fun ServiceDataUploadComponent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 1. National ID Upload (Yellow if empty, Green if uploaded)
+
             if (uiState.nationalIdUrl == null) {
                 UploadBox(
                     title = "صورة البطاقة القومية",
                     subtitle = "تنبيه: يجب رفع صورة البطاقة (وجه وظهر)",
                     isUploading = isUploading,
-                    backgroundColor = Color(0xFFFDF5E0), // Yellow warning
+                    backgroundColor = Color(0xFFFDF5E0),
                     borderColor = Color(0xFFD4A843),
                     onUploadClick = { nationalIdLauncher.launch("image/*") }
                 )

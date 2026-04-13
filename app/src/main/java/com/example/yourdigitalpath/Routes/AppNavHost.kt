@@ -38,6 +38,7 @@ import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
 import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
+
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
@@ -54,11 +55,18 @@ fun AppNavHost(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomBar = currentRoute in listOf(
-        "home_screen", "notifications_screen", "profile_screen", "my_orders_screen"
+        "home_screen",
+        "notifications_screen",
+        "profile_screen",
+        "my_orders_screen"
     )
 
     Scaffold(
-        bottomBar = { if (showBottomBar) BottomNavBar(navController) }
+        bottomBar = {
+            if (showBottomBar) {
+                BottomNavBar(navController)
+            }
+        }
     ) { padding ->
 
         NavHost(
@@ -167,7 +175,10 @@ fun AppNavHost(navController: NavHostController) {
                 arguments = listOf(navArgument("orderId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-                TrackingDetailsScreen(orderId = orderId, navController = navController)
+                TrackingDetailsScreen(
+                    orderId = orderId,
+                    navController = navController
+                )
             }
 
             composable("profile_screen") {

@@ -10,6 +10,7 @@ import com.example.yourdigitalpath.domain.repository.TrackingRepository
 import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
 import com.example.yourdigitalpath.domain.usecase.ObserveOrderTrackingUseCase
+import com.example.yourdigitalpath.domain.usecase.order.CalculateOrderPercentageUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -55,7 +56,7 @@ object AppModule {
     fun provideObserveTrackingUseCase(
         repo: TrackingRepository
     ): ObserveOrderTrackingUseCase {
-        return ObserveOrderTrackingUseCase(repo)
+        return ObserveOrderTrackingUseCase(repo, CalculateOrderPercentageUseCase())
     }
 
     @Provides

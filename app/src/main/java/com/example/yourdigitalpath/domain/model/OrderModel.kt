@@ -8,5 +8,6 @@ data class OrderModel(
     val totalFee: Int,
     val copiesCount: Int,
     val deliveryMethod: String,
-    val progressPercent: Int
+    val progressPercent: Int,
+
 )

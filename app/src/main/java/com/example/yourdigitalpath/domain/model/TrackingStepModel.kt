@@ -14,5 +14,6 @@ data class OrderTrackingDetail(
     val date: String = "",
     val price: String = "",
     val deliveryMethod: String = "توصيل للمنزل",
+    val progressPercent: Int = 0,
     val steps: List<TrackingStep> = emptyList()
 )

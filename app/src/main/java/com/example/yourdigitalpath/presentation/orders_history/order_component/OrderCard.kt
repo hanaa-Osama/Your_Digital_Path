@@ -1,31 +1,41 @@
 package com.example.yourdigitalpath.presentation.orders_history.order_component
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.ui.theme.AppColors
-import androidx.compose.runtime.remember
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun OrderCard(
     orderModel: OrderModel,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val dateFormatted = remember(orderModel.requestDate) {
@@ -35,7 +45,8 @@ fun OrderCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .border(0.5.dp, AppColors.Border, RoundedCornerShape(14.dp)),
+            .border(0.5.dp, AppColors.Border, RoundedCornerShape(14.dp))
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = AppColors.Surface)
     ) {
@@ -78,7 +89,7 @@ fun OrderCard(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     LinearProgressIndicator(
-                        progress = { orderModel.progressPercent / 100f },
+                        progress = { orderModel.progressPercent.toFloat() / 100f },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(6.dp)
@@ -99,41 +110,41 @@ fun OrderCard(
     }
 }
 
-@Preview(showBackground = true, locale = "ar")
-@Composable
-fun PreviewOrderCard() {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        //  في حالة جاري التنفيذ
-        OrderCard(
-            orderModel = OrderModel(
-                id = "REQ-2025-00841",
-                serviceName = "تجديد بطاقة الهوية",
-                requestDate = System.currentTimeMillis(),
-                status = OrderStatus.InProgress,
-                progressPercent = 45,
-                totalFee = 100,
-                copiesCount = 1,
-                deliveryMethod = "البريد"
-            )
-        )
-
-        //  في حالة "مكتمل"
-        OrderCard(
-            orderModel = OrderModel(
-                id = "REQ-2025-00838",
-                serviceName = "شهادة ميلاد",
-                requestDate = System.currentTimeMillis() - 864000000,
-                status = OrderStatus.Completed,
-                progressPercent = 100,
-                totalFee = 50,
-                copiesCount = 1,
-                deliveryMethod = "استلام يدوي"
-            )
-        )
-    }
-}
+//@Preview(showBackground = true, locale = "ar")
+//@Composable
+//fun PreviewOrderCard() {
+//    Column(
+//        modifier = Modifier
+//            .padding(16.dp)
+//            .fillMaxWidth(),
+//        verticalArrangement = Arrangement.spacedBy(16.dp)
+//    ) {
+//        //  في حالة جاري التنفيذ
+//        OrderCard(
+//            orderModel = OrderModel(
+//                id = "REQ-2025-00841",
+//                serviceName = "تجديد بطاقة الهوية",
+//                requestDate = System.currentTimeMillis(),
+//                status = OrderStatus.InProgress,
+//                progressPercent = 45,
+//                totalFee = 100,
+//                copiesCount = 1,
+//                deliveryMethod = "البريد"
+//            )
+//        )
+//
+//        //  في حالة "مكتمل"
+//        OrderCard(
+//            orderModel = OrderModel(
+//                id = "REQ-2025-00838",
+//                serviceName = "شهادة ميلاد",
+//                requestDate = System.currentTimeMillis() - 864000000,
+//                status = OrderStatus.Completed,
+//                progressPercent = 100,
+//                totalFee = 50,
+//                copiesCount = 1,
+//                deliveryMethod = "استلام يدوي"
+//            )
+//        )
+//    }
+//}

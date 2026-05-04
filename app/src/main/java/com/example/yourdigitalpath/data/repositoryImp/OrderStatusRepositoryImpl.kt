@@ -37,7 +37,11 @@ class OrderRepositoryImpl @Inject constructor(
                             totalFee = doc.getString("price")?.toIntOrNull() ?: 0,
                             copiesCount = 1,
                             deliveryMethod = doc.getString("deliveryMethod") ?: "توصيل",
-                            progressPercent = if (isCompleted) 100 else 45
+                            progressPercent =
+                                if (steps.isEmpty()) 0 else {
+                                    val completedSteps = steps.count { it["status"] == "completed" }
+                                    (completedSteps * 100) / steps.size
+                                }
                         )
                     } ?: emptyList()
                     trySend(orders)

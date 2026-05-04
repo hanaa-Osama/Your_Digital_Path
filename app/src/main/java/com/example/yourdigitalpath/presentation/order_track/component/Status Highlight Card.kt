@@ -59,7 +59,7 @@ fun StatusHighlightCard(
                     fontSize = 18.sp
                 )
                 Text(
-                    "مراجعة المستندات - 45%",
+                    "مراجعة المستندات - ${currentOrder?.progressPercent ?: 0}%",
                     color = Color(0xFFD48D3B),
                     fontSize = 12.sp
                 )

@@ -21,6 +21,8 @@ import com.blqes.digi.viewmodel.AuthViewModel
 import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.presentation.Home.MainScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
+import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
+import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
 import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
@@ -111,7 +113,6 @@ fun AppNavHost(navController: NavHostController) {
                 ) { backStackEntry ->
                     val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
 
-                    // تصليح الـ getBackStackEntry باستخدام remember
                     val parentEntry = remember(backStackEntry) {
                         navController.getBackStackEntry("service_root")
                     }
@@ -166,7 +167,7 @@ fun AppNavHost(navController: NavHostController) {
                         onConfirm = {
                             viewModel.saveServiceRequest { orderId ->
                                 navController.navigate("tracking_details/$orderId") {
-                                    popUpTo("home_screen") { inclusive = true }
+                                    popUpTo("home_screen")
                                 }
                             }
                         }
@@ -217,7 +218,21 @@ fun AppNavHost(navController: NavHostController) {
             }
 
             composable("my_orders_screen") {
-                MyOrdersScreen()
+                MyOrdersScreen(
+                    onOrderClick = { orderId ->
+                        navController.navigate("tracking_details/$orderId") {
+                            popUpTo("home_screen")
+                        }
+                    }
+                )
+            }
+
+            composable("notifications_screen") {
+                val viewModel: NotificationViewModel = hiltViewModel()
+                NotificationsScreen(
+                    onBack = { navController.popBackStack() },
+                    notificationViewModel = viewModel
+                )
             }
         }
     }

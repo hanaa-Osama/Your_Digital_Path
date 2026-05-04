@@ -45,6 +45,7 @@ private data class FilterOption(
 
 @Composable
 fun MyOrdersScreen(
+    onOrderClick: (orderId: String) -> Unit,
     viewModel: OrdersViewModel = hiltViewModel()
 ) {
     val orders by viewModel.orders.collectAsState()
@@ -156,7 +157,10 @@ fun MyOrdersScreen(
                     items = orders,
                     key = { it.id }
                 ) { order ->
-                    OrderCard(orderModel = order)
+                    OrderCard(
+                        orderModel = order,
+                        onClick = { onOrderClick(order.id) }
+                    )
                 }
             }
         }
@@ -166,5 +170,7 @@ fun MyOrdersScreen(
 @Preview
 @Composable
 fun PreviewMyOrdersScreen() {
-    MyOrdersScreen()
+    MyOrdersScreen(
+        onOrderClick = {}
+    )
 }

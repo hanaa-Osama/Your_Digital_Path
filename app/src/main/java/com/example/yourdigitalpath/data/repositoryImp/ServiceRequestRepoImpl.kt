@@ -4,6 +4,7 @@ import android.net.Uri
 import com.example.yourdigitalpath.data.dataSource.local.Dao.ServiceRequestDao
 import com.example.yourdigitalpath.data.dataSource.local.Entity.ServiceRequestEntity
 import com.example.yourdigitalpath.domain.model.ServiceRequestModel
+import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -28,11 +29,39 @@ class ServiceRequestRepoImpl @Inject constructor(
             )
         )
 
-        // Save to Firebase in "orders" collection to match TrackingRepository
+        // تم استخدام "completed" لتظهر خضراء وعليها علامة (صح)
+        // وتم استخدام "current" لخطوة المراجعة لتظهر كخطوة نشطة
         val initialSteps = listOf(
-            mapOf("status" to "PENDING", "title" to "تم استلام الطلب", "timestamp" to "الآن"),
-            mapOf("status" to "PROCESSING", "title" to "جاري مراجعة البيانات", "timestamp" to ""),
-            mapOf("status" to "COMPLETED", "title" to "تم التنفيذ", "timestamp" to "")
+            TrackingStep(
+                id = 1,
+                status = "completed",
+                title = "تم استلام الطلب",
+                timestamp = "الآن"
+            ),
+            TrackingStep(
+                id = 2,
+                status = "current",
+                title = "قيد المراجعة",
+                timestamp = "جاري التأكد من البيانات"
+            ),
+            TrackingStep(
+                id = 3,
+                status = "pending",
+                title = "جاري استخراج الوثيقة",
+                timestamp = ""
+            ),
+            TrackingStep(
+                id = 4,
+                status = "pending",
+                title = "تم الشحن",
+                timestamp = ""
+            ),
+            TrackingStep(
+                id = 5,
+                status = "pending",
+                title = "تم التسليم",
+                timestamp = ""
+            )
         )
 
         val data = hashMapOf(
@@ -45,6 +74,8 @@ class ServiceRequestRepoImpl @Inject constructor(
             "price" to request.totalFees.toString(),
             "date" to "اليوم",
             "steps" to initialSteps,
+            "status" to "InProgress",
+            "progressPercent" to 45, // النسبة المطلوبة 45%
             "timestamp" to com.google.firebase.Timestamp.now()
         )
 

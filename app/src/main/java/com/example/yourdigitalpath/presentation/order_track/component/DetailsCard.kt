@@ -1,6 +1,5 @@
 package com.example.yourdigitalpath.presentation.order_track.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun DetailsCard(
@@ -21,11 +21,11 @@ fun DetailsCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color(0xFFEAECF0))
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Column(modifier = Modifier.padding(vertical = 12.dp, horizontal = 4.dp)) {
             DetailRow("رقم الطلب", currentOrder?.orderId ?: orderId)
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -49,7 +49,7 @@ fun DetailsCard(
             DetailRow(
                 "المبلغ المدفوع",
                 currentOrder?.price ?: "  لم يتم التحديد ",
-                valueColor = Color(0xFF067647)
+                valueColor = AppColors.Success
             )
         }
     }

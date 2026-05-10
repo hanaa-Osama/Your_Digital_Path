@@ -19,6 +19,7 @@ import com.blqes.digi.presentation.BottomNavBar
 import com.blqes.digi.viewmodel.AuthViewModel
 import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.presentation.Home.MainScreen
+import com.example.yourdigitalpath.presentation.Login.screens.LoginScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
@@ -230,7 +231,6 @@ fun AppNavHost(navController: NavHostController) {
             composable("notifications_screen") {
                 val viewModel: NotificationViewModel = hiltViewModel()
                 NotificationsScreen(
-                    onBack = { navController.popBackStack() },
                     notificationViewModel = viewModel
                 )
             }

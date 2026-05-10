@@ -32,20 +32,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.TrackingStep
 
+import com.example.yourdigitalpath.ui.theme.AppColors
+
 @Composable
 fun OrderTimelineSection(steps: List<TrackingStep>) {
     Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(24.dp),
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEAECF0))
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 "مسار الطلب",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color(0xFF1D2939),
+                fontWeight = FontWeight.Black,
+                fontSize = 18.sp,
+                color = AppColors.TextPrimary,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Right
             )
@@ -80,7 +82,7 @@ fun TimelineItem(
         Text(
             text = if (date.isEmpty()) "-" else date,
             fontSize = 13.sp,
-            color = Color(0xFF98A2B3),
+            color = AppColors.TextHint,
             modifier = Modifier
                 .padding(top = 2.dp)
                 .weight(1f),
@@ -94,9 +96,9 @@ fun TimelineItem(
             fontSize = 14.sp,
             fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
             color = when (stepStatus) {
-                "completed" -> Color(0xFF067647)
-                "current" -> Color(0xFF1D2939)
-                else -> Color(0xFF98A2B3)
+                "completed" -> AppColors.Success
+                "current" -> AppColors.TextPrimary
+                else -> AppColors.TextHint
             },
             modifier = Modifier
                 .padding(top = 2.dp)
@@ -116,12 +118,10 @@ fun TimelineItem(
                     Box(
                         modifier = Modifier
                             .padding(top = 24.dp)
-                            .width(3.dp)
+                            .width(2.dp)
                             .fillMaxHeight()
                             .background(
-                                if (stepStatus == "completed") Color(0xFF067647) else Color(
-                                    0xFFF2F4F7
-                                ),
+                                if (stepStatus == "completed") AppColors.Success else AppColors.Border,
                                 shape = RoundedCornerShape(2.dp)
                             )
                     )
@@ -131,14 +131,14 @@ fun TimelineItem(
                     "completed" -> {
                         Surface(
                             shape = CircleShape,
-                            color = Color(0xFFE7F4EE),
-                            modifier = Modifier.size(28.dp)
+                            color = AppColors.SuccessBg,
+                            modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
                                 Icons.Default.Check,
                                 contentDescription = null,
-                                tint = Color(0xFF067647),
-                                modifier = Modifier.padding(6.dp)
+                                tint = AppColors.Success,
+                                modifier = Modifier.padding(4.dp)
                             )
                         }
                     }
@@ -149,10 +149,16 @@ fun TimelineItem(
                             color = Color.White,
                             border = androidx.compose.foundation.BorderStroke(
                                 2.dp,
-                                Color(0xFF3B5474)
+                                AppColors.Primary
                             ),
-                            modifier = Modifier.size(28.dp)
-                        ) {}
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .background(AppColors.Primary, CircleShape)
+                            )
+                        }
                     }
 
                     else -> {
@@ -160,17 +166,18 @@ fun TimelineItem(
                             shape = CircleShape,
                             color = Color.White,
                             border = androidx.compose.foundation.BorderStroke(
-                                3.dp,
-                                Color(0xFFF2F4F7)
+                                2.dp,
+                                AppColors.Border
                             ),
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(24.dp)
                         ) {}
                     }
                 }
             }
             if (!isLast) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 }
+

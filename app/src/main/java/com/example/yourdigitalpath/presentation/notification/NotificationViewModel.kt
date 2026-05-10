@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.usecase.ClearNotificationsUseCase
+import com.example.yourdigitalpath.domain.usecase.DeleteNotificationUseCase
 import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class NotificationViewModel @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
     private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase,
-    private val clearNotificationsUseCase: ClearNotificationsUseCase
+    private val clearNotificationsUseCase: ClearNotificationsUseCase,
+    private val deleteNotificationUseCase: DeleteNotificationUseCase
 ) : ViewModel() {
 
     val notifications: StateFlow<List<NotificationItem>> = getNotificationsUseCase()
@@ -32,6 +34,13 @@ class NotificationViewModel @Inject constructor(
             markNotificationAsReadUseCase(id)
         }
     }
+
+    fun deleteNotification(id: String) {
+        viewModelScope.launch {
+            deleteNotificationUseCase(id)
+        }
+    }
+
     fun clearAllNotifications() {
         viewModelScope.launch {
             clearNotificationsUseCase()

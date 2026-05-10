@@ -1,14 +1,17 @@
 package com.example.yourdigitalpath.presentation.orders_history.order_component
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -42,68 +46,96 @@ fun OrderCard(
         SimpleDateFormat("d MMMM yyyy", Locale("ar")).format(Date(orderModel.requestDate))
     }
 
+    // إضافة كلمة "طلب استخراج" لجعل العنوان واضحاً كما طلبت
+    val displayTitle = if (orderModel.serviceName.contains("طلب")) {
+        orderModel.serviceName
+    } else {
+        "طلب استخراج ${orderModel.serviceName}"
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .border(0.5.dp, AppColors.Border, RoundedCornerShape(14.dp))
+            .padding(vertical = 4.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = AppColors.Surface)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Column(modifier = Modifier.padding(14.dp)) {
+            Column(modifier = Modifier.padding(18.dp)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    ServiceIconBadge(serviceName = orderModel.serviceName)
-
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                    // أيقونة الخدمة بشكل جمالي
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .background(AppColors.Primary.copy(alpha = 0.1f), CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = orderModel.serviceName,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AppColors.TextPrimary
-                        )
-                        Text(
-                            text = orderModel.id,
-                            fontSize = 11.sp,
-                            color = AppColors.TextHint
-                        )
-                        Text(
-                            text = dateFormatted,
-                            fontSize = 11.sp,
-                            color = AppColors.TextHint
-                        )
+                        ServiceIconBadge(serviceName = orderModel.serviceName)
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier
+                            .padding(horizontal = 14.dp)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = displayTitle,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color(0xFF293241)
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "رقم الطلب: ${orderModel.id}",
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
+                    }
 
                     StatusChip(status = orderModel.status)
                 }
 
-                if (orderModel.status is OrderStatus.InProgress && orderModel.progressPercent > 0) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = dateFormatted,
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                    if (orderModel.status is OrderStatus.InProgress) {
+                        Text(
+                            text = "جاري المعالجة ${orderModel.progressPercent}%",
+                            fontSize = 12.sp,
+                            color = AppColors.Primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                if (orderModel.status is OrderStatus.InProgress && orderModel.progressPercent > 0) {
+                    Spacer(modifier = Modifier.height(10.dp))
                     LinearProgressIndicator(
                         progress = { orderModel.progressPercent.toFloat() / 100f },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(6.dp)
+                            .height(8.dp)
                             .clip(RoundedCornerShape(10.dp)),
                         color = AppColors.Primary,
-                        trackColor = AppColors.Border
+                        trackColor = AppColors.Primary.copy(alpha = 0.1f)
                     )
-                    Text(
-                        text = "مراجعة المستندات — ${orderModel.progressPercent}%",
-                        fontSize = 11.sp,
-                        color = AppColors.TextHint,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-
                 }
             }
         }

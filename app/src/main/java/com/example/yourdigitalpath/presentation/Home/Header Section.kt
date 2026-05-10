@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.Home
+package com.blqes.digi.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,76 +25,87 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.yourdigitalpath.domain.model.OrderModel
 
 @Composable
 fun HeaderSection(
     modifier: Modifier = Modifier,
-    userName: String = "هناء اسامة",
-    orders: List<OrderModel> = emptyList()) {
+    userName: String,
+    servicesCount: Int = 5
+) {
     CompositionLocalProvider(
         LocalLayoutDirection provides LayoutDirection.Rtl
     ) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .background(Color(0xFF3D5A80))
-                .padding(top = 40.dp, bottom = 30.dp, start = 20.dp, end = 20.dp)
+                .background(
+                    brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(Color(0xFF3D5A80), Color(0xFF293241))
+                    )
+                )
+                .padding(top = 50.dp, bottom = 35.dp, start = 24.dp, end = 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "أهلاً بك 👋",
+                            color = Color.White.copy(alpha = 0.8f),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+
+                        Text(
+                            text = "هناء اسامة",
+                            color = Color.White,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Black,
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "أهلاً بك",
+                    text = "استخرج مستنداتك الرسمية بضغطة زر واحدة",
                     color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 16.sp
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp
                 )
 
-                Text(
-                    text = userName,
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-
-                Text(
-                    text = "استخرج مستنداتك الرسمية بسهولة",
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 14.sp
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier
                         .background(
-                            color = Color.White.copy(0.1f),
-                            shape = RoundedCornerShape(25.dp)
+                            color = Color.White.copy(0.15f),
+                            shape = RoundedCornerShape(16.dp)
                         )
-                        .border(
-                            width = 1.dp,
-                            color = Color.Gray.copy(alpha = 0.5f),
-                            shape = RoundedCornerShape(25.dp)
-                        )
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(8.dp)
+                            .size(10.dp)
                             .background(Color(0xFF4CAF50), shape = CircleShape)
+                            .border(2.dp, Color.White.copy(0.3f), CircleShape)
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        text = " ${orders.size} خدمات متاحة",
+                        text = "$servicesCount خدمات متاحة حالياً",
                         color = Color.White,
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -107,5 +118,7 @@ fun HeaderSection(
 private fun HeaderSectionPrev() {
     HeaderSection(
         userName = "هناء اسامه",
+
     )
+
 }

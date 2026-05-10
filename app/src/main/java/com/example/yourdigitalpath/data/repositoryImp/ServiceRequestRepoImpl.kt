@@ -9,6 +9,9 @@ import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class ServiceRequestRepoImpl @Inject constructor(
@@ -72,7 +75,7 @@ class ServiceRequestRepoImpl @Inject constructor(
             "deliveryMethod" to request.deliveryMethod,
             "copiesCount" to request.copiesCount,
             "price" to request.totalFees.toString(),
-            "date" to "اليوم",
+            "date" to SimpleDateFormat("d MMMM yyyy", Locale("ar")).format(Date()),
             "steps" to initialSteps,
             "status" to "InProgress",
             "progressPercent" to 45, // النسبة المطلوبة 45%

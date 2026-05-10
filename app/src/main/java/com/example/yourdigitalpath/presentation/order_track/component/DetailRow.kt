@@ -15,12 +15,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.example.yourdigitalpath.ui.theme.AppColors
+
 @Composable
-fun DetailRow(label: String, value: String, valueColor: Color = Color(0xFF1D2939)) {
+fun DetailRow(label: String, value: String, valueColor: Color = AppColors.TextPrimary) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -28,16 +30,17 @@ fun DetailRow(label: String, value: String, valueColor: Color = Color(0xFF1D2939
             text = value,
             color = valueColor,
             fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             textAlign = TextAlign.Left,
             modifier = Modifier.weight(1f)
         )
         Text(
             text = label,
-            color = Color(0xFF98A2B3),
+            color = AppColors.TextSecond,
             fontSize = 14.sp,
             textAlign = TextAlign.Right,
             modifier = Modifier.width(100.dp)
         )
     }
 }
+

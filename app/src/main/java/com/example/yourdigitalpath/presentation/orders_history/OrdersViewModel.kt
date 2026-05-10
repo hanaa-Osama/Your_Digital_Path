@@ -9,7 +9,12 @@ import com.example.yourdigitalpath.domain.usecase.GetMyOrdersUseCase
 import com.example.yourdigitalpath.domain.usecase.GetOrdersByStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,14 +27,16 @@ class OrdersViewModel @Inject constructor(
     val selectedStatus = _selectedStatus.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val orders: StateFlow<List<OrderModel>> = _selectedStatus
-        .flatMapLatest { status ->
-            if (status == null) {
-                getMyOrdersUseCase()
-            } else {
-                getOrdersByStatusUseCase(status)
-            }
+    val orders: StateFlow<List<OrderModel>> = combine(
+        getMyOrdersUseCase(),
+        _selectedStatus
+    ) { allOrders, status ->
+        if (status == null) {
+            allOrders
+        } else {
+            allOrders.filter { it.status == status }
         }
+    }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

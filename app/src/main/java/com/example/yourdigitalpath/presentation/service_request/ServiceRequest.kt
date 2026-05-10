@@ -180,7 +180,6 @@ fun ServiceRequestScreen(
                         onClick = {
                             if (isFormValid) {
                                 onNext()
-                                viewModel.saveServiceRequest { }
                             }
                         }
                     )

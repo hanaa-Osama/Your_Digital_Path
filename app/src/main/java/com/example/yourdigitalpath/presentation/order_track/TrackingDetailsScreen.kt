@@ -2,7 +2,6 @@ package com.example.yourdigitalpath.presentation.order_track
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -60,38 +57,72 @@ fun TrackingDetailsScreen(
     }
 
     Scaffold(
+        containerColor = Color(0xFFF9FAFB),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                            colors = listOf(
+                                com.example.yourdigitalpath.ui.theme.AppColors.Primary,
+                                Color(0xFF293241)
+                            )
+                        )
+                    )
+                    .padding(top = 16.dp, bottom = 24.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.White
+                            )
+                        }
+                        
                         Text(
                             "تفاصيل الطلب",
-                            color = Color(0xFF1D2939),
+                            color = Color.White,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            modifier = Modifier.weight(1f),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
-                        trackingstate?.let {
+
+                        // Transparent placeholder to keep title centered
+                        Spacer(modifier = Modifier.size(40.dp))
+                    }
+
+                    trackingstate?.let { order ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp, vertical = 8.dp),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Text(
+                                text = "رقم الطلب #${order.orderId}",
+                                color = Color.White.copy(alpha = 0.8f),
+                                fontSize = 14.sp
+                            )
                         }
                     }
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(40.dp)
-                            .background(Color(0xFFF9FAFB), CircleShape)
-                            .border(BorderStroke(1.dp, Color(0xFFEAECF0)), CircleShape)
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color(0xFF667085)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
-            )
+                }
+            }
         },
         bottomBar = {
             Row(
@@ -116,11 +147,11 @@ fun TrackingDetailsScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0EAF5))
+                    colors = ButtonDefaults.buttonColors(containerColor = com.example.yourdigitalpath.ui.theme.AppColors.Primary)
                 ) {
                     Text(
                         "تتبع الشحن",
-                        color = Color(0xFF3B5474),
+                        color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )

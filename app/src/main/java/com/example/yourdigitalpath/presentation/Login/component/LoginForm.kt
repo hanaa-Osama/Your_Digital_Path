@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.Login
+package com.example.yourdigitalpath.presentation.Login.component
 
 import CustomTextField
 import androidx.compose.foundation.layout.Column

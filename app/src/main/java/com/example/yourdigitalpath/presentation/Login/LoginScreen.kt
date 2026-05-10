@@ -1,11 +1,11 @@
-package com.example.yourdigitalpath.presentation.welcom_screen
+package com.example.yourdigitalpath.presentation.Login
 
+import CustomTextField
 import LoginHeader
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -101,24 +100,27 @@ fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
 
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
             Column {
-                OutlinedTextField(
+                CustomTextField(
                     value = nationalId,
-                    onValueChange = { nationalId = it },
-                    label = { Text("الرقم القومي") },
-                    modifier = Modifier.fillMaxWidth()
+                    onValueChange = {
+                        nationalId = it
+                    },
+                    hint = "الرقم القومي",
+                    isNationalId = true
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedTextField(
+                CustomTextField(
                     value = password,
-                    onValueChange = { password = it },
-                    label = { Text("كلمة السر") },
-                    modifier = Modifier.fillMaxWidth()
+                    onValueChange = {
+                        password = it
+                    },
+                    hint = "كلمة المرور",
+                    isPassword = true
                 )
             }
         }
-            Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
 
             LoginButtons(
                 onLoginClick = {

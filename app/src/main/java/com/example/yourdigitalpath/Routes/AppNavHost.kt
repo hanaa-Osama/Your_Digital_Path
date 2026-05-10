@@ -35,7 +35,7 @@ import com.example.yourdigitalpath.presentation.service_request.ServiceRequestSc
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
-import com.example.yourdigitalpath.presentation.welcom_screen.LoginScreen
+import com.example.yourdigitalpath.presentation.Login.LoginScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable

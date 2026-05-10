@@ -24,7 +24,12 @@ class OrderRepositoryImpl @Inject constructor(
 
         val remoteOrders = callbackFlow {
             val listener = firestore.collection("orders")
-                .addSnapshotListener { snapshot, _ ->
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        android.util.Log.e("OrderRepo", "Listen failed.", error)
+                        trySend(emptyList())
+                        return@addSnapshotListener
+                    }
                     val orders = snapshot?.documents?.mapNotNull { doc ->
                         val steps = doc.get("steps") as? List<Map<String, Any>> ?: emptyList()
                         val isCompleted = steps.all { it["status"] == "completed" }

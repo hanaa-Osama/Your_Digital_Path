@@ -79,18 +79,28 @@ class ServiceRequestRepoImpl @Inject constructor(
             "timestamp" to com.google.firebase.Timestamp.now()
         )
 
-        val result = firestore.collection("orders")
-            .add(data)
-            .await()
-        return result.id
+        try {
+            val result = firestore.collection("orders")
+                .add(data)
+                .await()
+            return result.id
+        } catch (e: Exception) {
+            android.util.Log.e("ServiceRequestRepo", "Error saving to Firestore: ${e.message}")
+            return ""
+        }
     }
 
     override suspend fun uploadDocument(fileUri: Uri): String {
-        val fileName = "documents/doc_${System.currentTimeMillis()}.pdf"
-        val ref = storage.reference.child(fileName)
+        try {
+            val fileName = "documents/doc_${System.currentTimeMillis()}.pdf"
+            val ref = storage.reference.child(fileName)
 
-        ref.putFile(fileUri).await()
-        return ref.downloadUrl.await().toString()
+            ref.putFile(fileUri).await()
+            return ref.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            android.util.Log.e("ServiceRequestRepo", "Error uploading document: ${e.message}")
+            return ""
+        }
     }
 
     override suspend fun getLastServiceRequest(): ServiceRequestModel? {

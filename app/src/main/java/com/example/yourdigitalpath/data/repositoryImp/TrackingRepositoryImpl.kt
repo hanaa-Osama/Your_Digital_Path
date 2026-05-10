@@ -20,7 +20,8 @@ class TrackingRepositoryImpl(
 
         val listener = docRef.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                close(error)
+                Log.e("TrackingRepo", "Listen failed: ${error.message}")
+                trySend(null)
                 return@addSnapshotListener
             }
 

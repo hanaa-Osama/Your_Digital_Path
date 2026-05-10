@@ -31,7 +31,10 @@ class FirestoreNotificationListener @Inject constructor(
     fun startListening() {
         firestore.collection("notifications")
             .addSnapshotListener { snapshots, error ->
-                if (error != null) return@addSnapshotListener
+                if (error != null) {
+                    android.util.Log.e("FirestoreListener", "Listen failed.", error)
+                    return@addSnapshotListener
+                }
 
                 if (isFirstLoad) {
                     isFirstLoad = false

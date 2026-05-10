@@ -18,7 +18,7 @@ class OrderTrackRepositoryImp @Inject constructor(
                 .set(order)
                 .await()
         } catch (e: Exception) {
-            throw e
+            android.util.Log.e("OrderTrackRepo", "Error adding order: ${e.message}")
         }
     }
 

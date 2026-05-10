@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.personal_screen
+package com.example.yourdigitalpath.presentation.Register.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,11 +28,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
-import com.blqes.digi.presentation.personalscreen.HintColor
-import com.blqes.digi.presentation.personalscreen.InputBorder
-import com.blqes.digi.presentation.personalscreen.RegisterInputField
-import com.blqes.digi.presentation.personalscreen.RegisterSectionHeader
-import com.blqes.digi.presentation.personalscreen.WarningYellow
 
 @Composable
 fun AccountDataScreen(

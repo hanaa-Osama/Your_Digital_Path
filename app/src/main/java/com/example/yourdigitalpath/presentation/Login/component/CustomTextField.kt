@@ -1,3 +1,5 @@
+package com.example.yourdigitalpath.presentation.Login.component
+
 import androidx.compose.foundation.text.KeyboardOptions
 
 import androidx.compose.foundation.layout.fillMaxWidth

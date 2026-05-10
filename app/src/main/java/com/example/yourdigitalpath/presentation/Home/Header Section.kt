@@ -1,4 +1,4 @@
-package com.blqes.digi.presentation
+package com.example.yourdigitalpath.presentation.Home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,7 +53,7 @@ fun HeaderSection(
                 )
 
                 Text(
-                    text = "هناء اسامة",
+                    text = userName,
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.ExtraBold,
@@ -107,7 +107,5 @@ fun HeaderSection(
 private fun HeaderSectionPrev() {
     HeaderSection(
         userName = "هناء اسامه",
-
     )
-
 }

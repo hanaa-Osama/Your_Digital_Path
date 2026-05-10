@@ -1,3 +1,5 @@
+package com.example.yourdigitalpath.presentation.Login.component
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

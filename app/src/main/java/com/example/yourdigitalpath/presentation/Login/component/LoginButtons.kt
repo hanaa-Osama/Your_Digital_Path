@@ -1,6 +1,6 @@
 package com.blqes.digi.Login
 
-import PrimaryButton
+import com.example.yourdigitalpath.presentation.Login.component.PrimaryButton
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

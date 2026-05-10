@@ -5,6 +5,7 @@ import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.data.mapper.toEntity
 import com.example.yourdigitalpath.domain.model.UserProfileModel
 import com.example.yourdigitalpath.domain.repository.ProfileRepository
+import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
@@ -12,14 +13,19 @@ class ProfileRepositoryImpl @Inject constructor(
 ) : ProfileRepository {
 
     override suspend fun getUserProfile(): UserProfileModel? {
-        // TODO: remove fallback before production
-        return userProfileDao.getUserProfile()?.toDomain() ?: UserProfileModel(
-            nationalId = "2990115001234",
-            name = "هناء اسامة سمير",
-            email = "hanaa@email.com",
-            phoneNumber = "01012345678",
-            governorate = "القاهرة"
-        )
+        val localProfile = userProfileDao.getUserProfile()?.toDomain()
+        if (localProfile != null) return localProfile
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        return firebaseUser?.let {
+            val nationalId = it.email?.replace("@digitalpath.app", "") ?: ""
+            UserProfileModel(
+                nationalId  = nationalId,
+                name        = it.displayName ?: "",
+                email       = it.email ?: "",
+                phoneNumber = "",
+                governorate = null
+            )
+        }
     }
 
     override suspend fun updateProfile(profile: UserProfileModel): Boolean {

@@ -1,7 +1,7 @@
 package com.example.yourdigitalpath.presentation.Login.screens
 
-import CustomTextField
-import LoginHeader
+import com.example.yourdigitalpath.presentation.Login.component.CustomTextField
+import com.example.yourdigitalpath.presentation.Login.component.LoginHeader
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

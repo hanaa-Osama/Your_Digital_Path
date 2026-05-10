@@ -16,7 +16,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
-import com.blqes.digi.presentation.personalscreen.PersonalDataScreen
 import com.blqes.digi.viewmodel.AuthViewModel
 import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.presentation.Home.MainScreen
@@ -25,7 +24,7 @@ import com.example.yourdigitalpath.presentation.notification.NotificationViewMod
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
 import com.example.yourdigitalpath.presentation.order_track.TrackingDetailsScreen
 import com.example.yourdigitalpath.presentation.orders_history.screens.MyOrdersScreen
-import com.example.yourdigitalpath.presentation.personal_screen.AccountDataScreen
+import com.example.yourdigitalpath.presentation.Register.screens.AccountDataScreen
 import com.example.yourdigitalpath.presentation.profile.screens.EditProfileScreen
 import com.example.yourdigitalpath.presentation.profile.screens.NotificationsSettingScreen
 import com.example.yourdigitalpath.presentation.profile.screens.ProfileScreen
@@ -36,6 +35,7 @@ import com.example.yourdigitalpath.presentation.service_request.ServiceRequestVi
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
 import com.example.yourdigitalpath.presentation.Login.screens.LoginScreen
+import com.example.yourdigitalpath.presentation.Register.screens.PersonalDataScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable

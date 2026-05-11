@@ -75,7 +75,6 @@ fun ProfileScreen(
             .background(Color(0xFFF9FAFB))
             .verticalScroll(rememberScrollState())
     ) {
-        // Updated Header with Gradient and RTL alignment
         Box(
             modifier = Modifier
                 .fillMaxWidth()

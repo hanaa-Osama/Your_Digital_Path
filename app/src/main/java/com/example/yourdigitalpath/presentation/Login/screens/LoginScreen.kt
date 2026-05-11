@@ -1,29 +1,14 @@
 package com.example.yourdigitalpath.presentation.Login.screens
 
-import com.example.yourdigitalpath.presentation.Login.component.CustomTextField
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,49 +20,52 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.blqes.digi.Login.LoginButtons
-import com.blqes.digi.viewmodel.AuthViewModel
-import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.presentation.Login.AuthViewModel
+import com.example.yourdigitalpath.presentation.Login.LoginState
+import com.example.yourdigitalpath.presentation.Login.component.CustomTextField
 
-@SuppressLint("ViewModelConstructorInComposable")
 @Composable
-fun LoginScreen(navController: NavController) {
-
-    val authViewModel = AuthViewModel()
-
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
     LoginContent(
         authViewModel = authViewModel,
         onLoginSuccess = {
-            navController.navigate("home_screen")
+            navController.navigate("home_screen") {
+                popUpTo("login_screen") {
+                    inclusive = true
+                }
+            }
         }
     )
 }
 
 @Composable
-fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
-    var nationalId by remember { mutableStateOf("") }
+fun LoginContent(
+    authViewModel: AuthViewModel,
+    onLoginSuccess: () -> Unit
+) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val state = authViewModel.loginState
+    // ← التعديل هنا
+    val state by authViewModel.loginState.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            ,
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             LoginHeader()
-
             Spacer(modifier = Modifier.width(16.dp))
-
             Image(
                 painter = painterResource(id = R.drawable.icon1),
                 contentDescription = "icon",
@@ -92,47 +80,50 @@ fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
                     .clip(RoundedCornerShape(20.dp))
             )
         }
-
-
-
         Spacer(modifier = Modifier.height(24.dp))
-
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        CompositionLocalProvider(
+            LocalLayoutDirection provides LayoutDirection.Rtl
+        ) {
             Column {
                 CustomTextField(
-                    value = nationalId,
-                    onValueChange = {
-                        nationalId = it
-                    },
-                    hint = "الرقم القومي",
-                    isNationalId = true
+                    value = email,
+                    onValueChange = { email = it },
+                    hint = "البريد الإلكتروني"
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 CustomTextField(
                     value = password,
-                    onValueChange = {
-                        password = it
-                    },
+                    onValueChange = { password = it },
                     hint = "كلمة المرور",
                     isPassword = true
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-            LoginButtons(
-                onLoginClick = {
-                    authViewModel.login(nationalId, password)
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+        LoginButtons(
+            onLoginClick = {
+                authViewModel.login(
+                    email = email,
+                    password = password
+                )
+            }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         when (state) {
-            is LoginState.Loading -> CircularProgressIndicator()
-            is LoginState.Error -> Text(state.message, color = Color.Red)
-            is LoginState.Success -> LaunchedEffect(Unit) { onLoginSuccess() }
+            is LoginState.Loading -> {
+                CircularProgressIndicator()
+            }
+            is LoginState.Error -> {
+                Text(
+                    text = (state as LoginState.Error).message,
+                    color = Color.Red
+                )
+            }
+            is LoginState.Success -> {
+                LaunchedEffect(Unit) {
+                    onLoginSuccess()
+                }
+            }
             else -> {}
         }
     }

@@ -1,55 +1,78 @@
-package com.blqes.digi.viewmodel
+package com.example.yourdigitalpath.presentation.Login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.yourdigitalpath.domain.NationalIdValidator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 sealed class LoginState {
-    object Idle    : LoginState()
+    object Idle : LoginState()
     object Loading : LoginState()
     data class Success(val token: String, val userName: String) : LoginState()
     data class Error(val message: String) : LoginState()
 }
 
-class AuthViewModel : ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
+) : ViewModel() {
 
-    var loginState by mutableStateOf<LoginState>(LoginState.Idle)
-        private set
+    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
+    val loginState = _loginState.asStateFlow()
 
-    private val auth = FirebaseAuth.getInstance()
+    init {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            viewModelScope.launch {
+                val name = fetchUserName(currentUser.uid)
+                _loginState.value = LoginState.Success(
+                    token = currentUser.uid,
+                    userName = name
+                )
+            }
+        }
+    }
 
-    fun login(nationalId: String, password: String) {
-        if (!NationalIdValidator.isValid(nationalId)) {
-            loginState = LoginState.Error("الرقم القومي غير صالح — يجب أن يكون 14 رقم")
+    fun login(email: String, password: String) {
+        if (email.isBlank() || password.isBlank()) {
+            _loginState.value = LoginState.Error("من فضلك أدخل البريد الإلكتروني وكلمة المرور")
             return
         }
-
-        loginState = LoginState.Loading
-
-        val email = "$nationalId@digitalpath.app"
-
+        _loginState.value = LoginState.Loading
         viewModelScope.launch {
             try {
-                val result = auth.signInWithEmailAndPassword(email, password).await()
-                val user   = result.user
-                loginState = LoginState.Success(
-                    token    = user?.uid ?: "",
-                    userName = user?.displayName ?: nationalId
-                )
+                val result = auth.signInWithEmailAndPassword(email.trim(), password).await()
+                val user = result.user ?: throw Exception("فشل تسجيل الدخول")
+                val name = fetchUserName(user.uid)
+                _loginState.value = LoginState.Success(token = user.uid, userName = name)
             } catch (e: Exception) {
-                loginState = LoginState.Error("الرقم القومي أو كلمة المرور غير صحيحة")
+                _loginState.value = LoginState.Error("البريد الإلكتروني أو كلمة المرور غير صحيحة")
             }
+        }
+    }
+
+    private suspend fun fetchUserName(uid: String): String {
+        return try {
+            val doc = firestore.collection("users").document(uid).get().await()
+            doc.getString("fullName") ?: auth.currentUser?.displayName ?: "مستخدم"
+        } catch (e: Exception) {
+            auth.currentUser?.displayName ?: "مستخدم"
         }
     }
 
     fun logout() {
         auth.signOut()
-        loginState = LoginState.Idle
+        _loginState.value = LoginState.Idle
+    }
+
+    fun resetState() {
+        _loginState.value = LoginState.Idle
     }
 }

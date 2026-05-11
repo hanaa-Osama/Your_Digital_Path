@@ -14,6 +14,8 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,33 +29,48 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.yourdigitalpath.presentation.Register.RegisterState
+import com.example.yourdigitalpath.presentation.Register.RegisterViewModel
 
 @Composable
 fun AccountDataScreen(
     onBack: () -> Unit = {},
-    onRegister: () -> Unit = {}
+    onRegisterSuccess: () -> Unit = {},
+    viewModel: RegisterViewModel = hiltViewModel()
 ) {
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
     var showPassword by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
 
+    val state by viewModel.state.collectAsState()
+
     val isEmailValid = email.contains("@") && email.contains(".")
     val isPasswordValid = password.length >= 8
-    val passwordsMatch = password == confirmPassword && confirmPassword.isNotEmpty()
+    val passwordsMatch =
+        password == confirmPassword && confirmPassword.isNotEmpty()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(PrimaryBlue)
     ) {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        CompositionLocalProvider(
+            LocalLayoutDirection provides LayoutDirection.Rtl
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp, start = 16.dp, end = 16.dp, bottom = 20.dp),
+                    .padding(
+                        top = 40.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 20.dp
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
@@ -74,11 +91,13 @@ fun AccountDataScreen(
                     text = "إنشاء حساب",
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
+
                 Spacer(modifier = Modifier.width(40.dp))
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,12 +112,17 @@ fun AccountDataScreen(
                         color = Color.White.copy(alpha = 0.6f),
                         fontSize = 14.sp
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(1.dp)
-                            .background(Color.White.copy(alpha = 0.3f))                    )
+                            .background(
+                                Color.White.copy(alpha = 0.3f)
+                            )
+                    )
                 }
                 Column(
                     modifier = Modifier.weight(1f),
@@ -110,7 +134,9 @@ fun AccountDataScreen(
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -126,7 +152,10 @@ fun AccountDataScreen(
                 .weight(1f)
                 .background(
                     color = Color.White,
-                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                    shape = RoundedCornerShape(
+                        topStart = 28.dp,
+                        topEnd = 28.dp
+                    )
                 )
                 .padding(24.dp)
                 .verticalScroll(rememberScrollState()),
@@ -143,14 +172,17 @@ fun AccountDataScreen(
                 placeholder = "example@email.com",
                 isVerified = isEmailValid
             )
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                Text(text = "كلمة المرور", color = HintColor, fontSize = 13.sp)
+                Text(
+                    text = "كلمة المرور",
+                    color = HintColor,
+                    fontSize = 13.sp
+                )
                 Spacer(modifier = Modifier.height(6.dp))
                 OutlinedTextField(
                     value = password,
@@ -158,18 +190,32 @@ fun AccountDataScreen(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = RoundedCornerShape(10.dp),
-                    visualTransformation = if (showPassword) VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
+                    visualTransformation =
+                        if (showPassword)
+                            VisualTransformation.None
+                        else
+                            PasswordVisualTransformation(),
+
+                    textStyle = LocalTextStyle.current.copy(
+                        textAlign = TextAlign.End
+                    ),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = PrimaryBlue,
                         unfocusedBorderColor = InputBorder
                     ),
                     leadingIcon = {
-                        IconButton(onClick = { showPassword = !showPassword }) {
+                        IconButton(
+                            onClick = {
+                                showPassword = !showPassword
+                            }
+                        ) {
                             Icon(
-                                imageVector = if (showPassword) Icons.Outlined.Visibility
-                                else Icons.Outlined.VisibilityOff,
+                                imageVector =
+                                    if (showPassword)
+                                        Icons.Outlined.Visibility
+                                    else
+                                        Icons.Outlined.VisibilityOff,
+
                                 contentDescription = null,
                                 tint = HintColor
                             )
@@ -194,35 +240,58 @@ fun AccountDataScreen(
                     )
                 }
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                Text(text = "تأكيد كلمة المرور", color = HintColor, fontSize = 13.sp)
+                Text(
+                    text = "تأكيد كلمة المرور",
+                    color = HintColor,
+                    fontSize = 13.sp
+                )
+
                 Spacer(modifier = Modifier.height(6.dp))
+
                 OutlinedTextField(
                     value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
+                    onValueChange = {
+                        confirmPassword = it
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = RoundedCornerShape(10.dp),
-                    visualTransformation = if (showConfirm) VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                    isError = confirmPassword.isNotEmpty() && !passwordsMatch,
+                    visualTransformation =
+                        if (showConfirm)
+                            VisualTransformation.None
+                        else
+                            PasswordVisualTransformation(),
+                    textStyle = LocalTextStyle.current.copy(
+                        textAlign = TextAlign.End
+                    ),
+                    isError =
+                        confirmPassword.isNotEmpty()
+                                && !passwordsMatch,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = PrimaryBlue,
                         unfocusedBorderColor = InputBorder,
                         errorBorderColor = Color(0xFFE24B4A)
                     ),
+
                     leadingIcon = {
-                        IconButton(onClick = { showConfirm = !showConfirm }) {
+                        IconButton(
+                            onClick = {
+                                showConfirm = !showConfirm
+                            }
+                        ) {
                             Icon(
-                                imageVector = if (showConfirm) Icons.Outlined.Visibility
-                                else Icons.Outlined.VisibilityOff,
+                                imageVector =
+                                    if (showConfirm)
+                                        Icons.Outlined.Visibility
+                                    else
+                                        Icons.Outlined.VisibilityOff,
+
                                 contentDescription = null,
                                 tint = HintColor
                             )
@@ -238,7 +307,10 @@ fun AccountDataScreen(
                         }
                     } else null
                 )
-                if (confirmPassword.isNotEmpty() && !passwordsMatch) {
+                if (
+                    confirmPassword.isNotEmpty()
+                    && !passwordsMatch
+                ) {
                     Text(
                         text = "كلمتا المرور غير متطابقتين",
                         color = Color(0xFFE24B4A),
@@ -280,15 +352,25 @@ fun AccountDataScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = onRegister,
-                enabled = isEmailValid && isPasswordValid && passwordsMatch,
+                onClick = {
+
+                    viewModel.register(
+                        email = email,
+                        password = password
+                    )
+                },
+                enabled =
+                    isEmailValid
+                            && isPasswordValid
+                            && passwordsMatch,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PrimaryBlue,
-                    disabledContainerColor = PrimaryBlue.copy(alpha = 0.4f)
+                    disabledContainerColor =
+                        PrimaryBlue.copy(alpha = 0.4f)
                 )
             ) {
                 Row(
@@ -300,7 +382,9 @@ fun AccountDataScreen(
                         contentDescription = null,
                         tint = Color.White
                     )
+
                     Spacer(modifier = Modifier.width(6.dp))
+
                     Text(
                         text = "إنشاء الحساب",
                         fontSize = 15.sp,
@@ -309,6 +393,27 @@ fun AccountDataScreen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            when (state) {
+                is RegisterState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                is RegisterState.Success -> {
+                    LaunchedEffect(Unit) {
+                        onRegisterSuccess()
+                        viewModel.resetState()
+                    }
+                }
+                is RegisterState.Error -> {
+                    Text(
+                        text = (state as RegisterState.Error).message,
+                        color = Color.Red
+                    )
+                }
+                else -> {}
+            }
         }
     }
 }
@@ -316,5 +421,6 @@ fun AccountDataScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewAccountDataScreen() {
+
     AccountDataScreen()
 }

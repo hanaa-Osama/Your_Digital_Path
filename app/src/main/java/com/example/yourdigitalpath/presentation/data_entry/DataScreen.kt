@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.blqes.digi.presentation.personalscreen.HintColor
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
-import com.example.yourdigitalpath.ui.components.ActionButton
+import com.example.yourdigitalpath.presentation.profile.component.ActionButton
 import com.example.yourdigitalpath.ui.components.BackgroundGray
 import com.example.yourdigitalpath.ui.components.CustomDatePickerField
 import com.example.yourdigitalpath.ui.components.CustomDropdown
@@ -112,7 +112,8 @@ fun DataScreen(
                         onValueChange = { viewModel.updateFullName(it) },
                         label = "الاسم الكامل (عربي فقط)",
                         placeholder = "الاسم رباعي",
-                        isValid = uiState.fullName.trim().split(" ").size >= 4,
+                        isValid = uiState.fullName.trim()
+                            .split(" ").size >= 4 && uiState.fullNameError == null,
                         errorMessage = uiState.fullNameError
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -144,7 +145,7 @@ fun DataScreen(
                         onValueChange = { viewModel.updateNationalId(it) },
                         label = "الرقم القومي (14 رقم)",
                         placeholder = "2990115012345XX",
-                        isValid = uiState.applicantNationalId.length == 14,
+                        isValid = uiState.applicantNationalId.length == 14 && uiState.applicantNationalIdError == null,
                         errorMessage = uiState.applicantNationalIdError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
@@ -155,8 +156,10 @@ fun DataScreen(
                         label = "رقم الهاتف",
                         placeholder = "010XXXXXXXX",
                         leadingIcon = Icons.Default.Phone,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        errorMessage = uiState.applicantPhoneError
+                        // الربط مع الـ Logic الموحد (طول 11 وبدون أخطاء)
+                        isValid = uiState.applicantPhone.length == 11 && uiState.applicantPhoneError == null,
+                        errorMessage = uiState.applicantPhoneError,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
                     )
 
                     SelectionChipGroup(
@@ -181,8 +184,7 @@ fun DataScreen(
                     text = "التالي",
                     onClick = {
                         viewModel.submitForm(onSuccess = onNext)
-//                        onNext()
-                    }
+                    },
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

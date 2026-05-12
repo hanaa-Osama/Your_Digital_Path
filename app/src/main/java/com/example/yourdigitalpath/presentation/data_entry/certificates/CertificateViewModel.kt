@@ -6,6 +6,7 @@ import com.example.yourdigitalpath.domain.model.certificates.CertificatesForm
 import com.example.yourdigitalpath.domain.usecase.certificates.CacheCertificatesUseCase
 import com.example.yourdigitalpath.domain.usecase.certificates.GetCachedCertificatesUseCase
 import com.example.yourdigitalpath.domain.usecase.certificates.SaveCertificatesUseCase
+import com.example.yourdigitalpath.utils.Validator // تأكدي من هذا الـ import
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -78,13 +79,24 @@ class BirthCertificateViewModel @Inject constructor(
     }
 
     fun updateNationalId(value: String) {
-        _uiState.update { it.copy(applicantNationalId = value, applicantNationalIdError = null) }
-        autoCache()
+        if (value.length <= 14) {
+            val error = Validator.validateNationalId(value)
+            _uiState.update {
+                it.copy(
+                    applicantNationalId = value,
+                    applicantNationalIdError = error
+                )
+            }
+            autoCache()
+        }
     }
 
     fun updatePhone(value: String) {
-        _uiState.update { it.copy(applicantPhone = value, applicantPhoneError = null) }
-        autoCache()
+        if (value.length <= 11) {
+            val error = Validator.validatePhone(value)
+            _uiState.update { it.copy(applicantPhone = value, applicantPhoneError = error) }
+            autoCache()
+        }
     }
 
     fun updateRelationship(value: String) {
@@ -94,16 +106,17 @@ class BirthCertificateViewModel @Inject constructor(
 
     private fun autoCache() {
         val currentState = _uiState.value
-        val form = CertificatesForm(
-            fullName = currentState.fullName,
-            dateOfBirth = currentState.dateOfBirth,
-            governorate = currentState.governorate,
-            applicantNationalId = currentState.applicantNationalId,
-            applicantPhone = currentState.applicantPhone,
-            relationship = currentState.relationship
-        )
         viewModelScope.launch {
-            cacheCertificatesUseCase(form)
+            cacheCertificatesUseCase(
+                CertificatesForm(
+                    fullName = currentState.fullName,
+                    dateOfBirth = currentState.dateOfBirth,
+                    governorate = currentState.governorate,
+                    applicantNationalId = currentState.applicantNationalId,
+                    applicantPhone = currentState.applicantPhone,
+                    relationship = currentState.relationship
+                )
+            )
         }
     }
 
@@ -111,11 +124,20 @@ class BirthCertificateViewModel @Inject constructor(
         var isValid = true
         val currentState = _uiState.value
 
-        if (currentState.fullName.isBlank()) {
-            _uiState.update { it.copy(fullNameError = "يرجى إدخال الاسم الرباعي") }
-            isValid = false
-        } else if (currentState.fullName.trim().split(" ").size < 4) {
+        if (currentState.fullName.trim().split(" ").size < 4) {
             _uiState.update { it.copy(fullNameError = "يجب إدخال الاسم رباعياً") }
+            isValid = false
+        }
+
+        val idError = Validator.validateNationalId(currentState.applicantNationalId)
+        val phoneError = Validator.validatePhone(currentState.applicantPhone)
+
+        if (idError != null) {
+            _uiState.update { it.copy(applicantNationalIdError = idError) }
+            isValid = false
+        }
+        if (phoneError != null) {
+            _uiState.update { it.copy(applicantPhoneError = phoneError) }
             isValid = false
         }
 
@@ -123,22 +145,10 @@ class BirthCertificateViewModel @Inject constructor(
             _uiState.update { it.copy(dateOfBirthError = "يرجى إدخال تاريخ الميلاد") }
             isValid = false
         }
-
         if (currentState.governorate.isBlank()) {
             _uiState.update { it.copy(governorateError = "يرجى اختيار المحافظة") }
             isValid = false
         }
-
-        if (currentState.applicantNationalId.length != 14) {
-            _uiState.update { it.copy(applicantNationalIdError = "الرقم القومي يجب أن يكون 14 رقم") }
-            isValid = false
-        }
-
-        if (currentState.applicantPhone.length != 11 || !currentState.applicantPhone.startsWith("01")) {
-            _uiState.update { it.copy(applicantPhoneError = "رقم الهاتف غير صحيح") }
-            isValid = false
-        }
-
         if (currentState.relationship.isBlank()) {
             _uiState.update { it.copy(relationshipError = "يرجى اختيار صلة القرابة") }
             isValid = false
@@ -148,33 +158,6 @@ class BirthCertificateViewModel @Inject constructor(
     }
 
     fun submitForm(onSuccess: () -> Unit) {
-        if (validate()) {
-            onSuccess()
-        }
-    }
-
-    fun submitFinalForm(onSuccess: () -> Unit) {
-        if (!validate()) return
-
-        val currentState = _uiState.value
-        val form = CertificatesForm(
-            fullName = currentState.fullName,
-            dateOfBirth = currentState.dateOfBirth,
-            governorate = currentState.governorate,
-            applicantNationalId = currentState.applicantNationalId,
-            applicantPhone = currentState.applicantPhone,
-            relationship = currentState.relationship
-        )
-
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                saveCertificatesUseCase(form)
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
-                onSuccess()
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = e.message) }
-            }
-        }
+        if (validate()) onSuccess()
     }
 }

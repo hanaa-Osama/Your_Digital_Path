@@ -35,7 +35,7 @@ import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
-import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
+import com.example.yourdigitalpath.presentation.uploadfile.UploadFilesScreens
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
@@ -146,7 +146,7 @@ fun AppNavHost(navController: NavHostController) {
                     }
                     val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
 
-                    UploudFilesScreens(
+                    UploadFilesScreens(
                         serviceName = serviceName,
                         viewModel = viewModel,
                         onNextClick = { navController.navigate("summary_screen/$serviceName") },

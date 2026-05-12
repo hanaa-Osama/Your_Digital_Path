@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
+import com.example.yourdigitalpath.presentation.profile.component.ActionButton
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
-import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.DarkBlue
 import com.example.yourdigitalpath.ui.components.GrayText
 import com.example.yourdigitalpath.ui.components.PrimaryBlue
@@ -56,6 +56,8 @@ fun ServiceSummaryScreen(
 ) {
     val requestState by serviceRequestViewModel.uiState.collectAsState()
     val personalState by birthCertificateViewModel.uiState.collectAsState()
+    val pricePerCopy =
+        if (requestState.copiesCount > 0) requestState.totalFees / requestState.copiesCount else 0.0
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Scaffold(
@@ -69,7 +71,7 @@ fun ServiceSummaryScreen(
                 ) {
                     ActionButton(
                         text = "تأكيد والانتقال للدفع",
-                        onClick = onConfirm
+                        onClick = onConfirm,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -188,8 +190,6 @@ fun ServiceSummaryScreen(
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                         border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF2F4F7))
                     ) {
-
-
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = "المستندات المرفوعة",
@@ -211,7 +211,6 @@ fun ServiceSummaryScreen(
                                     if (serviceName.contains("ميلاد")) "شهادة الميلاد القديمة" else "أصل المستند المطلوب"
                                 DocumentCheckItem(name = docName, count = 1)
                             }
-
                         }
                     }
 
@@ -246,7 +245,7 @@ fun ServiceSummaryScreen(
                                     color = DarkBlue
                                 )
                                 Text(
-                                    text = "عدد ${requestState.copiesCount} نسخ × 20 جنيه",
+                                    text = "عدد ${requestState.copiesCount} نسخ × $pricePerCopy جنيه",
                                     fontSize = 12.sp,
                                     color = GrayText
                                 )

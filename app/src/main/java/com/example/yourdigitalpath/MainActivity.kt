@@ -14,16 +14,13 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     @Inject
     lateinit var firestoreNotificationListener: FirestoreNotificationListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         firestoreNotificationListener.startListening()
-
         setContent {
             YourDigitalPathTheme  {
                 val navController = rememberAppNavController()

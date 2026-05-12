@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.Home
+package com.example.yourdigitalpath.presentation.Home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.blqes.digi.presentation.LastOrdersSection
+import com.example.yourdigitalpath.domain.model.getEvents
 import com.example.yourdigitalpath.presentation.SearchBar
 
 @Composable

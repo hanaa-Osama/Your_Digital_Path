@@ -16,20 +16,23 @@ class ProfileRepositoryImpl @Inject constructor(
 ) : ProfileRepository {
 
     override suspend fun getUserProfile(): UserProfileModel? {
-        val localProfile = userProfileDao.getUserProfile()?.toDomain()
-        if (localProfile != null) return localProfile
-
         val uid = auth.currentUser?.uid ?: return null
 
         return try {
             val snapshot = firestore.collection("users").document(uid).get().await()
-            val remoteProfile = snapshot.toObject(UserProfileModel::class.java)
-            remoteProfile?.let {
-                userProfileDao.insertUserProfile(it.toEntity())
-            }
-            remoteProfile
+            if (!snapshot.exists()) return null
+
+            val profile = UserProfileModel(
+                name = snapshot.getString("fullName") ?: "مستخدم",
+                nationalId = snapshot.getString("nationalId") ?: "",
+                email = snapshot.getString("email") ?: "",
+                phoneNumber = snapshot.getString("phone") ?: "",
+                governorate = snapshot.getString("governorate")
+            )
+            userProfileDao.insertUserProfile(profile.toEntity())
+            profile
         } catch (e: Exception) {
-            null
+            userProfileDao.getUserProfile()?.toDomain()
         }
     }
 

@@ -3,10 +3,11 @@ package com.example.yourdigitalpath.presentation.Register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.data.local.Dao.UserProfileDao
+import com.example.yourdigitalpath.data.local.entity.UserProfileEntity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +34,8 @@ class RegisterViewModel @Inject constructor(
     var nationalId = ""
     var birthDate = ""
     var phone = ""
-    private val _state = MutableStateFlow<RegisterState>(RegisterState.Idle)
+    private val _state =
+        MutableStateFlow<RegisterState>(RegisterState.Idle)
 
     val state = _state.asStateFlow()
     fun register(
@@ -56,6 +58,7 @@ class RegisterViewModel @Inject constructor(
                         .setDisplayName(fullName)
                         .build()
                 user.updateProfile(profileUpdate).await()
+                println("FULL NAME = $fullName")
                 val userData = hashMapOf(
                     "uid" to user.uid,
                     "fullName" to fullName,
@@ -69,7 +72,18 @@ class RegisterViewModel @Inject constructor(
                     .document(user.uid)
                     .set(userData)
                     .await()
+                user.reload().await()
+                userProfileDao.insertUserProfile(
+                    UserProfileEntity(
+                        nationalId = nationalId,
+                        name = fullName,
+                        email = email.trim(),
+                        phoneNumber = phone,
+                        governorate = null
+                    )
+                )
                 _state.value = RegisterState.Success
+
             } catch (e: FirebaseAuthWeakPasswordException) {
                 _state.value =
                     RegisterState.Error(
@@ -86,6 +100,7 @@ class RegisterViewModel @Inject constructor(
                         "البريد الإلكتروني غير صحيح"
                     )
             } catch (e: Exception) {
+
                 _state.value =
                     RegisterState.Error(
                         e.message ?: "حدث خطأ، حاول مرة أخرى"
@@ -93,7 +108,6 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
-
     fun resetState() {
         _state.value = RegisterState.Idle
     }

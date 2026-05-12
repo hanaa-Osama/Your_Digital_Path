@@ -88,6 +88,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    implementation("com.google.code.gson:gson:2.10.1")
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
     implementation("androidx.compose.material:material-icons-extended")

@@ -2,6 +2,7 @@ package com.blqes.digi.Login
 
 import com.example.yourdigitalpath.presentation.Login.component.PrimaryButton
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,13 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
-
 fun LoginButtons(
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit
 ) {
+
     Column {
+
         PrimaryButton(
             text = "تسجيل الدخول",
             onClick = onLoginClick
@@ -35,7 +37,10 @@ fun LoginButtons(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("الدخول بالبطاقة القومية", color = Color(0xFF3D5A80))
+            Text(
+                "الدخول بالبطاقة القومية",
+                color = Color(0xFF3D5A80)
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -43,7 +48,10 @@ fun LoginButtons(
         Text(
             text = "ليس لديك حساب؟ سجل الآن",
             color = Color(0xFF3D5A80),
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            modifier = Modifier.clickable {
+                onRegisterClick()
+            }
         )
     }
 }
@@ -51,8 +59,9 @@ fun LoginButtons(
 @Composable
 @Preview
 private fun LoginButtonsprev() {
-    LoginButtons(
-        onLoginClick = {}
-    )
 
+    LoginButtons(
+        onLoginClick = {},
+        onRegisterClick = {}
+    )
 }

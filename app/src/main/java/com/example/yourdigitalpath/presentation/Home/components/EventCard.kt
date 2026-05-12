@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.Home
+package com.example.yourdigitalpath.presentation.Home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.yourdigitalpath.domain.model.Event
 
 @Composable
 fun EventCard(

@@ -32,6 +32,9 @@ fun HeaderSection(
     userName: String,
     servicesCount: Int = 5
 ) {
+    val displayName =
+        if (userName.isBlank()) "مستخدم"
+        else userName
     CompositionLocalProvider(
         LocalLayoutDirection provides LayoutDirection.Rtl
     ) {
@@ -71,7 +74,7 @@ fun HeaderSection(
                             fontWeight = FontWeight.Medium
                         )
                         Text(
-                            text = userName,
+                            text = displayName,
                             color = Color.White,
                             fontSize = 26.sp,
                             fontWeight = FontWeight.Black,
@@ -79,18 +82,22 @@ fun HeaderSection(
                         )
                     }
                 }
+
                 Spacer(
                     modifier = Modifier.height(8.dp)
                 )
+
                 Text(
                     text = "استخرج مستنداتك الرسمية بضغطة زر واحدة",
                     color = Color.White.copy(alpha = 0.7f),
                     fontSize = 14.sp,
                     lineHeight = 20.sp
                 )
+
                 Spacer(
                     modifier = Modifier.height(20.dp)
                 )
+
                 Row(
                     modifier = Modifier
                         .background(

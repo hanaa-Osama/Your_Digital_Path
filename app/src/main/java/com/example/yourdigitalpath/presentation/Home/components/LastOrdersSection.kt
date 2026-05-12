@@ -1,12 +1,10 @@
 package com.blqes.digi.presentation
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
@@ -20,10 +18,9 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.blqes.digi.model.Order
-import com.blqes.digi.model.OrderStatus
 import com.blqes.digi.ui.components.OrderCard
-import com.example.yourdigitalpath.ui.theme.AppColors
+import com.example.yourdigitalpath.domain.model.Order
+import com.example.yourdigitalpath.domain.model.OrderStatus
 
 @Composable
 fun LastOrdersSection() {
@@ -47,13 +44,13 @@ fun LastOrdersSection() {
                     icon = Icons.Default.Person,
                     title = "شهادة ميلاد",
                     date = "20 مارس 2025",
-                    status = OrderStatus.COMPLETED
+                    status = OrderStatus.Completed
                 ),
                 Order(
                     icon = Icons.Default.Notifications,
                     title = "تجديد هوية",
                     date = "2 أبريل 2025",
-                    status = OrderStatus.IN_PROGRESS
+                    status = OrderStatus.InProgress
                 )
             )
 

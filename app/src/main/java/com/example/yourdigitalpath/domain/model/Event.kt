@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.Home
+package com.example.yourdigitalpath.domain.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Article
@@ -7,11 +7,12 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.HeartBroken
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 
 data class Event(
     val title: String,
     val subtitle: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val icon: ImageVector,
     val price: String,
     val color: Color,
     val route: String

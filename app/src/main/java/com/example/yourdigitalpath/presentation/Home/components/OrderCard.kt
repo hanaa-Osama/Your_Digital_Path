@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.blqes.digi.model.Order
-import com.blqes.digi.model.OrderStatus
+import com.example.yourdigitalpath.domain.model.Order
+import com.example.yourdigitalpath.domain.model.OrderStatus
 
 @Composable
 fun OrderCard(order: Order) {
@@ -62,7 +62,7 @@ fun OrderCard(order: Order) {
         Box(
             modifier = Modifier
                 .background(
-                    color = if (order.status == OrderStatus.COMPLETED) Color(0xFFEAF4EE)
+                    color = if (order.status == OrderStatus.Completed) Color(0xFFEAF4EE)
                     else Color(0xFFFDF5E0),
                     shape = RoundedCornerShape(20.dp)
                 )
@@ -70,8 +70,8 @@ fun OrderCard(order: Order) {
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         ) {
             Text(
-                text = if (order.status == OrderStatus.COMPLETED) "مكتمل" else "جاري",
-                color = if (order.status == OrderStatus.COMPLETED) Color(0xFF3A7D5A)
+                text = if (order.status == OrderStatus.Completed) "مكتمل" else "جاري",
+                color = if (order.status == OrderStatus.Completed) Color(0xFF3A7D5A)
                 else Color(0xFF8A6A1F),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold

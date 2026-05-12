@@ -61,13 +61,11 @@ fun ProfileScreen(
 ) {
     val profile by viewModel.userProfile.collectAsState()
 
-    val initials = remember(profile?.name) {
-        profile?.name
-            ?.split(" ")
-            ?.take(2)
-            ?.mapNotNull { it.firstOrNull()?.toString() }
-            ?.joinToString("") ?: "؟"
-    }
+    val initials = profile?.name
+        ?.split(" ")
+        ?.take(2)
+        ?.mapNotNull { it.firstOrNull()?.toString() }
+        ?.joinToString("") ?: "؟"
 
     Column(
         modifier = Modifier
@@ -75,7 +73,6 @@ fun ProfileScreen(
             .background(Color(0xFFF9FAFB))
             .verticalScroll(rememberScrollState())
     ) {
-        // Updated Header with Gradient and RTL alignment
         Box(
             modifier = Modifier
                 .fillMaxWidth()

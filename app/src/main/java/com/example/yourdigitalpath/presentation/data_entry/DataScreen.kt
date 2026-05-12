@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.blqes.digi.presentation.personalscreen.HintColor
+import com.example.yourdigitalpath.presentation.Register.components.HintColor
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.presentation.profile.component.ActionButton
 import com.example.yourdigitalpath.ui.components.BackgroundGray

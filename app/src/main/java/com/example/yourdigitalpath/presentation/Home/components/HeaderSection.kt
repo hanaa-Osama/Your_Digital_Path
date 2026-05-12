@@ -32,6 +32,9 @@ fun HeaderSection(
     userName: String,
     servicesCount: Int = 5
 ) {
+    val displayName =
+        if (userName.isBlank()) "مستخدم"
+        else userName
     CompositionLocalProvider(
         LocalLayoutDirection provides LayoutDirection.Rtl
     ) {
@@ -40,10 +43,18 @@ fun HeaderSection(
                 .fillMaxWidth()
                 .background(
                     brush = androidx.compose.ui.graphics.Brush.verticalGradient(
-                        colors = listOf(Color(0xFF3D5A80), Color(0xFF293241))
+                        colors = listOf(
+                            Color(0xFF3D5A80),
+                            Color(0xFF293241)
+                        )
                     )
                 )
-                .padding(top = 50.dp, bottom = 35.dp, start = 24.dp, end = 24.dp)
+                .padding(
+                    top = 50.dp,
+                    bottom = 35.dp,
+                    start = 24.dp,
+                    end = 24.dp
+                )
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -53,26 +64,28 @@ fun HeaderSection(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(
                             text = "أهلاً بك 👋",
                             color = Color.White.copy(alpha = 0.8f),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
-
                         Text(
-                            text = "هناء اسامة",
+                            text = displayName,
                             color = Color.White,
                             fontSize = 26.sp,
                             fontWeight = FontWeight.Black,
                             modifier = Modifier.padding(vertical = 2.dp)
                         )
                     }
-
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
 
                 Text(
                     text = "استخرج مستنداتك الرسمية بضغطة زر واحدة",
@@ -81,7 +94,9 @@ fun HeaderSection(
                     lineHeight = 20.sp
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(
+                    modifier = Modifier.height(20.dp)
+                )
 
                 Row(
                     modifier = Modifier
@@ -89,18 +104,28 @@ fun HeaderSection(
                             color = Color.White.copy(0.15f),
                             shape = RoundedCornerShape(16.dp)
                         )
-                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                        .padding(
+                            horizontal = 16.dp,
+                            vertical = 10.dp
+                        ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier
                             .size(10.dp)
-                            .background(Color(0xFF4CAF50), shape = CircleShape)
-                            .border(2.dp, Color.White.copy(0.3f), CircleShape)
+                            .background(
+                                Color(0xFF4CAF50),
+                                shape = CircleShape
+                            )
+                            .border(
+                                2.dp,
+                                Color.White.copy(0.3f),
+                                CircleShape
+                            )
                     )
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
+                    Spacer(
+                        modifier = Modifier.width(10.dp)
+                    )
                     Text(
                         text = "$servicesCount خدمات متاحة حالياً",
                         color = Color.White,
@@ -113,12 +138,10 @@ fun HeaderSection(
     }
 }
 
-@Composable
 @Preview
+@Composable
 private fun HeaderSectionPrev() {
     HeaderSection(
-        userName = "هناء اسامه",
-
+        userName = "هناء أسامة"
     )
-
 }

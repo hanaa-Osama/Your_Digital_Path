@@ -1,12 +1,17 @@
 package com.example.yourdigitalpath.Routes
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -42,14 +47,19 @@ import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 fun AppNavHost(navController: NavHostController) {
 
     val authViewModel: AuthViewModel = hiltViewModel()
+    val loginState by authViewModel.loginState.collectAsState()
 
-    val userName by remember {
-        derivedStateOf {
-            val state = authViewModel.loginState
-            if (state is LoginState.Success) state.userName else ""
-        }
+
+    val startDestination = remember {
+        if (authViewModel.isUserAlreadyLoggedIn()) "home_screen" else "welcome_screen"
     }
-
+    if (authViewModel.isUserAlreadyLoggedIn() && loginState is LoginState.Idle) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = Color(0xFF3D5A80))
+        }
+        return
+    }
+    val userName by authViewModel.userName.collectAsState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -67,32 +77,59 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
     ) { padding ->
-
         NavHost(
             navController = navController,
-            startDestination = "welcome_screen",
+            startDestination = startDestination,
             modifier = Modifier.padding(padding)
         ) {
-            composable("welcome_screen") { WelcomeScreen(navController) }
 
-            composable("login_screen") { LoginScreen(navController) }
+            composable("welcome_screen") {
+                WelcomeScreen(navController)
+            }
 
-            composable("register_screen") {
-                PersonalDataScreen(
-                    onBack = { navController.popBackStack() },
-                    onNext = { navController.navigate("account_data_screen") }
+            composable("login_screen") {
+                LoginScreen(
+                    navController = navController,
+                    authViewModel = authViewModel
                 )
             }
 
-            composable("account_data_screen") {
-                AccountDataScreen(
-                    onBack = { navController.popBackStack() },
-                    onRegister = {
-                        navController.navigate("home_screen") {
-                            popUpTo(0) { inclusive = true }
-                        }
+            navigation(
+                startDestination = "register_screen",
+                route = "register_root"
+            ) {
+                composable("register_screen") { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("register_root")
                     }
-                )
+                    val registerViewModel: RegisterViewModel =
+                        hiltViewModel(parentEntry)
+                    PersonalDataScreen(
+                        viewModel = registerViewModel,
+                        onBack = { navController.popBackStack() },
+                        onNext = {
+                            navController.navigate("account_data_screen")
+                        }
+                    )
+                }
+
+                composable("account_data_screen") { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("register_root")
+                    }
+                    val registerViewModel: RegisterViewModel =
+                        hiltViewModel(parentEntry)
+                    AccountDataScreen(
+                        viewModel = registerViewModel,
+                        onBack = { navController.popBackStack() },
+                        onRegisterSuccess = {
+                            authViewModel.refreshAfterRegister()
+                            navController.navigate("home_screen") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
+                    )
+                }
             }
 
             composable("home_screen") {
@@ -112,12 +149,10 @@ fun AppNavHost(navController: NavHostController) {
                     arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
-
                     val parentEntry = remember(backStackEntry) {
                         navController.getBackStackEntry("service_root")
                     }
                     val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
-
                     ServiceRequestScreen(
                         serviceName = serviceName,
                         navController = navController,
@@ -160,7 +195,6 @@ fun AppNavHost(navController: NavHostController) {
                         navController.getBackStackEntry("service_root")
                     }
                     val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
-
                     ServiceSummaryScreen(
                         serviceName = serviceName,
                         serviceRequestViewModel = viewModel,
@@ -180,10 +214,7 @@ fun AppNavHost(navController: NavHostController) {
                 arguments = listOf(navArgument("orderId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-                TrackingDetailsScreen(
-                    orderId = orderId,
-                    navController = navController
-                )
+                TrackingDetailsScreen(orderId = orderId, navController = navController)
             }
 
             composable("profile_screen") {
@@ -194,6 +225,7 @@ fun AppNavHost(navController: NavHostController) {
                     onNavigateToSecurity = { navController.navigate("security_screen") },
                     onNavigateToSettings = { navController.navigate("settings_screen") },
                     onLogout = {
+                        authViewModel.logout()
                         navController.navigate("welcome_screen") {
                             popUpTo(0) { inclusive = true }
                         }
@@ -229,9 +261,7 @@ fun AppNavHost(navController: NavHostController) {
 
             composable("notifications_screen") {
                 val viewModel: NotificationViewModel = hiltViewModel()
-                NotificationsScreen(
-                    notificationViewModel = viewModel
-                )
+                NotificationsScreen(notificationViewModel = viewModel)
             }
         }
     }

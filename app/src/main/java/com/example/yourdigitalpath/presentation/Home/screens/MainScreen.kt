@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation.Home
+package com.example.yourdigitalpath.presentation.Home.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.blqes.digi.presentation.HeaderSection
 import com.example.yourdigitalpath.domain.model.OrderModel
+import com.example.yourdigitalpath.domain.model.getEvents
+import com.example.yourdigitalpath.presentation.Home.components.EventSection
 
 @Composable
 fun MainScreen(

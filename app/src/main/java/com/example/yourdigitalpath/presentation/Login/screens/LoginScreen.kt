@@ -1,29 +1,20 @@
 package com.example.yourdigitalpath.presentation.Login.screens
 
-import CustomTextField
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,49 +22,62 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.blqes.digi.Login.LoginButtons
-import com.blqes.digi.viewmodel.AuthViewModel
-import com.blqes.digi.viewmodel.LoginState
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.presentation.Login.AuthViewModel
+import com.example.yourdigitalpath.presentation.Login.LoginState
+import com.example.yourdigitalpath.presentation.Login.component.CustomTextField
+import com.example.yourdigitalpath.presentation.Login.component.SavedAccount
 
-@SuppressLint("ViewModelConstructorInComposable")
 @Composable
-fun LoginScreen(navController: NavController) {
-
-    val authViewModel = AuthViewModel()
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
+    LaunchedEffect(Unit) {
+        authViewModel.resetState()
+    }
 
     LoginContent(
         authViewModel = authViewModel,
+        navController = navController,
         onLoginSuccess = {
-            navController.navigate("home_screen")
+            navController.navigate("home_screen") {
+                popUpTo("login_screen") { inclusive = true }
+            }
         }
     )
 }
 
 @Composable
-fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
-    var nationalId by remember { mutableStateOf("") }
+fun LoginContent(
+    authViewModel: AuthViewModel,
+    navController: NavController,
+    onLoginSuccess: () -> Unit
+) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    val state = authViewModel.loginState
+    val state by authViewModel.loginState.collectAsState()
+    val savedAccounts by authViewModel.savedAccounts.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            ,
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             LoginHeader()
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -93,26 +97,66 @@ fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
             )
         }
 
-
-
         Spacer(modifier = Modifier.height(24.dp))
 
+        if (savedAccounts.isNotEmpty()) {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                Text(
+                    text = "تسجيل الدخول بحساب سابق",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF3D5A80),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFF5F7FA)
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.heightIn(max = 200.dp)
+                    ) {
+                        items(savedAccounts) { account ->
+                            SavedAccountItem(
+                                account = account,
+                                onSelect = {
+                                    email = account.email
+                                },
+                                onRemove = {
+                                    authViewModel.removeAccount(account.email)
+                                }
+                            )
+                            if (savedAccounts.last() != account) {
+                                HorizontalDivider(
+                                    color = Color(0xFFEAECF0),
+                                    thickness = 0.5.dp
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
             Column {
                 CustomTextField(
-                    value = nationalId,
-                    onValueChange = {
-                        nationalId = it
-                    },
-                    hint = "الرقم القومي",
-                    isNationalId = true
+                    value = email,
+                    onValueChange = { email = it },
+                    hint = "البريد الإلكتروني"
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 CustomTextField(
                     value = password,
-                    onValueChange = {
-                        password = it
-                    },
+                    onValueChange = { password = it },
                     hint = "كلمة المرور",
                     isPassword = true
                 )
@@ -121,19 +165,110 @@ fun LoginContent(authViewModel: AuthViewModel, onLoginSuccess: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-            LoginButtons(
-                onLoginClick = {
-                    authViewModel.login(nationalId, password)
-                }
-            )
+        LoginButtons(
+            onLoginClick = {
+                authViewModel.login(
+                    email = email,
+                    password = password
+                )
+            },
+            onRegisterClick = {
+                navController.navigate("register_screen")
+            }
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         when (state) {
-            is LoginState.Loading -> CircularProgressIndicator()
-            is LoginState.Error -> Text(state.message, color = Color.Red)
-            is LoginState.Success -> LaunchedEffect(Unit) { onLoginSuccess() }
+            is LoginState.Loading -> {
+                CircularProgressIndicator()
+            }
+            is LoginState.Error -> {
+                Text(
+                    text = (state as LoginState.Error).message,
+                    color = Color.Red
+                )
+            }
+            is LoginState.Success -> {
+
+                LaunchedEffect(Unit) {
+                    onLoginSuccess()
+                }
+            }
             else -> {}
+        }
+    }
+}
+
+@Composable
+fun SavedAccountItem(
+    account: SavedAccount,
+    onSelect: () -> Unit,
+    onRemove: () -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelect() }
+            .padding(
+                horizontal = 16.dp,
+                vertical = 10.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        IconButton(
+            onClick = onRemove,
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                Icons.Outlined.Close,
+                contentDescription = null,
+                tint = Color(0xFF9BA3B2),
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier.weight(1f)
+        ) {
+
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = account.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1A1A2E)
+                )
+                Text(
+                    text = account.email,
+                    fontSize = 12.sp,
+                    color = Color(0xFF9BA3B2)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF3D5A80))
+            ) {
+                Text(
+                    text = account.initials,
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

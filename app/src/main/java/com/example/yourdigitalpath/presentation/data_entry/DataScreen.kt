@@ -21,8 +21,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -156,15 +158,31 @@ fun DataScreen(
                         label = "رقم الهاتف",
                         placeholder = "010XXXXXXXX",
                         leadingIcon = Icons.Default.Phone,
-                        // الربط مع الـ Logic الموحد (طول 11 وبدون أخطاء)
                         isValid = uiState.applicantPhone.length == 11 && uiState.applicantPhoneError == null,
                         errorMessage = uiState.applicantPhoneError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
                     )
 
+                    // Refactor relationship logic for Death Certificate
+                    val relationshipOptions = remember(serviceName) {
+                        if (serviceName.contains("وفاة")) {
+                            listOf("قريب من الدرجة الأولى", "ولي الأمر", "وكيل")
+                        } else {
+                            listOf("صاحب الوثيقة", "ولي الأمر", "وكيل")
+                        }
+                    }
+
+                    LaunchedEffect(serviceName) {
+                        if (serviceName.contains("وفاة") &&
+                            (uiState.relationship.isEmpty() || uiState.relationship == "صاحب الوثيقة")
+                        ) {
+                            viewModel.updateRelationship("قريب من الدرجة الأولى")
+                        }
+                    }
+
                     SelectionChipGroup(
                         title = "الصفة",
-                        items = listOf("صاحب الوثيقة", "ولي الأمر", "وكيل"),
+                        items = relationshipOptions,
                         selectedItem = uiState.relationship,
                         onItemSelected = { viewModel.updateRelationship(it) }
                     )

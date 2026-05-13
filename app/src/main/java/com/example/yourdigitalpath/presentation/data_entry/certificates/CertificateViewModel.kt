@@ -6,7 +6,7 @@ import com.example.yourdigitalpath.domain.model.certificates.CertificatesForm
 import com.example.yourdigitalpath.domain.usecase.certificates.CacheCertificatesUseCase
 import com.example.yourdigitalpath.domain.usecase.certificates.GetCachedCertificatesUseCase
 import com.example.yourdigitalpath.domain.usecase.certificates.SaveCertificatesUseCase
-import com.example.yourdigitalpath.utils.Validator // تأكدي من هذا الـ import
+import com.example.yourdigitalpath.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

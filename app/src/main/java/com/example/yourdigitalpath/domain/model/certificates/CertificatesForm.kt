@@ -6,5 +6,5 @@ data class CertificatesForm(
     val governorate: String = "",
     val applicantNationalId: String = "",
     val applicantPhone: String = "",
-    val relationship: String = "" // "صاحب الوثيقة", "ولي الأمر", "وكيل"
+    val relationship: String = ""
 )

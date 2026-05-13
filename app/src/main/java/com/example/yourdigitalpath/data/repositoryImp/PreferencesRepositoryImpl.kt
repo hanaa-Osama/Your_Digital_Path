@@ -51,7 +51,7 @@ class PreferencesRepositoryImpl @Inject constructor(
     }
 
     override fun getLanguage(): String {
-        return sharedPrefs.getString(KEY_LANGUAGE, "العربية") ?: "العربية"
+        return sharedPrefs.getString(KEY_LANGUAGE, "ar") ?: "ar"
     }
 
     override suspend fun setLanguage(language: String) {
@@ -59,7 +59,7 @@ class PreferencesRepositoryImpl @Inject constructor(
     }
 
     override fun getDisplayMode(): String {
-        return sharedPrefs.getString(KEY_DISPLAY_MODE, "الوضع الفاتح") ?: "الوضع الفاتح"
+        return sharedPrefs.getString(KEY_DISPLAY_MODE, "light") ?: "light"
     }
 
     override suspend fun setDisplayMode(mode: String) {

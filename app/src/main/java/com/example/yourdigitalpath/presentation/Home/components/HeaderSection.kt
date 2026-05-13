@@ -1,5 +1,4 @@
-package com.blqes.digi.presentation
-
+package com.example.yourdigitalpath.presentation.Home.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -18,13 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.R
 
 @Composable
 fun HeaderSection(
@@ -33,16 +36,21 @@ fun HeaderSection(
     servicesCount: Int = 5
 ) {
     val displayName =
-        if (userName.isBlank()) "مستخدم"
+        if (userName.isBlank())
+            stringResource(R.string.default_user)
         else userName
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
+
     CompositionLocalProvider(
-        LocalLayoutDirection provides LayoutDirection.Rtl
+        LocalLayoutDirection provides layoutDirection
     ) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .background(
-                    brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                    brush = Brush.verticalGradient(
                         colors = listOf(
                             Color(0xFF3D5A80),
                             Color(0xFF293241)
@@ -68,7 +76,7 @@ fun HeaderSection(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = "أهلاً بك 👋",
+                            text = stringResource(R.string.welcome_message),
                             color = Color.White.copy(alpha = 0.8f),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
@@ -88,7 +96,7 @@ fun HeaderSection(
                 )
 
                 Text(
-                    text = "استخرج مستنداتك الرسمية بضغطة زر واحدة",
+                    text = stringResource(R.string.header_description),
                     color = Color.White.copy(alpha = 0.7f),
                     fontSize = 14.sp,
                     lineHeight = 20.sp
@@ -127,7 +135,10 @@ fun HeaderSection(
                         modifier = Modifier.width(10.dp)
                     )
                     Text(
-                        text = "$servicesCount خدمات متاحة حالياً",
+                        text = stringResource(
+                            R.string.available_services,
+                            servicesCount
+                        ),
                         color = Color.White,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold

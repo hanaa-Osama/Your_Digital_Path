@@ -36,10 +36,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.ui.components.DarkBlue
 import com.example.yourdigitalpath.ui.components.GrayText
@@ -77,44 +79,62 @@ fun ServiceDataUploadComponent(
         Spacer(modifier = Modifier.height(8.dp))
 
         SectionCard {
-            SectionHeader(title = "الملفات المطلوبة")
+            SectionHeader(
+                title = stringResource(R.string.required_files)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // National ID Section
             Text(
-                text = "صورة البطاقة القومية (وجه وظهر)",
+                text = stringResource(R.string.national_id_front_back),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = DarkBlue,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
             uiState.nationalIdUrls.forEachIndexed { index, url ->
                 UploadedDocumentItem(
-                    name = "البطاقة القومية - صورة ${index + 1}",
+                    name = stringResource(
+                        R.string.national_id_image_number,
+                        index + 1
+                    ),
                     fileName = url.substringAfterLast("_"),
-                    onDelete = { viewModel.removeNationalId(url) }
+                    onDelete = {
+                        viewModel.removeNationalId(url)
+                    }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-
             if (uiState.nationalIdUrls.size < 2) {
                 UploadBox(
-                    title = if (uiState.nationalIdUrls.isEmpty()) "اضغط لرفع صورة البطاقة (وجه)" else "اضغط لرفع صورة البطاقة (ظهر)",
-                    subtitle = "تنبيه: يجب رفع صورة البطاقة (وجه وظهر)",
+                    title =
+                        if (uiState.nationalIdUrls.isEmpty())
+                            stringResource(R.string.upload_national_id_front)
+                        else
+                            stringResource(R.string.upload_national_id_back),
+                    subtitle = stringResource(
+                        R.string.upload_national_id_notice
+                    ),
                     isUploading = isUploading,
                     backgroundColor = Color(0xFFFDF5E0),
                     borderColor = Color(0xFFD4A843),
-                    onUploadClick = { nationalIdLauncher.launch("image/*") }
+                    onUploadClick = {
+                        nationalIdLauncher.launch("image/*")
+                    }
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Service Document Section
             val docTitle =
-                if (serviceName.contains("ميلاد")) "شهادة الميلاد القديمة" else "أصل المستند المطلوب ($serviceName)"
+                if (serviceName.contains("ميلاد")) {
+                    stringResource(R.string.old_birth_certificate)
+                } else {
+                    stringResource(
+                        R.string.original_required_document,
+                        serviceName
+                    )
+                }
 
             Text(
                 text = docTitle,
@@ -123,29 +143,39 @@ fun ServiceDataUploadComponent(
                 color = DarkBlue,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
             if (uiState.serviceDocumentUrl == null) {
                 UploadBox(
-                    title = "اضغط لرفع الملف",
-                    subtitle = "PDF / JPG / PNG - الحد الأقصى 5 ميغابايت",
+                    title = stringResource(R.string.click_to_upload),
+                    subtitle = stringResource(
+                        R.string.file_upload_formats
+                    ),
                     isUploading = isUploading,
                     backgroundColor = Color(0xFFEEF4F9),
                     borderColor = Color(0xFF98C1D9),
-                    onUploadClick = { serviceDocLauncher.launch("image/*") }
+                    onUploadClick = {
+                        serviceDocLauncher.launch("image/*")
+                    }
                 )
             } else {
                 UploadedDocumentItem(
                     name = docTitle,
-                    fileName = uiState.serviceDocumentUrl?.substringAfterLast("/")
-                        ?: "document.jpg",
-                    onDelete = { viewModel.removeServiceDocument() }
+                    fileName =
+                        uiState.serviceDocumentUrl
+                            ?.substringAfterLast("/")
+                            ?: "document.jpg",
+                    onDelete = {
+                        viewModel.removeServiceDocument()
+                    }
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Warning Box
-            WarningBox(text = "في حالة الفاقد، يجب إرفاق محضر بلاغ من الشرطة")
+            WarningBox(
+                text = stringResource(
+                    R.string.police_report_warning
+                )
+            )
         }
     }
 }
@@ -291,7 +321,7 @@ fun WarningBox(text: String) {
                 modifier = Modifier.size(24.dp)
             )
             Text(
-                text = "تنبيه",
+                text = stringResource(R.string.warning),
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFD4A843)

@@ -1,40 +1,55 @@
 package com.example.yourdigitalpath.data.mapper
+import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
 import com.example.yourdigitalpath.data.model.TrackingFirebaseDto
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationItemData
 
-fun NotificationEntity.toDomain(): NotificationItem {
+fun NotificationEntity.toDomain(context: Context): NotificationItem {
     return NotificationItem(
         id = this.id,
         title = this.title,
         message = this.message,
-        timeAgo = formatTimestamp(this.createdAt),
+        timeAgo = formatTimestamp(context, this.createdAt),
         type = this.type,
         isRead = this.isRead
     )
 }
 
-fun formatTimestamp(timestamp: Long): String {
+fun formatTimestamp(context: Context, timestamp: Long): String {
     val diff = System.currentTimeMillis() - timestamp
     return when {
-        diff < 60_000 -> "الآن"
-        diff < 3600_000 -> "${diff / 60_000} دقيقة"
-        diff < 86400_000 -> "منذ ساعات"
-        else -> "منذ أيام"
+        diff < 60_000 ->
+            context.getString(R.string.now)
+        diff < 3600_000 ->
+            context.getString(
+                R.string.minutes_ago,
+                (diff / 60_000).toInt()
+            )
+        diff < 86400_000 ->
+            context.getString(R.string.hours_ago)
+        else ->
+            context.getString(R.string.days_ago)
     }
 }
 
 fun TrackingFirebaseDto.toDomain(stepId: Long = 0L): TrackingStep {
+    val title = when (this.status_code) {
+        "completed" -> R.string.order_received
+        "current" -> R.string.under_review
+        "done" -> R.string.order_completed
+        else -> R.string.order_received
+    }
     return TrackingStep(
         id = stepId,
-        title = this.description,
+        title = title,
         timestamp = this.update_time,
         status = this.status_code
     )

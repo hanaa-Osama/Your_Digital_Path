@@ -34,11 +34,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.order_track.component.DetailsCard
 import com.example.yourdigitalpath.presentation.order_track.component.OrderTimelineSection
 import com.example.yourdigitalpath.presentation.order_track.component.StatusHighlightCard
@@ -89,13 +91,13 @@ fun TrackingDetailsScreen(
                         ) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(R.string.back),
                                 tint = Color.White
                             )
                         }
                         
                         Text(
-                            "تفاصيل الطلب",
+                            text = stringResource(R.string.tracking_details),
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
@@ -103,7 +105,6 @@ fun TrackingDetailsScreen(
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
 
-                        // Transparent placeholder to keep title centered
                         Spacer(modifier = Modifier.size(40.dp))
                     }
 
@@ -115,7 +116,10 @@ fun TrackingDetailsScreen(
                             horizontalAlignment = Alignment.End
                         ) {
                             Text(
-                                text = "رقم الطلب #${order.orderId}",
+                                text = stringResource(
+                                    R.string.order_number_with_id,
+                                    order.orderId
+                                ),
                                 color = Color.White.copy(alpha = 0.8f),
                                 fontSize = 14.sp
                             )
@@ -139,7 +143,11 @@ fun TrackingDetailsScreen(
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color(0xFFEAECF0))
                 ) {
-                    Text("استفسار", color = Color(0xFF344054), fontSize = 16.sp)
+                    Text(
+                        text = stringResource(R.string.inquiry)
+                        , color = Color(0xFF344054),
+                        fontSize = 16.sp
+                    )
                 }
                 Button(
                     onClick = { /* Track Shipping */ },
@@ -150,7 +158,7 @@ fun TrackingDetailsScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = com.example.yourdigitalpath.ui.theme.AppColors.Primary)
                 ) {
                     Text(
-                        "تتبع الشحن",
+                        text = stringResource(R.string.track_shipping),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold

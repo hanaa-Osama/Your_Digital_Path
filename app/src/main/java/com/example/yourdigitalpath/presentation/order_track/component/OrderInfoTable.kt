@@ -7,16 +7,31 @@ import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 
 @Composable
 fun OrderInfoTable(detail: OrderTrackingDetail) {
     Card(shape = RoundedCornerShape(16.dp)) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            InfoRow("رقم الطلب", detail.orderId)
-            InfoRow("نوع الخدمة", detail.serviceType)
-            InfoRow("تاريخ التقديم", detail.date)
-            InfoRow("المبلغ المدفوع", detail.price, isAmount = true)
+            InfoRow(
+                stringResource(R.string.order_number),
+                detail.orderId
+            )
+            InfoRow(
+                stringResource(R.string.service_type),
+                detail.serviceType
+            )
+            InfoRow(
+                stringResource(R.string.submission_date),
+                detail.date
+            )
+            InfoRow(
+                stringResource(R.string.paid_amount),
+                detail.price,
+                isAmount = true
+            )
         }
     }
 }

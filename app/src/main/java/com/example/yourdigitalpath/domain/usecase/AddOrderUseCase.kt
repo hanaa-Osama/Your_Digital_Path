@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.domain.usecase
 
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.OrderRepository
@@ -21,14 +22,14 @@ class AddOrderUseCase @Inject constructor(
             TrackingStep(
                 id = 1,
                 status = "completed",
-                title = "تم استلام الطلب",
+                title = R.string.order_received,
                 timestamp = sdfTime.format(now)
             ),
             TrackingStep(
                 id = 2,
                 status = "current",
-                title = "قيد المراجعة",
-                timestamp = "الآن"
+                title = R.string.under_review,
+                timestamp = "Now"
             )
         )
 

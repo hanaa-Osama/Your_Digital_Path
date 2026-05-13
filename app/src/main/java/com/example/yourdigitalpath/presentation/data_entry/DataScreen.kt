@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -57,22 +59,42 @@ fun DataScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val egyptGovernorates = listOf(
-        "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "البحر الأحمر",
-        "البحيرة", "الفيوم", "الغربية", "الإسماعيلية", "المنوفية",
-        "المنيا", "القليوبية", "الوادي الجديد", "السويس", "الشرقية",
-        "أسوان", "أسيوط", "بني سويف", "بورسعيد", "دمياط",
-        "جنوب سيناء", "كفر الشيخ", "مطروح", "الأقصر", "قنا",
-        "شمال سيناء", "سوهاج"
+        stringResource(R.string.cairo),
+        stringResource(R.string.giza),
+        stringResource(R.string.alexandria),
+        stringResource(R.string.dakahlia),
+        stringResource(R.string.red_sea),
+        stringResource(R.string.beheira),
+        stringResource(R.string.fayoum),
+        stringResource(R.string.gharbia),
+        stringResource(R.string.ismailia),
+        stringResource(R.string.monufia),
+        stringResource(R.string.minya),
+        stringResource(R.string.qalyubia),
+        stringResource(R.string.new_valley),
+        stringResource(R.string.suez),
+        stringResource(R.string.sharqia),
+        stringResource(R.string.aswan),
+        stringResource(R.string.assiut),
+        stringResource(R.string.beni_suef),
+        stringResource(R.string.port_said),
+        stringResource(R.string.damietta),
+        stringResource(R.string.south_sinai),
+        stringResource(R.string.kafr_el_sheikh),
+        stringResource(R.string.matrouh),
+        stringResource(R.string.luxor),
+        stringResource(R.string.qena),
+        stringResource(R.string.north_sinai),
+        stringResource(R.string.sohag)
     )
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(BackgroundGray)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.Start
-        ) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(BackgroundGray)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.Start
+    ) {
             TopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.Start) {
@@ -83,7 +105,7 @@ fun DataScreen(
                             color = AppColors.PrimaryLight
                         )
                         Text(
-                            text = "الخطوة 2 - بيانات صاحب الوثيقة",
+                            text = stringResource(R.string.step_2_document_owner),
                             fontSize = 12.sp,
                             color = AppColors.PrimaryLight
                         )
@@ -93,7 +115,7 @@ fun DataScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBackIos,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back),
                             tint = AppColors.PrimaryLight
                         )
                     }
@@ -105,29 +127,35 @@ fun DataScreen(
             StepperComponent(currentStep = 2)
             Column(modifier = Modifier.padding(16.dp)) {
                 SectionCard {
-                    SectionHeader("بيانات صاحب الوثيقة")
+                    SectionHeader(stringResource(R.string.document_owner_data))
 
                     CustomTextField(
                         value = uiState.fullName,
                         onValueChange = { viewModel.updateFullName(it) },
-                        label = "الاسم الكامل (عربي فقط)",
-                        placeholder = "الاسم رباعي",
+                        label = stringResource(R.string.full_name_arabic),
+                        placeholder = stringResource(R.string.full_name_placeholder),
                         isValid = uiState.fullName.trim().split(" ").size >= 4,
                         errorMessage = uiState.fullNameError
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "تاريخ الميلاد", color = HintColor, fontSize = 13.sp)
+                    Text(
+                        text = stringResource(R.string.birth_date),
+                        color = HintColor,
+                        fontSize = 13.sp
+                    )
                     CustomDatePickerField(
                         value = uiState.dateOfBirth,
                         onValueChange = { viewModel.updateDateOfBirth(it) },
-                        placeholder = "1990 / 01 / 15",
+                        placeholder = stringResource(R.string.birth_date_placeholder),
                         leadingIcon = Icons.Default.CalendarMonth,
                         errorMessage = uiState.dateOfBirthError
                     )
 
                     CustomDropdown(
-                        label = "محافظة الميلاد",
-                        selectedOption = uiState.governorate.ifEmpty { "اختر محافظة..." },
+                        label = stringResource(R.string.birth_governorate),
+                        selectedOption = uiState.governorate.ifEmpty {
+                            stringResource(R.string.choose_governorate)
+                        },
                         options = egyptGovernorates,
                         onOptionSelected = { viewModel.updateGovernorate(it) },
                         errorMessage = uiState.governorateError
@@ -137,12 +165,12 @@ fun DataScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SectionCard {
-                    SectionHeader("بيانات مقدم الطلب")
+                    SectionHeader(stringResource(R.string.applicant_data))
 
                     CustomTextField(
                         value = uiState.applicantNationalId,
                         onValueChange = { viewModel.updateNationalId(it) },
-                        label = "الرقم القومي (14 رقم)",
+                        label = stringResource(R.string.national_id_14),
                         placeholder = "2990115012345XX",
                         isValid = uiState.applicantNationalId.length == 14,
                         errorMessage = uiState.applicantNationalIdError,
@@ -152,7 +180,7 @@ fun DataScreen(
                     CustomTextField(
                         value = uiState.applicantPhone,
                         onValueChange = { viewModel.updatePhone(it) },
-                        label = "رقم الهاتف",
+                        label = stringResource(R.string.phone_number),
                         placeholder = "010XXXXXXXX",
                         leadingIcon = Icons.Default.Phone,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -160,8 +188,12 @@ fun DataScreen(
                     )
 
                     SelectionChipGroup(
-                        title = "الصفة",
-                        items = listOf("صاحب الوثيقة", "ولي الأمر", "وكيل"),
+                        title = stringResource(R.string.relationship),
+                        items = listOf(
+                            stringResource(R.string.document_owner),
+                            stringResource(R.string.guardian),
+                            stringResource(R.string.agent)
+                        ),
                         selectedItem = uiState.relationship,
                         onItemSelected = { viewModel.updateRelationship(it) }
                     )
@@ -178,15 +210,13 @@ fun DataScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 ActionButton(
-                    text = "التالي",
+                    text = stringResource(R.string.next),
                     onClick = {
                         viewModel.submitForm(onSuccess = onNext)
-//                        onNext()
                     }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
 }

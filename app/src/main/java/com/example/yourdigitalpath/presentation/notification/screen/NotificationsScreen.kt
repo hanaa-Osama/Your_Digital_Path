@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsNone
@@ -85,7 +87,6 @@ fun NotificationsScreen(
                     )
                     .padding(horizontal = 24.dp, vertical = 24.dp)
             ) {
-                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Column(
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
@@ -93,19 +94,21 @@ fun NotificationsScreen(
                             .padding(top = 16.dp)
                     ) {
                         Text(
-                            text = "مركز الإشعارات",
+                            text = stringResource(R.string.notifications_center),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.White
                         )
                         Text(
-                            text = "لديك ${notifications.size} إشعارات جديدة",
+                            text = stringResource(
+                                R.string.new_notifications_count,
+                                notifications.size
+                            ),
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.7f),
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-                }
             }
         },
     ) { padding ->
@@ -125,7 +128,7 @@ fun NotificationsScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        "لا توجد إشعارات حالياً",
+                        stringResource(R.string.no_notifications),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF667085)
@@ -141,10 +144,18 @@ fun NotificationsScreen(
                         selectedNotificationId = null
                     },
                     title = {
-                        Text("تأكيد الحذف")
+                        Text(
+                            text = stringResource(
+                                R.string.delete_confirmation
+                            )
+                        )
                     },
                     text = {
-                        Text("هل أنتِ متأكدة من حذف هذا الإشعار؟")
+                        Text(
+                            text = stringResource(
+                                R.string.delete_notification_message
+                            )
+                        )
                     },
                     confirmButton = {
                         TextButton(
@@ -156,7 +167,9 @@ fun NotificationsScreen(
                                 selectedNotificationId = null
                             }
                         ) {
-                            Text("نعم")
+                            Text(
+                                text = stringResource(R.string.yes)
+                            )
                         }
                     },
                     dismissButton = {
@@ -166,7 +179,9 @@ fun NotificationsScreen(
                                 selectedNotificationId = null
                             }
                         ) {
-                            Text("إلغاء")
+                            Text(
+                                text = stringResource(R.string.cancel)
+                            )
                         }
                     }
                 )
@@ -207,7 +222,8 @@ fun NotificationsScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.DeleteOutline,
-                                    contentDescription = "Delete",
+                                    contentDescription =
+                                        stringResource(R.string.delete),
                                     tint = Color(0xFFF04438)
                                 )
                             }
@@ -264,7 +280,7 @@ fun NotificationsScreen(
                                 }
 
                                 Text(
-                                    text = "الآن",
+                                    text = stringResource(R.string.now),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = Color(0xFF9CA3AF)
                                 )

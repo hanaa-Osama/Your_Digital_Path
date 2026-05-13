@@ -3,7 +3,7 @@ package com.example.yourdigitalpath.domain.model
 
 data class TrackingStep(
     val id: Long = 0L,
-    val title: String = "",
+    val title: Int,
     val timestamp: String = "",
     val status: String = "pending"
 )
@@ -13,7 +13,7 @@ data class OrderTrackingDetail(
     val serviceType: String = "",
     val date: String = "",
     val price: String = "",
-    val deliveryMethod: String = "توصيل للمنزل",
+    val deliveryMethod: String = "",
     val progressPercent: Int = 0,
     val steps: List<TrackingStep> = emptyList()
 )

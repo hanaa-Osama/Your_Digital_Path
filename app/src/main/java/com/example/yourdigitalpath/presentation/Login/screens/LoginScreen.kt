@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -100,67 +101,67 @@ fun LoginContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (savedAccounts.isNotEmpty()) {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                Text(
-                    text = "تسجيل الدخول بحساب سابق",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF3D5A80),
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Text(
+                text = stringResource(
+                    R.string.login_with_existing_account
+                ),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF3D5A80),
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFF5F7FA)
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFF5F7FA)
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                LazyColumn(
+                    modifier = Modifier.heightIn(max = 200.dp)
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.heightIn(max = 200.dp)
-                    ) {
-                        items(savedAccounts) { account ->
-                            SavedAccountItem(
-                                account = account,
-                                onSelect = {
-                                    email = account.email
-                                },
-                                onRemove = {
-                                    authViewModel.removeAccount(account.email)
-                                }
-                            )
-                            if (savedAccounts.last() != account) {
-                                HorizontalDivider(
-                                    color = Color(0xFFEAECF0),
-                                    thickness = 0.5.dp
-                                )
+                    items(savedAccounts) { account ->
+                        SavedAccountItem(
+                            account = account,
+                            onSelect = {
+                                email = account.email
+                            },
+                            onRemove = {
+                                authViewModel.removeAccount(account.email)
                             }
+                        )
+                        if (savedAccounts.last() != account) {
+                            HorizontalDivider(
+                                color = Color(0xFFEAECF0),
+                                thickness = 0.5.dp
+                            )
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Column {
-                CustomTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    hint = "البريد الإلكتروني"
+        Column {
+            CustomTextField(
+                value = email,
+                onValueChange = { email = it },
+                hint = stringResource(
+                    R.string.email
                 )
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                CustomTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    hint = "كلمة المرور",
-                    isPassword = true
-                )
-            }
+            CustomTextField(
+                value = password,
+                onValueChange = { password = it },
+                hint = stringResource(R.string.password),
+                isPassword = true
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +46,9 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                "مسار الطلب",
+                    text = stringResource(
+                        R.string.order_tracking_path
+                    ),
                 fontWeight = FontWeight.Black,
                 fontSize = 18.sp,
                 color = AppColors.TextPrimary,
@@ -55,7 +59,7 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
 
             steps.forEachIndexed { index, step ->
                 TimelineItem(
-                    status = step.title,
+                    status = stringResource(step.title),
                     date = step.timestamp,
                     stepStatus = step.status,
                     isLast = index == steps.size - 1
@@ -69,7 +73,7 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
 fun TimelineItem(
     status: String,
     date: String,
-    stepStatus: String, // completed, current, or pending
+    stepStatus: String,
     isLast: Boolean
 ) {
     Row(

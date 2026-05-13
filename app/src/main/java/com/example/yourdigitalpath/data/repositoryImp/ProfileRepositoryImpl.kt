@@ -1,18 +1,23 @@
 package com.example.yourdigitalpath.data.repositoryImp
 
+import android.content.Context
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.data.local.Dao.UserProfileDao
 import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.data.mapper.toEntity
 import com.example.yourdigitalpath.domain.model.UserProfileModel
 import com.example.yourdigitalpath.domain.repository.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
     private val userProfileDao: UserProfileDao,
     private val firestore: FirebaseFirestore,
-    private val auth: com.google.firebase.auth.FirebaseAuth
+    private val auth: com.google.firebase.auth.FirebaseAuth,
+    @ApplicationContext
+    private val context: Context
 ) : ProfileRepository {
 
     override suspend fun getUserProfile(): UserProfileModel? {
@@ -23,7 +28,8 @@ class ProfileRepositoryImpl @Inject constructor(
             if (!snapshot.exists()) return null
 
             val profile = UserProfileModel(
-                name = snapshot.getString("fullName") ?: "مستخدم",
+                name = snapshot.getString("fullName")
+                    ?: context.getString(R.string.user),
                 nationalId = snapshot.getString("nationalId") ?: "",
                 email = snapshot.getString("email") ?: "",
                 phoneNumber = snapshot.getString("phone") ?: "",

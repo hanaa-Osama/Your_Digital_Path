@@ -17,16 +17,19 @@ import com.example.yourdigitalpath.ui.theme.AppColors
 fun ActionButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.Primary
+            containerColor = AppColors.Primary,
+            disabledContainerColor = AppColors.Border
         )
     ) {
         Text(

@@ -22,12 +22,17 @@ import com.example.yourdigitalpath.ui.theme.AppColors
 @Composable
 fun ServiceIconBadge(serviceName: String) {
     val icon = when {
-        serviceName.contains("ميلاد") -> Icons.Outlined.Article
-        serviceName.contains("هوية")  -> Icons.Outlined.Badge
-        serviceName.contains("زواج")  -> Icons.Outlined.Favorite
-        serviceName.contains("وفاة")  -> Icons.Outlined.Person
-        serviceName.contains("طلاق")  -> Icons.Outlined.HeartBroken
-        else                          -> Icons.Outlined.Article
+        serviceName.contains("birth", true) ||
+                serviceName.contains("ميلاد") -> Icons.Outlined.Article
+        serviceName.contains("identity", true) ||
+                serviceName.contains("هوية") -> Icons.Outlined.Badge
+        serviceName.contains("marriage", true) ||
+                serviceName.contains("زواج") -> Icons.Outlined.Favorite
+        serviceName.contains("death", true) ||
+                serviceName.contains("وفاة") -> Icons.Outlined.Person
+        serviceName.contains("divorce", true) ||
+                serviceName.contains("طلاق") -> Icons.Outlined.HeartBroken
+        else -> Icons.Outlined.Article
     }
 
     Box(

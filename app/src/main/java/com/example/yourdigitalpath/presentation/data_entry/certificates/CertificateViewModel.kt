@@ -10,6 +10,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import android.content.Context
+import com.example.yourdigitalpath.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +36,7 @@ data class BirthCertificateUiState(
 
 @HiltViewModel
 class BirthCertificateViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val saveCertificatesUseCase: SaveCertificatesUseCase,
     private val getCachedCertificatesUseCase: GetCachedCertificatesUseCase,
     private val cacheCertificatesUseCase: CacheCertificatesUseCase
@@ -112,35 +116,35 @@ class BirthCertificateViewModel @Inject constructor(
         val currentState = _uiState.value
 
         if (currentState.fullName.isBlank()) {
-            _uiState.update { it.copy(fullNameError = "يرجى إدخال الاسم الرباعي") }
+            _uiState.update { it.copy(fullNameError = context.getString(R.string.enter_full_name)) }
             isValid = false
         } else if (currentState.fullName.trim().split(" ").size < 4) {
-            _uiState.update { it.copy(fullNameError = "يجب إدخال الاسم رباعياً") }
+            _uiState.update { it.copy(fullNameError = context.getString(R.string.full_name_must_be_four)) }
             isValid = false
         }
 
         if (currentState.dateOfBirth.isBlank()) {
-            _uiState.update { it.copy(dateOfBirthError = "يرجى إدخال تاريخ الميلاد") }
+            _uiState.update { it.copy(dateOfBirthError = context.getString(R.string.enter_birth_date)) }
             isValid = false
         }
 
         if (currentState.governorate.isBlank()) {
-            _uiState.update { it.copy(governorateError = "يرجى اختيار المحافظة") }
+            _uiState.update { it.copy(governorateError = context.getString(R.string.choose_governorate_error)) }
             isValid = false
         }
 
         if (currentState.applicantNationalId.length != 14) {
-            _uiState.update { it.copy(applicantNationalIdError = "الرقم القومي يجب أن يكون 14 رقم") }
+            _uiState.update { it.copy(applicantNationalIdError = context.getString(R.string.national_id_invalid)) }
             isValid = false
         }
 
         if (currentState.applicantPhone.length != 11 || !currentState.applicantPhone.startsWith("01")) {
-            _uiState.update { it.copy(applicantPhoneError = "رقم الهاتف غير صحيح") }
+            _uiState.update { it.copy(applicantPhoneError = context.getString(R.string.phone_invalid)) }
             isValid = false
         }
 
         if (currentState.relationship.isBlank()) {
-            _uiState.update { it.copy(relationshipError = "يرجى اختيار صلة القرابة") }
+            _uiState.update { it.copy(relationshipError = context.getString(R.string.choose_relationship)) }
             isValid = false
         }
 

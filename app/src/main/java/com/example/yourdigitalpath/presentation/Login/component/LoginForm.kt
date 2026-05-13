@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -18,28 +20,42 @@ fun LoginForm(
     onPasswordChange: (String) -> Unit
 ) {
     Column {
-        Text("رقم الهاتف أو الرقم القومي")
+        Text(
+            text = stringResource(
+                R.string.phone_or_national_id
+            )
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         CustomTextField(
             value = phone,
             onValueChange = onPhoneChange,
-            hint = "الرقم القومي",
+            hint = stringResource(
+                R.string.national_id_hint
+            ),
             isNationalId = true
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text("كلمة المرور")
+        Text(
+            text = stringResource(
+                R.string.password
+            )
+        )
         Spacer(modifier = Modifier.height(8.dp))
         CustomTextField(
             value = password,
             onValueChange = onPasswordChange,
-            hint = "كلمة المرور",
+            hint = stringResource(
+                R.string.password
+            ),
             isPassword = true
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "نسيت كلمة المرور؟",
+            text = stringResource(
+                R.string.forgot_password
+            ),
             color = Color.Gray,
             fontSize = 12.sp
         )

@@ -33,9 +33,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTrackingRepository(
-        firestore: FirebaseFirestore
+        firestore: FirebaseFirestore,
+        @ApplicationContext
+        context: Context
     ): TrackingRepository {
-        return TrackingRepositoryImpl(firestore)
+        return TrackingRepositoryImpl(firestore, context)
     }
 
     @Provides

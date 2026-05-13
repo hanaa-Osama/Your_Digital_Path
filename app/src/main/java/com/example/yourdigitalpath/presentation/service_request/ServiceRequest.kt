@@ -23,13 +23,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.blqes.digi.presentation.BottomNavBar
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.BackgroundGray
 import com.example.yourdigitalpath.ui.components.CustomDropdown
@@ -52,12 +55,18 @@ fun ServiceRequestScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
+
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
-                        Column(horizontalAlignment = Alignment.Start) {
+                        Column(
+                            horizontalAlignment = Alignment.Start
+                        ) {
                             Text(
                                 text = serviceName,
                                 fontSize = 20.sp,
@@ -65,7 +74,7 @@ fun ServiceRequestScreen(
                                 color = AppColors.PrimaryLight
                             )
                             Text(
-                                text = "حدد نوع الطلب",
+                                text = stringResource(R.string.select_request_type),
                                 fontSize = 12.sp,
                                 color = AppColors.PrimaryLight
                             )
@@ -75,7 +84,7 @@ fun ServiceRequestScreen(
                         IconButton(onClick = onBack) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBackIos,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(R.string.back),
                                 tint = AppColors.PrimaryLight
                             )
                         }
@@ -98,15 +107,23 @@ fun ServiceRequestScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.Start
             ) {
-
                 StepperComponent(currentStep = 1)
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
                     SectionCard {
                         SelectionChipGroup(
-                            title = "نوع الطلب",
-                            items = listOf("نسخة كاملة", "نسخة مختصرة", "رقمية موثقة", "بدل فاقد"),
+                            title = stringResource(R.string.request_type),
+                            items = listOf(
+                                stringResource(R.string.full_copy),
+                                stringResource(R.string.short_copy),
+                                stringResource(R.string.certified_digital),
+                                stringResource(R.string.lost_replacement)
+                            ),
                             selectedItem = state.selectedType,
-                            onItemSelected = { viewModel.updateSelectedType(it) }
+                            onItemSelected = {
+                                viewModel.updateSelectedType(it)
+                            }
                         )
                     }
 
@@ -114,17 +131,24 @@ fun ServiceRequestScreen(
 
                     SectionCard {
                         SelectionChipGroup(
-                            title = "سبب الطلب",
-                            items = listOf("تجديد", "سفر", "عمل"),
+                            title = stringResource(R.string.request_reason),
+                            items = listOf(
+                                stringResource(R.string.renewal),
+                                stringResource(R.string.travel),
+                                stringResource(R.string.work)
+                            ),
                             selectedItem = state.requestReason,
-                            onItemSelected = { viewModel.updateRequestReason(it) }
+                            onItemSelected = {
+                                viewModel.updateRequestReason(it)
+                            }
                         )
-
                         CustomTextField(
                             value = state.otherReason ?: "",
-                            onValueChange = { viewModel.updateOtherReason(it) },
-                            label = "سبب آخر (اختياري)",
-                            placeholder = "اكتب السبب..."
+                            onValueChange = {
+                                viewModel.updateOtherReason(it)
+                            },
+                            label = stringResource(R.string.other_reason_optional),
+                            placeholder = stringResource(R.string.write_reason)
                         )
                     }
 
@@ -132,29 +156,43 @@ fun ServiceRequestScreen(
 
                     SectionCard {
                         Text(
-                            text = "عدد النسخ وطريقة التسليم",
+                            text = stringResource(R.string.copies_and_delivery),
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             color = DarkBlue,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-
+                        val oneCopy =
+                            stringResource(R.string.one_copy)
+                        val twoCopies =
+                            stringResource(R.string.two_copies)
+                        val copiesWord =
+                            stringResource(R.string.copies)
                         val options =
-                            (1..3).map { if (it == 1) "نسخة واحدة" else if (it == 2) "نسختان" else "$it نسخ" }
+                            (1..3).map {
+                                when (it) {
+                                    1 -> oneCopy
+                                    2 -> twoCopies
+                                    else -> "$it $copiesWord"
+                                }
+                            }
                         CustomDropdown(
-                            label = "عدد النسخ (1-3)",
+                            label = stringResource(R.string.copies_count),
                             selectedOption = when (state.copiesCount) {
-                                1 -> "نسخة واحدة"
-                                2 -> "نسختان"
-                                else -> "${state.copiesCount} نسخ"
+                                1 -> oneCopy
+                                2 -> twoCopies
+                                else -> "${state.copiesCount} $copiesWord"
                             },
                             options = options,
                             onOptionSelected = { option ->
-                                val count = when (option) {
-                                    "نسخة واحدة" -> 1
-                                    "نسختان" -> 2
-                                    else -> option.split(" ")[0].toIntOrNull() ?: 1
-                                }
+                                val count =
+                                    when (option) {
+                                        oneCopy -> 1
+                                        twoCopies -> 2
+                                        else ->
+                                            option.split(" ")[0]
+                                                .toIntOrNull() ?: 1
+                                    }
                                 viewModel.updateCopiesCount(count)
                             }
                         )
@@ -162,21 +200,27 @@ fun ServiceRequestScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         SelectionChipGroup(
-                            title = "طريقة الاستلام",
-                            items = listOf("في المكتب", "توصيل", "رقمي"),
+                            title = stringResource(R.string.delivery_method),
+                            items = listOf(
+                                stringResource(R.string.office_pickup),
+                                stringResource(R.string.delivery),
+                                stringResource(R.string.digital)
+                            ),
                             selectedItem = state.deliveryMethod,
-                            onItemSelected = { viewModel.updateDeliveryMethod(it) }
+                            onItemSelected = {
+                                viewModel.updateDeliveryMethod(it)
+                            }
                         )
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    val isFormValid = state.selectedType.isNotEmpty() &&
-                            state.requestReason.isNotEmpty() &&
-                            state.deliveryMethod.isNotEmpty()
-
+                    val isFormValid =
+                        state.selectedType.isNotEmpty() &&
+                                state.requestReason.isNotEmpty() &&
+                                state.deliveryMethod.isNotEmpty()
                     ActionButton(
-                        text = "التالي",
+                        text = stringResource(R.string.next),
                         onClick = {
                             if (isFormValid) {
                                 onNext()

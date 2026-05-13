@@ -1,7 +1,9 @@
 package com.example.yourdigitalpath.presentation.profile.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -9,6 +11,7 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -28,7 +31,9 @@ fun PasswordField(
     onValueChange: (String) -> Unit,
     isVisible: Boolean,
     onToggleVisibility: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    errorMessage: String = ""
 ) {
     Column(modifier = modifier) {
         Text(
@@ -44,13 +49,23 @@ fun PasswordField(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
-            visualTransformation = if (isVisible) VisualTransformation.None
-            else PasswordVisualTransformation(),
+            isError = isError,
+            visualTransformation =
+                if (isVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
             trailingIcon = {
-                IconButton(onClick = onToggleVisibility) {
+                IconButton(
+                    onClick = onToggleVisibility
+                ) {
                     Icon(
-                        imageVector = if (isVisible) Icons.Outlined.Visibility
-                        else Icons.Outlined.VisibilityOff,
+                        imageVector =
+                            if (isVisible)
+                                Icons.Outlined.Visibility
+                            else
+                                Icons.Outlined.VisibilityOff,
+
                         contentDescription = null,
                         tint = AppColors.TextHint
                     )
@@ -59,8 +74,17 @@ fun PasswordField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AppColors.Primary,
                 unfocusedBorderColor = AppColors.Border,
+                errorBorderColor = MaterialTheme.colorScheme.error,
                 cursorColor = AppColors.Primary
             )
         )
+        if (isError && errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp
+            )
+        }
     }
 }

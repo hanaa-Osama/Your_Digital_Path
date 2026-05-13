@@ -14,6 +14,12 @@ import dagger.hilt.android.HiltAndroidApp
 class YourDigitalPathApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        if (!sharedPrefs.contains("app_language")) {
+            sharedPrefs.edit().putString("app_language", "ar").apply()
+        }
+        val language = sharedPrefs.getString("app_language", "ar") ?: "ar"
+        LocaleManager.setLocale(language)
         createNotificationChannel()
         Firebase.firestore
     }

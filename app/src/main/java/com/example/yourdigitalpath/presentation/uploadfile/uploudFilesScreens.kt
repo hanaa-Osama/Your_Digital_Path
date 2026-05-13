@@ -14,9 +14,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.ui.components.ActionButton
 
@@ -29,13 +32,17 @@ fun UploudFilesScreens(
 ) {
     val isReadyToNext by viewModel.isAllRequiredFilesUploaded.collectAsState()
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
+
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Scaffold(
             bottomBar = {
                 if (isReadyToNext) {
                     Box(modifier = Modifier.padding(16.dp)) {
                         ActionButton(
-                            text = "التالي",
+                            text = stringResource(R.string.next),
                             onClick = onNextClick
                         )
                     }

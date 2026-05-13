@@ -14,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.yourdigitalpath.R
 
 val primary = Color(0xFF3D5A80)
 
@@ -29,22 +32,45 @@ fun BottomNavBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
+
     CompositionLocalProvider(
-        LocalLayoutDirection provides LayoutDirection.Rtl
+        LocalLayoutDirection provides layoutDirection
     ) {
         NavigationBar(
             containerColor = Color.White
         ) {
             val items = listOf(
-                BottomNavItem("الرئيسية", Icons.Default.Home, "home_screen"),
-                BottomNavItem("طلباتي", Icons.Default.InsertDriveFile, "my_orders_screen"),
-                BottomNavItem("إشعارات", Icons.Default.Notifications, "notifications_screen"),
-                BottomNavItem("حسابي", Icons.Default.Person, "profile_screen")
+                BottomNavItem(
+                    stringResource(R.string.home),
+                    Icons.Default.Home,
+                    "home_screen"
+                ),
+
+                BottomNavItem(
+                    stringResource(R.string.my_orders),
+                    Icons.Default.InsertDriveFile,
+                    "my_orders_screen"
+                ),
+
+                BottomNavItem(
+                    stringResource(R.string.notifications),
+                    Icons.Default.Notifications,
+                    "notifications_screen"
+                ),
+
+                BottomNavItem(
+                    stringResource(R.string.my_account),
+                    Icons.Default.Person,
+                    "profile_screen"
+                )
             )
 
             items.forEach { item ->
                 val isSelected = currentRoute == item.route ||
-                        (item.label == "طلباتي" && (
+                        (item.route == "my_orders_screen" && (
                                 currentRoute?.startsWith("service_request_screen") == true ||
                                         currentRoute?.startsWith("data_entry_screen") == true ||
                                         currentRoute == "file_upload_screen"||

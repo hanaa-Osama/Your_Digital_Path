@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +28,7 @@ fun LoginButtons(
     Column {
 
         PrimaryButton(
-            text = "تسجيل الدخول",
+            text = stringResource(R.string.login),
             onClick = onLoginClick
         )
 
@@ -38,7 +40,7 @@ fun LoginButtons(
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
-                "الدخول بالبطاقة القومية",
+                text = stringResource(R.string.login_with_national_id),
                 color = Color(0xFF3D5A80)
             )
         }
@@ -46,7 +48,7 @@ fun LoginButtons(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "ليس لديك حساب؟ سجل الآن",
+            text = stringResource(R.string.no_account_register),
             color = Color(0xFF3D5A80),
             fontSize = 12.sp,
             modifier = Modifier.clickable {

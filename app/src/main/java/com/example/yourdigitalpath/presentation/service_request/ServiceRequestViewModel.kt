@@ -20,29 +20,24 @@ import javax.inject.Inject
 class ServiceRequestViewModel @Inject constructor(
     private val saveServiceRequestUseCase: SaveServiceRequestUseCase
 ) : ViewModel() {
-
     private val PRICE_PER_COPY = 20.0
-
     private val _uiState = MutableStateFlow(
         ServiceRequestModel(
             selectedType = "",
             requestReason = "",
             otherReason = "",
             deliveryMethod = "",
-            copiesCount = 1, // عدد النسخ
-            totalFees = 20.0 // سعر النسخة الواحدة
+            copiesCount = 1,
+            totalFees = 20.0
         )
     )
 
     val uiState: StateFlow<ServiceRequestModel> = _uiState.asStateFlow()
-
     private val _isUploading = MutableStateFlow(false)
     val isUploading: StateFlow<Boolean> = _isUploading.asStateFlow()
-
     val isAllRequiredFilesUploaded: StateFlow<Boolean> = _uiState.map { state ->
         state.nationalIdUrls.isNotEmpty() && state.serviceDocumentUrl != null
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
-
     fun uploadNationalId(uri: Uri) {
         if (_uiState.value.nationalIdUrls.size >= 2) return
         viewModelScope.launch {

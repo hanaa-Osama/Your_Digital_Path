@@ -35,6 +35,8 @@ import com.example.yourdigitalpath.ui.theme.AppColors
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 
 @Composable
 fun OrderCard(
@@ -45,13 +47,15 @@ fun OrderCard(
     val dateFormatted = remember(orderModel.requestDate) {
         SimpleDateFormat("d MMMM yyyy", Locale("ar")).format(Date(orderModel.requestDate))
     }
-
-    // إضافة كلمة "طلب استخراج" لجعل العنوان واضحاً كما طلبت
-    val displayTitle = if (orderModel.serviceName.contains("طلب")) {
-        orderModel.serviceName
-    } else {
-        "طلب استخراج ${orderModel.serviceName}"
-    }
+    val displayTitle =
+        if (orderModel.serviceName.contains("طلب")) {
+            orderModel.serviceName
+        } else {
+            stringResource(
+                R.string.extract_request,
+                orderModel.serviceName
+            )
+        }
 
     Card(
         modifier = modifier
@@ -68,7 +72,6 @@ fun OrderCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    // أيقونة الخدمة بشكل جمالي
                     Box(
                         modifier = Modifier
                             .size(50.dp)
@@ -92,7 +95,10 @@ fun OrderCard(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "رقم الطلب: ${orderModel.id}",
+                            text = stringResource(
+                                R.string.order_number1,
+                                orderModel.id
+                            ),
                             fontSize = 12.sp,
                             color = Color.Gray
                         )
@@ -117,7 +123,10 @@ fun OrderCard(
 
                     if (orderModel.status is OrderStatus.InProgress) {
                         Text(
-                            text = "جاري المعالجة ${orderModel.progressPercent}%",
+                            text = stringResource(
+                                R.string.processing_progress,
+                                orderModel.progressPercent
+                            ),
                             fontSize = 12.sp,
                             color = AppColors.Primary,
                             fontWeight = FontWeight.Bold
@@ -151,7 +160,6 @@ fun OrderCard(
 //            .fillMaxWidth(),
 //        verticalArrangement = Arrangement.spacedBy(16.dp)
 //    ) {
-//        //  في حالة جاري التنفيذ
 //        OrderCard(
 //            orderModel = OrderModel(
 //                id = "REQ-2025-00841",
@@ -165,7 +173,6 @@ fun OrderCard(
 //            )
 //        )
 //
-//        //  في حالة "مكتمل"
 //        OrderCard(
 //            orderModel = OrderModel(
 //                id = "REQ-2025-00838",

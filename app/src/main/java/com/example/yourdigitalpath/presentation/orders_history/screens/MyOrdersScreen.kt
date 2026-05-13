@@ -25,12 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.presentation.orders_history.OrdersViewModel
 import com.example.yourdigitalpath.presentation.orders_history.order_component.OrderCard
@@ -50,7 +53,9 @@ fun MyOrdersScreen(
 ) {
     val orders by viewModel.orders.collectAsState()
     val selectedStatus by viewModel.selectedStatus.collectAsState()
-
+    val allText = stringResource(R.string.all)
+    val inProgressText = stringResource(R.string.in_progress)
+    val completedText = stringResource(R.string.completed)
     val primaryColor = AppColors.Primary
     val warningColor = AppColors.Warning
     val warningBgColor = AppColors.WarningBg
@@ -58,13 +63,41 @@ fun MyOrdersScreen(
     val successBgColor = AppColors.SuccessBg
 
     val filterOptions =
-        remember(primaryColor, warningColor, warningBgColor, successColor, successBgColor) {
+        remember(
+            primaryColor,
+            warningColor,
+            warningBgColor,
+            successColor,
+            successBgColor,
+            allText,
+            inProgressText,
+            completedText
+        ) {
             listOf(
-                FilterOption(null, "الكل", Color.White, primaryColor),
-                FilterOption(OrderStatus.InProgress, "جاري", warningColor, warningBgColor),
-                FilterOption(OrderStatus.Completed, "مكتمل", successColor, successBgColor),
+                FilterOption(
+                    null,
+                    allText,
+                    Color.White,
+                    primaryColor
+                ),
+                FilterOption(
+                    OrderStatus.InProgress,
+                    inProgressText,
+                    warningColor,
+                    warningBgColor
+                ),
+                FilterOption(
+                    OrderStatus.Completed,
+                    completedText,
+                    successColor,
+                    successBgColor
+                ),
             )
         }
+
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
 
 
     Scaffold(
@@ -80,7 +113,7 @@ fun MyOrdersScreen(
                     )
                     .padding(horizontal = 24.dp, vertical = 24.dp)
             ) {
-                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
                     Column(
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
@@ -88,13 +121,17 @@ fun MyOrdersScreen(
                             .padding(top = 16.dp)
                     ) {
                         Text(
-                            text = "تتبع طلباتك",
+                            text = stringResource(R.string.track_your_orders),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.White
                         )
+
                         Text(
-                            text = "لديك ${orders.size} طلبات نشطة في حسابك",
+                            text = stringResource(
+                                R.string.active_orders_count,
+                                orders.size
+                            ),
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.7f),
                             modifier = Modifier.padding(top = 4.dp)
@@ -154,7 +191,7 @@ fun MyOrdersScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "لا توجد طلبات تطابق الفلتر",
+                            text = stringResource(R.string.no_orders_match_filter),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF667085)
@@ -180,4 +217,3 @@ fun MyOrdersScreen(
         }
     }
 }
-

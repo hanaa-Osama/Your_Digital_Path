@@ -64,7 +64,7 @@
     <string name="last_orders">آخر الطلبات</string>
     <string name="renew_id">تجديد هوية</string>
     <string name="completed">مكتمل</string>
-    <string name="in_progress">جاري</string>
+    <string name="inProgress">جاري</string>
     <string name="search_service">ابحث عن خدمة</string>
     <string name="login">تسجيل الدخول</string>
     <string name="login_with_national_id">الدخول بالبطاقة القومية</string>

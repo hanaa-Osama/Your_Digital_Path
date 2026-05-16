@@ -76,7 +76,7 @@ fun OrderCard(order: Order) {
                     if (order.status == OrderStatus.Completed)
                         stringResource(R.string.completed)
                     else
-                        stringResource(R.string.in_progress),
+                        stringResource(R.string.inProgress),
                 color = if (order.status == OrderStatus.Completed) Color(0xFF3A7D5A)
                 else Color(0xFF8A6A1F),
                 fontSize = 11.sp,

@@ -54,7 +54,7 @@ fun MyOrdersScreen(
     val orders by viewModel.orders.collectAsState()
     val selectedStatus by viewModel.selectedStatus.collectAsState()
     val allText = stringResource(R.string.all)
-    val inProgressText = stringResource(R.string.in_progress)
+    val inProgressText = stringResource(R.string.inProgress)
     val completedText = stringResource(R.string.completed)
     val primaryColor = AppColors.Primary
     val warningColor = AppColors.Warning

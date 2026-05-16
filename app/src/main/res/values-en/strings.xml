@@ -65,7 +65,7 @@
     <string name="last_orders">Latest Orders</string>
     <string name="renew_id">Renew ID</string>
     <string name="completed">Completed</string>
-    <string name="in_progress">In Progress</string>
+    <string name="inProgress">In Progress</string>
     <string name="search_service">Search for a service</string>
     <string name="login">Login</string>
     <string name="login_with_national_id">Login with National ID</string>

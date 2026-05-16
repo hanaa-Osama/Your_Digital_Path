@@ -1,22 +1,25 @@
 package com.example.yourdigitalpath.data.repositoryImp
 
+import android.content.Context
 import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
 import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.domain.model.NotificationItem
 import com.example.yourdigitalpath.domain.repository.NotificationRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
-    private val dao: NotificationDao
+    private val dao: NotificationDao,
+    @ApplicationContext private val context: Context
 ) : NotificationRepository {
 
     override fun getAllNotifications(): Flow<List<NotificationItem>> {
         return dao.getNotificationsFlow().map { entities ->
 
-            entities.map { it.toDomain() }
+            entities.map { it.toDomain(context) }
         }
     }
 

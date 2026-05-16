@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,20 +20,27 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,10 +50,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.yourdigitalpath.ui.theme.AppColors
+import com.example.yourdigitalpath.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 // Color Constants
 val PrimaryBlue = Color(0xFF3D5A80)
@@ -58,7 +72,12 @@ val UnselectedGray = Color(0xFFF2F4F7)
 // 1. StepperComponent
 @Composable
 fun StepperComponent(currentStep: Int) {
-    val steps = listOf("النوع", "البيانات", "الملفات", "الدفع")
+    val steps = listOf(
+        stringResource(R.string.step_type),
+        stringResource(R.string.step_data),
+        stringResource(R.string.step_files),
+        stringResource(R.string.step_payment)
+    )
 
     Row(
         modifier = Modifier
@@ -187,6 +206,7 @@ fun SectionHeader(title: String) {
 }
 
 // 3. SelectionChipGroup
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SelectionChipGroup(
     items: List<String>,
@@ -205,16 +225,16 @@ fun SelectionChipGroup(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Row(
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items.forEach { item ->
                 val isSelected = item == selectedItem
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp)
+                        .height(48.dp)
                         .border(
                             width = 1.dp,
                             color = if (isSelected) PrimaryBlue else Color.Transparent,
@@ -224,7 +244,8 @@ fun SelectionChipGroup(
                             color = if (isSelected) LightBlue else UnselectedGray,
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .clickable { onItemSelected(item) },
+                        .clickable { onItemSelected(item) }
+                        .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -310,19 +331,34 @@ fun CustomTextField(
 fun ActionButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.Primary,
-            disabledContainerColor = Color.Gray
-        )
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
     ) {
-        Text(text = text, color = Color.White)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = text,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Icon(
+                imageVector = Icons.Default.ArrowBackIosNew,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
     }
 }
 
@@ -348,6 +384,124 @@ fun SectionCard(
         )
     }
 }
+
+// 7. CustomDatePickerField
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomDatePickerField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String? = null,
+    placeholder: String = "",
+    leadingIcon: ImageVector? = null,
+    errorMessage: String? = null
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    
+    val isError = errorMessage != null
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        if (label != null) {
+            Text(
+                text = label,
+                fontSize = 12.sp,
+                color = GrayText,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(UnselectedGray, RoundedCornerShape(12.dp))
+                .border(
+                    1.dp,
+                    if (isError) Color.Red else Color.Transparent,
+                    RoundedCornerShape(12.dp)
+                )
+                .clickable { showDatePicker = true }
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                leadingIcon?.let {
+                    Icon(it, contentDescription = null, tint = GrayText)
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
+                Text(
+                    text = value.ifEmpty { placeholder },
+                    color = if (value.isEmpty()) GrayText.copy(alpha = 0.7f) else DarkBlue,
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        if (isError) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 2.dp, start = 4.dp)
+            )
+        }
+    }
+
+    if (showDatePicker) {
+        // Parse current value to set initial date in picker
+        val initialDateMillis = remember(value) {
+            if (value.isNotEmpty()) {
+                try {
+                    val format = SimpleDateFormat("yyyy / MM / dd", Locale.getDefault())
+                    format.timeZone = TimeZone.getTimeZone("UTC")
+                    format.parse(value)?.time
+                } catch (e: Exception) {
+                    null
+                }
+            } else null
+        }
+
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = initialDateMillis
+        )
+
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let {
+                            val date = Date(it)
+                            val format = SimpleDateFormat("yyyy / MM / dd", Locale.getDefault())
+                            format.timeZone = TimeZone.getTimeZone("UTC")
+                            onValueChange(format.format(date))
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text(stringResource(R.string.yes))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
 // 8. CustomDropdown
 @Composable
 fun CustomDropdown(

@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.domain.usecase
 
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.OrderTrackRepository
@@ -18,54 +19,62 @@ class SubmitFinalOrderUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): String {
         val certificate = birthRepo.getCachedBirthCertificate()
-            ?: throw Exception("لم يتم العثور على بيانات الشهادة")
+            ?: throw Exception("No certificate data found")
+
         val requestDetails = serviceRepo.getLastServiceRequest()
-            ?: throw Exception("لم يتم العثور على تفاصيل الطلب")
+            ?: throw Exception("No request details found")
 
         val orderId = "REQ-${System.currentTimeMillis()}"
-        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        val totalPrice = (requestDetails.copiesCount * 20).toString()
+        val date = SimpleDateFormat(
+            "yyyy-MM-dd",
+            Locale.getDefault()
+        ).format(Date())
+
+        val totalPrice =
+            (requestDetails.copiesCount * 20).toString()
 
         val initialSteps = listOf(
             TrackingStep(
                 id = 1,
                 status = "completed",
-                title = "تم استلام الطلب",
-                timestamp = "الآن"
+                title = R.string.order_received,
+                timestamp = "Now"
             ),
             TrackingStep(
                 id = 2,
                 status = "current",
-                title = "قيد المراجعة",
-                timestamp = "جاري التأكد من البيانات"
+                title = R.string.under_review,
+                timestamp = "Checking data"
             ),
             TrackingStep(
                 id = 3,
                 status = "pending",
-                title = "جاري استخراج الوثيقة",
+                title = R.string.document_processing,
                 timestamp = ""
             ),
             TrackingStep(
                 id = 4,
                 status = "pending",
-                title = "تم الشحن",
+                title = R.string.shipped,
                 timestamp = ""
             ),
             TrackingStep(
                 id = 5,
                 status = "pending",
-                title = "تم التسليم",
+                title = R.string.delivered,
                 timestamp = ""
             )
         )
 
         val finalOrder = OrderTrackingDetail(
             orderId = orderId,
-            serviceType = "شهادة ميلاد - " + requestDetails.selectedType,
+            serviceType = "Birth Certificate - ${requestDetails.selectedType}",
             date = date,
             price = totalPrice,
-            deliveryMethod = requestDetails.deliveryMethod.ifEmpty { "توصيل للمنزل" },
+            deliveryMethod = requestDetails.deliveryMethod.ifEmpty {
+                "Home Delivery"
+            },
             steps = initialSteps
         )
 

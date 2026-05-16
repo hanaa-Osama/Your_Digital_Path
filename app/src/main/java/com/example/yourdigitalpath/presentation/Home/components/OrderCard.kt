@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.Order
 import com.example.yourdigitalpath.domain.model.OrderStatus
 
@@ -70,7 +72,11 @@ fun OrderCard(order: Order) {
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         ) {
             Text(
-                text = if (order.status == OrderStatus.Completed) "مكتمل" else "جاري",
+                text =
+                    if (order.status == OrderStatus.Completed)
+                        stringResource(R.string.completed)
+                    else
+                        stringResource(R.string.inProgress),
                 color = if (order.status == OrderStatus.Completed) Color(0xFF3A7D5A)
                 else Color(0xFF8A6A1F),
                 fontSize = 11.sp,

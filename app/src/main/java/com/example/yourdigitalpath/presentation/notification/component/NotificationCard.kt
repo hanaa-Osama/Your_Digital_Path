@@ -44,7 +44,6 @@ fun NotificationCard(item: NotificationItemData) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // أيقونة إبداعية بتدرج لوني
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -66,7 +65,6 @@ fun NotificationCard(item: NotificationItemData) {
                     modifier = Modifier.size(26.dp)
                 )
 
-                // نقطة صغيرة لتدل على الإشعار الجديد
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)

@@ -7,29 +7,39 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.blqes.digi.presentation.LastOrdersSection
-import com.example.yourdigitalpath.domain.model.getEvents
+import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.domain.model.eventsList
 import com.example.yourdigitalpath.presentation.SearchBar
 
 @Composable
 fun EventSection(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
-
-    val allEvents = getEvents()
-    val filteredEvents = remember(searchQuery) {
-        if (searchQuery.isBlank()) allEvents
-        else allEvents.filter { it.title.contains(searchQuery) }
+    val allEvents = eventsList()
+    val filteredEvents = if (searchQuery.isBlank()) {
+        allEvents
+    } else {
+        allEvents.filter { event ->
+            val title = stringResource(id = event.title)
+            title.contains(
+                searchQuery,
+                ignoreCase = true
+            )
+        }
     }
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -45,23 +55,23 @@ fun EventSection(navController: NavController) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     SearchBar(
                         query = searchQuery,
-                        onQueryChange = { searchQuery = it }
+                        onQueryChange = {
+                            searchQuery = it
+                        }
                     )
                 }
-
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
-                        text = "الخدمات الرسمية",
+                        text = stringResource(R.string.official_services),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
-
                 if (filteredEvents.isEmpty()) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
-                            text = "لا توجد نتائج",
+                            text = stringResource(R.string.no_results),
                             color = Color(0xFF9BA3B2),
                             modifier = Modifier.padding(vertical = 16.dp)
                         )
@@ -74,7 +84,6 @@ fun EventSection(navController: NavController) {
                         )
                     }
                 }
-
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     LastOrdersSection()
                 }

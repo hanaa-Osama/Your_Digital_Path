@@ -48,21 +48,21 @@ val LightAppColors = AppColorScheme(
 )
 
 val DarkAppColors = AppColorScheme(
-    Primary      = Color(0xFF7BA7C9),
-    PrimaryLight = Color(0xFF1E2D3D),
-    PrimaryMid   = Color(0xFF4A7A9B),
-    Background   = Color(0xFF0F1418),
-    Surface      = Color(0xFF1A2332),
-    Border       = Color(0xFF2A3A4A),
-    TextPrimary  = Color(0xFFE8EDF2),
-    TextSecond   = Color(0xFF8FA8C0),
-    TextHint     = Color(0xFF506070),
-    Success      = Color(0xFF5DBF85),
-    SuccessBg    = Color(0xFF0D2A1A),
-    Warning      = Color(0xFFD4A843),
-    WarningBg    = Color(0xFF2A1F08),
-    Danger       = Color(0xFFE06B6B),
-    DangerBg     = Color(0xFF2A0D0D)
+    Primary = Color(0xFF5E8BFF),
+    PrimaryLight = Color(0xFF1D2A44),
+    PrimaryMid = Color(0xFF7EA6FF),
+    Background = Color(0xFF0B1118),
+    Surface = Color(0xFF121A24),
+    Border = Color(0xFF243041),
+    TextPrimary = Color(0xFFF5F7FA),
+    TextSecond = Color(0xFFB8C1CC),
+    TextHint = Color(0xFF7D8A99),
+    Success = Color(0xFF4CAF50),
+    SuccessBg = Color(0xFF102417),
+    Warning = Color(0xFFFFB74D),
+    WarningBg = Color(0xFF2A1E0D),
+    Danger = Color(0xFFFF6B6B),
+    DangerBg = Color(0xFF2A1010)
 )
 
 @Composable

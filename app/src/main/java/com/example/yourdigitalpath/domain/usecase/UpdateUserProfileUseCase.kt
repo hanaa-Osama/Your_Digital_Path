@@ -1,11 +1,16 @@
 package com.example.yourdigitalpath.domain.usecase
 
+import android.content.Context
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.UserProfileModel
 import com.example.yourdigitalpath.domain.repository.ProfileRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class UpdateUserProfileUseCase @Inject constructor(
-    private val repository: ProfileRepository
+    private val repository: ProfileRepository,
+    @ApplicationContext
+    private val context: Context
 ) {
     suspend operator fun invoke(profile: UserProfileModel): Result<Unit> {
         return try {
@@ -16,7 +21,7 @@ class UpdateUserProfileUseCase @Inject constructor(
             if (isSuccess) {
                 Result.success(Unit)
             } else {
-                Result.failure(Exception("فشل تحديث البيانات في قاعدة البيانات"))
+                Result.failure(Exception(context.getString(R.string.database_update_failed)))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -27,10 +32,21 @@ class UpdateUserProfileUseCase @Inject constructor(
         val phoneRegex = Regex("^(010|011|012|015)\\d{8}$")
 
         when {
-            profile.name.isBlank() -> throw Exception("الاسم لا يمكن أن يكون فارغاً")
-            profile.name.length < 3 -> throw Exception("الاسم قصير جداً")
-
-            !phoneRegex.matches(profile.phoneNumber) -> throw Exception("رقم الهاتف غير صحيح")
+            profile.name.isBlank() -> {
+                throw Exception(
+                    context.getString(R.string.empty_name)
+                )
+            }
+            profile.name.length < 3 -> {
+                throw Exception(
+                    context.getString(R.string.short_name)
+                )
+            }
+            !phoneRegex.matches(profile.phoneNumber) -> {
+                throw Exception(
+                    context.getString(R.string.invalid_phone)
+                )
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.yourdigitalpath.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yourdigitalpath.LocaleManager
 import com.example.yourdigitalpath.domain.model.AppSettingsModel
 import com.example.yourdigitalpath.domain.model.NotificationSettingsModel
 import com.example.yourdigitalpath.domain.model.UserProfileModel
@@ -16,6 +17,7 @@ import com.example.yourdigitalpath.domain.usecase.UpdateDisplayModeUseCase
 import com.example.yourdigitalpath.domain.usecase.UpdateLanguageUseCase
 import com.example.yourdigitalpath.domain.usecase.UpdateUserProfileUseCase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,9 +56,12 @@ class ProfileViewModel @Inject constructor(
     val notificationsEnabled = _notificationsEnabled.asStateFlow()
     private val _updateResult = MutableStateFlow<Result<Unit>?>(null)
     val updateResult = _updateResult.asStateFlow()
+
     init {
         loadProfileData()
+        loadAppSettings()
     }
+
     private fun loadProfileData() {
         viewModelScope.launch {
             try {
@@ -132,9 +137,13 @@ class ProfileViewModel @Inject constructor(
     fun updateLanguage(language: String) {
         viewModelScope.launch {
             updateLanguageUseCase(language)
+            LocaleManager.setLocale(language)
             _appSettingsModel.value =
                 _appSettingsModel.value?.copy(
                     language = language
+                )?: AppSettingsModel(
+                    language = language,
+                    displayMode = "light"
                 )
         }
     }
@@ -145,7 +154,17 @@ class ProfileViewModel @Inject constructor(
             _appSettingsModel.value =
                 _appSettingsModel.value?.copy(
                     displayMode = mode
+                ) ?: AppSettingsModel(
+                    language = "ar",
+                    displayMode = mode
                 )
+        }
+    }
+
+    private fun loadAppSettings() {
+        viewModelScope.launch {
+            val settings = getAppSettingsUseCase()
+            _appSettingsModel.value = settings
         }
     }
 
@@ -158,5 +177,25 @@ class ProfileViewModel @Inject constructor(
 
     fun resetUpdateResult() {
         _updateResult.value = null
+    }
+
+    fun updatePassword(currentPassword: String, newPassword: String) {
+        viewModelScope.launch {
+            try {
+                val user = auth.currentUser
+                if (user != null && user.email != null) {
+                    // Reauthenticate with current password
+                    val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+                    user.reauthenticate(credential).await()
+                    // Update password
+                    user.updatePassword(newPassword).await()
+                    _updateResult.value = Result.success(Unit)
+                } else {
+                    _updateResult.value = Result.failure(Exception("User not authenticated"))
+                }
+            } catch (e: Exception) {
+                _updateResult.value = Result.failure(e)
+            }
+        }
     }
 }

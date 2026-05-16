@@ -2,6 +2,7 @@ package com.example.yourdigitalpath.presentation.Register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.data.local.Dao.UserProfileDao
 import com.example.yourdigitalpath.data.local.entity.UserProfileEntity
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +22,9 @@ sealed class RegisterState {
     object Idle : RegisterState()
     object Loading : RegisterState()
     object Success : RegisterState()
-    data class Error(val message: String) : RegisterState()
+    data class Error(
+        val messageRes: Int
+    ) : RegisterState()
 }
 
 @HiltViewModel
@@ -35,8 +38,9 @@ class RegisterViewModel @Inject constructor(
     var birthDate = ""
     var phone = ""
     private val _state =
-        MutableStateFlow<RegisterState>(RegisterState.Idle)
-
+        MutableStateFlow<RegisterState>(
+            RegisterState.Idle
+        )
     val state = _state.asStateFlow()
     fun register(
         email: String,
@@ -52,13 +56,12 @@ class RegisterViewModel @Inject constructor(
                     ).await()
                 val user =
                     result.user
-                        ?: throw Exception("فشل إنشاء الحساب")
+                        ?: throw Exception()
                 val profileUpdate =
                     UserProfileChangeRequest.Builder()
                         .setDisplayName(fullName)
                         .build()
                 user.updateProfile(profileUpdate).await()
-                println("FULL NAME = $fullName")
                 val userData = hashMapOf(
                     "uid" to user.uid,
                     "fullName" to fullName,
@@ -83,27 +86,25 @@ class RegisterViewModel @Inject constructor(
                     )
                 )
                 _state.value = RegisterState.Success
-
             } catch (e: FirebaseAuthWeakPasswordException) {
                 _state.value =
                     RegisterState.Error(
-                        "كلمة المرور ضعيفة جداً"
+                        R.string.weak_password
                     )
             } catch (e: FirebaseAuthUserCollisionException) {
                 _state.value =
                     RegisterState.Error(
-                        "هذا البريد الإلكتروني مستخدم بالفعل"
+                        R.string.email_already_used
                     )
             } catch (e: FirebaseAuthInvalidCredentialsException) {
                 _state.value =
                     RegisterState.Error(
-                        "البريد الإلكتروني غير صحيح"
+                        R.string.invalid_email
                     )
             } catch (e: Exception) {
-
                 _state.value =
                     RegisterState.Error(
-                        e.message ?: "حدث خطأ، حاول مرة أخرى"
+                        R.string.general_error
                     )
             }
         }

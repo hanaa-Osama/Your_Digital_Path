@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import android.content.Context
+import com.example.yourdigitalpath.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 sealed class LoginState {
@@ -29,6 +32,8 @@ sealed class LoginState {
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val savedAccountsManager: SavedAccountsManager,
@@ -38,7 +43,7 @@ class AuthViewModel @Inject constructor(
         MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState = _loginState.asStateFlow()
     private val _userName =
-        MutableStateFlow("مستخدم")
+        MutableStateFlow(context.getString(R.string.default_user))
     val userName: StateFlow<String> = _userName
     private val _savedAccounts =
         MutableStateFlow<List<SavedAccount>>(emptyList())
@@ -75,7 +80,9 @@ class AuthViewModel @Inject constructor(
         if (email.isBlank() || password.isBlank()) {
             _loginState.value =
                 LoginState.Error(
-                    "من فضلك أدخل البريد الإلكتروني وكلمة المرور"
+                    context.getString(
+                        R.string.enter_email_and_password
+                    )
                 )
             return
         }
@@ -89,7 +96,9 @@ class AuthViewModel @Inject constructor(
                     ).await()
                 val user =
                     result.user
-                        ?: throw Exception("فشل تسجيل الدخول")
+                        ?: throw Exception(
+                            context.getString(R.string.login_failed)
+                        )
                 user.reload().await()
                 val name =
                     fetchUserName(user.uid)
@@ -108,7 +117,9 @@ class AuthViewModel @Inject constructor(
             } catch (e: Exception) {
                 _loginState.value =
                     LoginState.Error(
-                        "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+                        context.getString(
+                            R.string.invalid_email_or_password
+                        )
                     )
             }
         }
@@ -136,15 +147,15 @@ class AuthViewModel @Inject constructor(
                     firestoreName
                 }
                 !auth.currentUser?.displayName.isNullOrBlank() -> {
-                    auth.currentUser?.displayName ?: "مستخدم"
+                    auth.currentUser?.displayName ?: context.getString(R.string.default_user)
                 }
                 else -> {
-                    "مستخدم"
+                    context.getString(R.string.default_user)
                 }
             }
         } catch (e: Exception) {
 
-            auth.currentUser?.displayName ?: "مستخدم"
+            auth.currentUser?.displayName ?: context.getString(R.string.default_user)
         }
     }
 
@@ -174,7 +185,7 @@ class AuthViewModel @Inject constructor(
     fun logout() {
         auth.signOut()
         loginedFromInit = false
-        _userName.value = "مستخدم"
+        _userName.value = context.getString(R.string.default_user)
         _loginState.value = LoginState.Idle
     }
 
@@ -185,6 +196,6 @@ class AuthViewModel @Inject constructor(
 
     suspend fun getSavedUserName(): String {
         return userProfileDao.getUserName()
-            ?: "مستخدم"
+            ?: context.getString(R.string.default_user)
     }
 }

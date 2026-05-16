@@ -1,28 +1,46 @@
 package com.example.yourdigitalpath.presentation.profile.screens
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Build
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LightMode
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.profile.component.ActionButton
+import com.example.yourdigitalpath.LocaleManager
+import com.example.yourdigitalpath.MainActivity
+import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.presentation.profile.component.NotificationSwitchItem
 import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleTopBar
-import com.example.yourdigitalpath.presentation.profile.component.SettingItem
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun SettingsScreen(
@@ -31,17 +49,21 @@ fun SettingsScreen(
 ) {
     val appSettings by viewModel.appSettings.collectAsState()
 
-    var showLanguageDialog    by remember { mutableStateOf(false) }
-    var showDisplayDialog     by remember { mutableStateOf(false) }
+    val isDarkMode =
+        appSettings?.displayMode == "dark"
 
-    val languages    = listOf("العربية", "English")
-    val displayModes = listOf("الوضع الفاتح", "الوضع المظلم")
+    val isArabic =
+        appSettings?.language == "ar"
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    val activity = LocalContext.current as Activity
+
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
+
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Scaffold(
             topBar = {
                 ProfileSimpleTopBar(
-                    title = "الإعدادات",
+                    title = stringResource(R.string.settings),
                     onBackClick = onBackClick
                 )
             },
@@ -49,123 +71,100 @@ fun SettingsScreen(
         ) { padding ->
             Column(
                 modifier = Modifier
-                    .padding(padding)
-                    .padding(horizontal = 20.dp, vertical = 16.dp)
                     .fillMaxSize()
+                    .padding(padding)
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "تفضيلات النظام",
+                    text = stringResource(R.string.system_preferences),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AppColors.TextPrimary,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    color = AppColors.TextPrimary
+                )
+                Text(
+                    text = stringResource(R.string.customize_app),
+                    fontSize = 12.sp,
+                    color = AppColors.TextHint,
+                    modifier = Modifier.padding(
+                        top = 4.dp,
+                        bottom = 20.dp
+                    )
                 )
 
                 Card(
+                    modifier = Modifier.animateContentSize(),
                     shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = AppColors.Surface
                     ),
-                    border = BorderStroke(0.5.dp, AppColors.Border)
+                    border = BorderStroke(
+                        0.5.dp,
+                        AppColors.Border
+                    )
                 ) {
                     Column {
-                        SettingItem(
-                            title = "لغة التطبيق",
-                            value = appSettings?.language ?: "العربية",
-                            icon = Icons.Outlined.Language,
-                            onClick = { showLanguageDialog = true }
+                        NotificationSwitchItem(
+                            title = stringResource(R.string.dark_mode),
+                            subtitle =
+                                if (isDarkMode)
+                                    stringResource(R.string.enabled_now)
+                                else
+                                    stringResource(R.string.disabled_now),
+                            icon =
+                                if (isDarkMode)
+                                    Icons.Outlined.DarkMode
+                                else
+                                    Icons.Outlined.LightMode,
+                            isChecked = isDarkMode,
+                            onCheckedChange = {
+                                viewModel.updateDisplayMode(
+                                    if (it)
+                                        "dark"
+                                    else
+                                        "light"
+                                )
+                                activity.recreate()
+                            }
                         )
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = 16.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp),
                             thickness = 0.5.dp,
                             color = AppColors.Border
                         )
-                        SettingItem(
-                            title = "وضع العرض",
-                            value = appSettings?.displayMode ?: "الوضع الفاتح",
-                            icon = Icons.Outlined.LightMode,
-                            onClick = { showDisplayDialog = true }
+                        NotificationSwitchItem(
+                            title = stringResource(R.string.app_language),
+                            subtitle =
+                                if (isArabic)
+                                    stringResource(R.string.arabic)
+                                else
+                                    stringResource(R.string.english),
+                            icon = Icons.Outlined.Language,
+                            isChecked = !isArabic,
+                            onCheckedChange = {
+                                val language =
+                                    if (it) "en"
+                                    else "ar"
+                                viewModel.updateLanguage(language)
+                                LocaleManager.setLocale(language)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                    activity.overrideActivityTransition(
+                                        Activity.OVERRIDE_TRANSITION_OPEN,
+                                        android.R.anim.fade_in,
+                                        android.R.anim.fade_out
+                                    )
+                                }
+                                // Restart the app to apply locale change
+                                val intent = Intent(activity, MainActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                activity.startActivity(intent)
+                                activity.finish()
+                            }
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                ActionButton(
-                    text = "حفظ التغييرات",
-                    onClick = onBackClick
-                )
             }
-        }
-
-        if (showLanguageDialog) {
-            AlertDialog(
-                onDismissRequest = { showLanguageDialog = false },
-                title = {
-                    Text(
-                        text = "اختر اللغة",
-                        fontWeight = FontWeight.Bold,
-                        color = AppColors.TextPrimary
-                    )
-                },
-                text = {
-                    Column {
-                        languages.forEach { lang ->
-                            Text(
-                                text = lang,
-                                fontSize = 14.sp,
-                                color = if (appSettings?.language == lang)
-                                    AppColors.Primary else AppColors.TextPrimary,
-                                fontWeight = if (appSettings?.language == lang)
-                                    FontWeight.Bold else FontWeight.Normal,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        viewModel.updateLanguage(lang)
-                                        showLanguageDialog = false
-                                    }
-                                    .padding(vertical = 10.dp)
-                            )
-                        }
-                    }
-                },
-                confirmButton = {}
-            )
-        }
-
-        if (showDisplayDialog) {
-            AlertDialog(
-                onDismissRequest = { showDisplayDialog = false },
-                title = {
-                    Text(
-                        text = "وضع العرض",
-                        fontWeight = FontWeight.Bold,
-                        color = AppColors.TextPrimary
-                    )
-                },
-                text = {
-                    Column {
-                        displayModes.forEach { mode ->
-                            Text(
-                                text = mode,
-                                fontSize = 14.sp,
-                                color = if (appSettings?.displayMode == mode)
-                                    AppColors.Primary else AppColors.TextPrimary,
-                                fontWeight = if (appSettings?.displayMode == mode)
-                                    FontWeight.Bold else FontWeight.Normal,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        viewModel.updateDisplayMode(mode)
-                                        showDisplayDialog = false
-                                    }
-                                    .padding(vertical = 10.dp)
-                            )
-                        }
-                    }
-                },
-                confirmButton = {}
-            )
         }
     }
 }
@@ -173,5 +172,8 @@ fun SettingsScreen(
 @Preview(showBackground = true, locale = "ar")
 @Composable
 fun PreviewSettingsScreen() {
-    SettingsScreen(onBackClick = {})
+
+    SettingsScreen(
+        onBackClick = {}
+    )
 }

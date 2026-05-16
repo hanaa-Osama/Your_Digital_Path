@@ -3,6 +3,7 @@ package com.example.yourdigitalpath.presentation.profile.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -15,6 +16,8 @@ import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleT
 import com.example.yourdigitalpath.presentation.profile.component.ProfileTextField
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 
 @Composable
 fun EditProfileScreen(
@@ -27,11 +30,15 @@ fun EditProfileScreen(
     var email    by remember(user) { mutableStateOf(user?.email         ?: "") }
     var phone    by remember(user) { mutableStateOf(user?.phoneNumber   ?: "") }
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    val configuration = LocalConfiguration.current
+    val isArabic = configuration.locales[0].language == "ar"
+    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
+
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Scaffold(
             topBar = {
                 ProfileSimpleTopBar(
-                    title = "بياناتي الشخصية",
+                    title = stringResource(R.string.personal_information),
                     onBackClick = onBackClick
                 )
             },
@@ -44,7 +51,7 @@ fun EditProfileScreen(
                     .fillMaxSize()
             ) {
                 ProfileTextField(
-                    label = "الاسم بالكامل",
+                    label = stringResource(R.string.full_name),
                     value = name,
                     onValueChange = { name = it }
                 )
@@ -52,7 +59,7 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 ProfileTextField(
-                    label = "البريد الإلكتروني",
+                    label = stringResource(R.string.email),
                     value = email,
                     onValueChange = { email = it }
                 )
@@ -60,7 +67,7 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 ProfileTextField(
-                    label = "رقم الهاتف",
+                    label = stringResource(R.string.phone_number),
                     value = phone,
                     onValueChange = { phone = it }
                 )
@@ -68,7 +75,7 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 ActionButton(
-                    text = "حفظ التعديلات",
+                    text = stringResource(R.string.save_changes),
                     onClick = {
                         user?.copy(
                             name = name,

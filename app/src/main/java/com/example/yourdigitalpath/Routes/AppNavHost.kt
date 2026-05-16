@@ -27,7 +27,6 @@ import com.example.yourdigitalpath.presentation.Login.LoginState
 import com.example.yourdigitalpath.presentation.Login.screens.LoginScreen
 import com.example.yourdigitalpath.presentation.Register.RegisterViewModel
 import com.example.yourdigitalpath.presentation.Register.screens.AccountDataScreen
-import com.example.yourdigitalpath.presentation.Register.screens.PersonalDataScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
@@ -41,12 +40,12 @@ import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
-import com.example.yourdigitalpath.presentation.uploadfile.UploadFilesScreens
+import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
+import com.example.yourdigitalpath.presentation.Register.screens.PersonalDataScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
-
 
     val authViewModel: AuthViewModel = hiltViewModel()
     val loginState by authViewModel.loginState.collectAsState()
@@ -182,8 +181,7 @@ fun AppNavHost(navController: NavHostController) {
                         navController.getBackStackEntry("service_root")
                     }
                     val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
-
-                    UploadFilesScreens(
+                    UploudFilesScreens(
                         serviceName = serviceName,
                         viewModel = viewModel,
                         onNextClick = { navController.navigate("summary_screen/$serviceName") },

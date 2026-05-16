@@ -1,16 +1,23 @@
 package com.example.yourdigitalpath.data.mapper
 
+import android.content.Context
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.data.local.entity.OrderEntity
 import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
 
-fun String.toOrderStatus(rejectReason: String? = null): OrderStatus {
+fun String.toOrderStatus(
+    context: Context,
+    rejectReason: String? = null
+): OrderStatus {
     return when (this) {
         "Pending" -> OrderStatus.Pending
         "InProgress" -> OrderStatus.InProgress
         "Completed" -> OrderStatus.Completed
         "Issued" -> OrderStatus.Issued
-        "Rejected" -> OrderStatus.Rejected(rejectReason ?: "سبب غير محدد")
+        "Rejected" -> OrderStatus.Rejected(
+            rejectReason ?: context.getString(R.string.undefined_reason)
+        )
         else -> OrderStatus.Pending
     }
 }
@@ -25,12 +32,15 @@ fun OrderStatus.toDbStatus(): String {
     }
 }
 
-fun OrderEntity.toDomain(): OrderModel {
+fun OrderEntity.toDomain(context: Context): OrderModel {
     return OrderModel(
         id = id,
         serviceName = serviceName,
         requestDate = requestDate,
-        status = status.toOrderStatus(rejectedReason),
+        status = status.toOrderStatus(
+            context = context,
+            rejectReason = rejectedReason
+        ),
         totalFee = totalFee,
         copiesCount = copiesCount,
         deliveryMethod = deliveryMethod,

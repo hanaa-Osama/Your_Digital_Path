@@ -14,12 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.Event
 
 @Composable
@@ -49,26 +51,30 @@ fun EventCard(
                 modifier = Modifier.size(22.dp)
             )
         }
+
         Spacer(modifier = Modifier.height(10.dp))
+
         Text(
-            text = event.title,
+            text = stringResource(id = event.title),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             color = Color(0xFF1A1D23)
         )
         Text(
-            text = event.subtitle,
+            text = stringResource(id = event.subtitle),
             fontSize = 11.sp,
             color = Color(0xFF9BA3B2)
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         Box(
             modifier = Modifier
                 .background(Color(0xFFEBF0F7), RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp, vertical = 3.dp)
         ) {
             Text(
-                text = event.price,
+                text = stringResource(id = event.price),
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF3D5A80),
                 fontSize = 12.sp
@@ -76,17 +82,19 @@ fun EventCard(
         }
     }
 }
-
+@Preview(showBackground = true)
 @Composable
-@Preview
 private fun EventCardPreview() {
     val sampleEvent = Event(
-        title = "UI Design",
-        subtitle = "3 tasks remaining",
+        title = R.string.birth_certificate,
+        subtitle = R.string.birth_certificate_subtitle,
         color = Color(0xFF2ED1C0),
         icon = Icons.Default.Star,
-        price = "20egp",
+        price = R.string.egp_20,
         route = ""
     )
-    EventCard(event = sampleEvent, navController = rememberNavController())
+    EventCard(
+        event = sampleEvent,
+        navController = rememberNavController()
+    )
 }

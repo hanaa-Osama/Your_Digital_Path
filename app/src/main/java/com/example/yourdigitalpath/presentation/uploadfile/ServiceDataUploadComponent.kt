@@ -1,26 +1,51 @@
 package com.example.yourdigitalpath.presentation.uploadfile
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.CloudUpload
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.yourdigitalpath.domain.model.ServiceRequestModel
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
-import com.example.yourdigitalpath.presentation.service_request.ServiceTypes
 import com.example.yourdigitalpath.ui.components.DarkBlue
+import com.example.yourdigitalpath.ui.components.GrayText
+import com.example.yourdigitalpath.ui.components.PrimaryBlue
 import com.example.yourdigitalpath.ui.components.SectionCard
 import com.example.yourdigitalpath.ui.components.SectionHeader
 import com.example.yourdigitalpath.ui.components.StepperComponent
@@ -33,260 +58,274 @@ fun ServiceDataUploadComponent(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isUploading by viewModel.isUploading.collectAsState()
-    val serviceType = viewModel.getServiceType(serviceName)
-    val isLost = uiState.selectedType == "بدل فاقد"
 
     val nationalIdLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { it?.let { uri -> viewModel.uploadNationalId(uri) } }
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.uploadNationalId(it) }
+    }
 
     val serviceDocLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { it?.let { uri -> viewModel.uploadServiceDocument(uri) } }
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.uploadServiceDocument(it) }
+    }
 
-    val photoLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { it?.let { uri -> viewModel.uploadPersonalPhoto(uri) } }
-
-    val policeLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { it?.let { uri -> viewModel.uploadPoliceReport(uri) } }
-
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
         StepperComponent(currentStep = 3)
+
         Spacer(modifier = Modifier.height(8.dp))
 
         SectionCard {
-            SectionHeader(title = "الملفات المطلوبة")
+            SectionHeader(
+                title = stringResource(R.string.required_files)
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (serviceType == ServiceTypes.NATIONAL_ID) {
-                NationalIdSection(
-                    uiState, isUploading, photoLauncher,
-                    nationalIdLauncher, serviceDocLauncher, viewModel
+            Text(
+                text = stringResource(R.string.national_id_front_back),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkBlue,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            uiState.nationalIdUrls.forEachIndexed { index, url ->
+                UploadedDocumentItem(
+                    name = stringResource(
+                        R.string.national_id_image_number,
+                        index + 1
+                    ),
+                    fileName = url.substringAfterLast("_"),
+                    onDelete = {
+                        viewModel.removeNationalId(url)
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            if (uiState.nationalIdUrls.size < 2) {
+                UploadBox(
+                    title =
+                        if (uiState.nationalIdUrls.isEmpty())
+                            stringResource(R.string.upload_national_id_front)
+                        else
+                            stringResource(R.string.upload_national_id_back),
+                    subtitle = stringResource(
+                        R.string.upload_national_id_notice
+                    ),
+                    isUploading = isUploading,
+                    backgroundColor = Color(0xFFFDF5E0),
+                    borderColor = Color(0xFFD4A843),
+                    onUploadClick = {
+                        nationalIdLauncher.launch("image/*")
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val docTitle =
+                if (serviceName.contains("ميلاد")) {
+                    stringResource(R.string.old_birth_certificate)
+                } else {
+                    stringResource(
+                        R.string.original_required_document,
+                        serviceName
+                    )
+                }
+
+            Text(
+                text = docTitle,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkBlue,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            if (uiState.serviceDocumentUrl == null) {
+                UploadBox(
+                    title = stringResource(R.string.click_to_upload),
+                    subtitle = stringResource(
+                        R.string.file_upload_formats
+                    ),
+                    isUploading = isUploading,
+                    backgroundColor = Color(0xFFEEF4F9),
+                    borderColor = Color(0xFF98C1D9),
+                    onUploadClick = {
+                        serviceDocLauncher.launch("image/*")
+                    }
                 )
             } else {
-                OtherServicesSection(
-                    uiState, isUploading, serviceType,
-                    nationalIdLauncher, serviceDocLauncher, viewModel
+                UploadedDocumentItem(
+                    name = docTitle,
+                    fileName =
+                        uiState.serviceDocumentUrl
+                            ?.substringAfterLast("/")
+                            ?: "document.jpg",
+                    onDelete = {
+                        viewModel.removeServiceDocument()
+                    }
                 )
             }
 
-            if (isLost) {
-                PoliceReportSection(uiState, isUploading, policeLauncher, viewModel)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            WarningBox(
+                text = stringResource(
+                    R.string.police_report_warning
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun UploadedDocumentItem(
+    name: String,
+    fileName: String,
+    onDelete: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0xFFEAF4EE))
+            .border(1.dp, Color(0xFF3A7D5A), RoundedCornerShape(12.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onDelete) {
+            Icon(
+                imageVector = Icons.Default.DeleteOutline,
+                contentDescription = null,
+                tint = Color.Red.copy(alpha = 0.7f)
+            )
+        }
+
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = name,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                color = Color(0xFF3A7D5A)
+            )
+            Text(
+                text = fileName,
+                fontSize = 12.sp,
+                color = GrayText,
+                maxLines = 1
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Icon(
+            imageVector = Icons.Default.CheckCircle,
+            contentDescription = null,
+            tint = Color(0xFF3A7D5A),
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+@Composable
+fun UploadBox(
+    title: String,
+    subtitle: String,
+    isUploading: Boolean,
+    backgroundColor: Color = Color(0xFFEEF4F9),
+    borderColor: Color = Color(0xFF98C1D9),
+    onUploadClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(backgroundColor)
+            .clickable(enabled = !isUploading) { onUploadClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRoundRect(
+                color = borderColor,
+                style = Stroke(
+                    width = 2f,
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                ),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(12.dp.toPx())
+            )
+        }
+
+        if (isUploading) {
+            CircularProgressIndicator(color = PrimaryBlue, modifier = Modifier.size(30.dp))
+        } else {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CloudUpload,
+                    contentDescription = null,
+                    tint = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFFD4A843) else PrimaryBlue,
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else DarkBlue
+                )
+                Text(
+                    text = subtitle,
+                    fontSize = 11.sp,
+                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else GrayText,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 16.sp
+                )
             }
         }
     }
 }
 
-
 @Composable
-private fun NationalIdSection(
-    uiState: ServiceRequestModel?,
-    isUploading: Boolean,
-    photoLauncher: ActivityResultLauncher<String>,
-    nationalIdLauncher: ActivityResultLauncher<String>,
-    serviceDocLauncher: ActivityResultLauncher<String>,
-    viewModel: ServiceRequestViewModel
-) {
-    UploadSectionTitle("صورة شخصية حديثة")
-    Spacer(modifier = Modifier.height(4.dp))
-    WarningBox(
-        text = "يجب أن تكون الصورة بخلفية بيضاء وواضحة الملامح",
-        isInfo = true
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-    if (uiState?.personalPhotoUrl == null) {
-        UploadBox(
-            title = "اضغط لرفع الصورة الشخصية",
-            subtitle = "JPG / PNG - الحد الأقصى 5 ميجابايت",
-            isUploading = isUploading,
-            backgroundColor = Color(0xFFFDF5E0),
-            borderColor = Color(0xFFD4A843),
-            onUploadClick = { photoLauncher.launch("image/*") }
+fun WarningBox(text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0xFFFDF5E0))
+            .border(1.dp, Color(0xFFD4A843), RoundedCornerShape(12.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            color = Color(0xFF8A6A1F),
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End
         )
-    } else {
-        UploadedDocumentItem(
-            name = "الصورة الشخصية",
-            fileName = uiState.personalPhotoUrl.substringAfterLast("/"),
-            onDelete = { viewModel.removePersonalPhoto() }
-        )
-    }
-
-    if (uiState?.selectedType in listOf("تجديد", "بدل تالف")) {
-        Spacer(modifier = Modifier.height(16.dp))
-        UploadSectionTitle("البطاقة القومية القديمة (وجه وظهر)")
-        Spacer(modifier = Modifier.height(8.dp))
-        NationalIdUploadBlock(uiState, isUploading, nationalIdLauncher, viewModel)
-    }
-
-    if (uiState?.selectedType == "إصدار لأول مرة") {
-        Spacer(modifier = Modifier.height(16.dp))
-        UploadSectionTitle("شهادة الميلاد (كمبيوتر)")
-        Spacer(modifier = Modifier.height(8.dp))
-        if (uiState.serviceDocumentUrl == null) {
-            UploadBox(
-                title = "اضغط لرفع شهادة الميلاد",
-                subtitle = "PNG / JPG / PDF - الحد الأقصى 5 ميجابايت",
-                isUploading = isUploading,
-                onUploadClick = { serviceDocLauncher.launch("*/*") }
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Default.ErrorOutline,
+                contentDescription = null,
+                tint = Color(0xFFD4A843),
+                modifier = Modifier.size(24.dp)
             )
-        } else {
-            UploadedDocumentItem(
-                name = "شهادة الميلاد",
-                fileName = uiState.serviceDocumentUrl.substringAfterLast("/"),
-                onDelete = { viewModel.removeServiceDocument() }
+            Text(
+                text = stringResource(R.string.warning),
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFD4A843)
             )
         }
     }
-    Spacer(modifier = Modifier.height(16.dp))
-}
-
-
-@Composable
-private fun OtherServicesSection(
-    uiState: ServiceRequestModel,
-    isUploading: Boolean,
-    serviceType: ServiceTypes,
-    nationalIdLauncher: ActivityResultLauncher<String>,
-    serviceDocLauncher: ActivityResultLauncher<String>,
-    viewModel: ServiceRequestViewModel
-) {
-    UploadSectionTitle("صورة البطاقة القومية (وجه وظهر)")
-    Spacer(modifier = Modifier.height(8.dp))
-    NationalIdUploadBlock(uiState, isUploading, nationalIdLauncher, viewModel)
-
-    val (docTitle, docSubtitle, showDoc) =
-        getMainDocConfig(serviceType, uiState.selectedType)
-
-    if (showDoc) {
-        Spacer(modifier = Modifier.height(16.dp))
-        UploadSectionTitle(docTitle)
-        if (docSubtitle.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
-            WarningBox(text = docSubtitle, isInfo = true)
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        if (uiState.serviceDocumentUrl == null) {
-            UploadBox(
-                title = "اضغط لرفع الملف",
-                subtitle = "PNG / JPG / PDF - الحد الأقصى 5 ميجابايت",
-                isUploading = isUploading,
-                onUploadClick = { serviceDocLauncher.launch("*/*") }
-            )
-        } else {
-            UploadedDocumentItem(
-                name = docTitle,
-                fileName = uiState.serviceDocumentUrl.substringAfterLast("/"),
-                onDelete = { viewModel.removeServiceDocument() }
-            )
-        }
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-}
-
-
-@Composable
-private fun PoliceReportSection(
-    uiState: ServiceRequestModel,
-    isUploading: Boolean,
-    policeLauncher: ActivityResultLauncher<String>,
-    viewModel: ServiceRequestViewModel
-) {
-    WarningBox("في حالة الفاقد، يجب إرفاق محضر بلاغ من الشرطة")
-    Spacer(modifier = Modifier.height(8.dp))
-    UploadSectionTitle("محضر الشرطة")
-    Spacer(modifier = Modifier.height(8.dp))
-    if (uiState.policeReportUrl == null) {
-        UploadBox(
-            title = "اضغط لرفع محضر الشرطة",
-            subtitle = "PNG / JPG / PDF - الحد الأقصى 5 ميجابايت",
-            isUploading = isUploading,
-            backgroundColor = Color(0xFFFDF5E0),
-            borderColor = Color(0xFFD4A843),
-            onUploadClick = { policeLauncher.launch("*/*") }
-        )
-    } else {
-        UploadedDocumentItem(
-            name = "محضر الشرطة",
-            fileName = uiState.policeReportUrl.substringAfterLast("/"),
-            onDelete = { viewModel.removePoliceReport() }
-        )
-    }
-}
-
-
-@Composable
-private fun UploadSectionTitle(title: String) {
-    Text(
-        text = title,
-        fontSize = 14.sp,
-        fontWeight = FontWeight.Bold,
-        color = DarkBlue,
-        modifier = Modifier.padding(bottom = 4.dp)
-    )
-}
-
-@Composable
-private fun NationalIdUploadBlock(
-    uiState: ServiceRequestModel?,
-    isUploading: Boolean,
-    launcher: ActivityResultLauncher<String>,
-    viewModel: ServiceRequestViewModel
-) {
-    uiState?.nationalIdUrls?.forEachIndexed { index, url ->
-        UploadedDocumentItem(
-            name = "البطاقة القومية - صورة ${index + 1}",
-            fileName = url.substringAfterLast("_"),
-            onDelete = { viewModel.removeNationalId(url) }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-    }
-    uiState?.nationalIdUrls?.size?.let {
-        if (it < 2) {
-            UploadBox(
-                title = if (uiState.nationalIdUrls.isEmpty())
-                    "اضغط لرفع صورة البطاقة (وجه)"
-                else
-                    "اضغط لرفع صورة البطاقة (ظهر)",
-                subtitle = "تنبيه: يجب رفع صورة البطاقة (وجه وظهر)",
-                isUploading = isUploading,
-                backgroundColor = Color(0xFFFDF5E0),
-                borderColor = Color(0xFFD4A843),
-                onUploadClick = { launcher.launch("image/*") }
-            )
-        }
-    }
-}
-
-private fun getMainDocConfig(
-    serviceType: ServiceTypes,
-    selectedType: String
-): Triple<String, String, Boolean> = when (serviceType) {
-    ServiceTypes.BIRTH_CERTIFICATE ->
-        Triple("شهادة الميلاد القديمة", "", true)
-
-    ServiceTypes.MARRIAGE_CERTIFICATE ->
-        if (selectedType == "موثقة للسفارة")
-            Triple("نسخة من عقد الزواج الأصلي", "", true)
-        else
-            Triple("عقد الزواج الأصلي (اختياري)", "", selectedType != "بدل فاقد")
-
-    ServiceTypes.DEATH_CERTIFICATE -> when (selectedType) {
-        "إصدار لأول مرة" -> Triple(
-            "تقرير الوفاة من المستشفى أو الطبيب",
-            "يجب أن يكون التقرير موقعاً وختم المستشفى",
-            true
-        )
-
-        "نسخة إضافية" -> Triple("شهادة الوفاة الأصلية", "", true)
-        else -> Triple("", "", false)
-    }
-
-    ServiceTypes.DIVORCE_CERTIFICATE -> Triple(
-        if (selectedType == "طلاق قضائي") "حكم المحكمة" else "وثيقة الماذون",
-        "", true
-    )
-
-    ServiceTypes.NATIONAL_ID -> Triple("", "", false)
 }

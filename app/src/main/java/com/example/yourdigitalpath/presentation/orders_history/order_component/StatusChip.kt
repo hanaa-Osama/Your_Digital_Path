@@ -14,15 +14,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.ui.theme.AppColors
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 
 @Composable
 fun StatusChip(status: OrderStatus) {
     val (label, textColor, bgColor) = when (status) {
-        is OrderStatus.Pending    -> Triple("في الانتظار", AppColors.Warning,  AppColors.WarningBg)
-        is OrderStatus.InProgress -> Triple("جاري",        AppColors.Warning,  AppColors.WarningBg)
-        is OrderStatus.Issued     -> Triple("تم الإصدار",  AppColors.Primary,  AppColors.PrimaryLight)
-        is OrderStatus.Completed  -> Triple("مكتمل",       AppColors.Success,  AppColors.SuccessBg)
-        is OrderStatus.Rejected   -> Triple("مرفوض",       AppColors.Danger,   AppColors.DangerBg)
+        is OrderStatus.Pending -> Triple(
+            stringResource(R.string.status_pending),
+            AppColors.Warning,
+            AppColors.WarningBg
+        )
+        is OrderStatus.InProgress -> Triple(
+            stringResource(R.string.status_in_progress),
+            AppColors.Warning,
+            AppColors.WarningBg
+        )
+        is OrderStatus.Issued -> Triple(
+            stringResource(R.string.status_issued),
+            AppColors.Primary,
+            AppColors.PrimaryLight
+        )
+        is OrderStatus.Completed -> Triple(
+            stringResource(R.string.status_completed),
+            AppColors.Success,
+            AppColors.SuccessBg
+        )
+        is OrderStatus.Rejected -> Triple(
+            stringResource(R.string.status_rejected),
+            AppColors.Danger,
+            AppColors.DangerBg
+        )
     }
 
     Text(
@@ -60,5 +82,9 @@ fun PreviewStatusChip3() {
 @Preview
 @Composable
 fun PreviewStatusChip4() {
-    StatusChip(status = OrderStatus.Rejected(reason = "غير مقبول"))
+    StatusChip(
+        status = OrderStatus.Rejected(
+            reason = stringResource(R.string.not_accepted)
+        )
+    )
 }

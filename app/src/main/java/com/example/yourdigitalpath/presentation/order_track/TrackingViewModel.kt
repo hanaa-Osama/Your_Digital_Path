@@ -1,10 +1,14 @@
 package com.example.yourdigitalpath.presentation.order_track
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.usecase.ObserveOrderTrackingUseCase
 import com.example.yourdigitalpath.domain.usecase.SubmitFinalOrderUseCase
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class TrackingViewModel @Inject constructor(
     private val observeOrderTrackingUseCase: ObserveOrderTrackingUseCase,
-    private val submitFinalOrderUseCase: SubmitFinalOrderUseCase
-) : ViewModel() {
+    private val submitFinalOrderUseCase: SubmitFinalOrderUseCase,
+    application: Application,
+    ) : AndroidViewModel(application) {
 
     private val _state = MutableStateFlow<OrderTrackingDetail?>(null)
     val state: StateFlow<OrderTrackingDetail?> = _state
@@ -47,7 +52,12 @@ class TrackingViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val testId = submitFinalOrderUseCase()
-                println("DEBUG: تم الرفع بنجاح بـ ID: $testId")
+                println(
+                    getApplication<Application>().getString(
+                        R.string.firebase_upload_success,
+                        testId
+                    )
+                )
                 startTracking(testId)
             } catch (e: Exception) {
                 e.printStackTrace()

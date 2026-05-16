@@ -9,10 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.blqes.digi.presentation.HeaderSection
 import com.example.yourdigitalpath.domain.model.OrderModel
-import com.example.yourdigitalpath.domain.model.getEvents
+import com.example.yourdigitalpath.domain.model.eventsList
 import com.example.yourdigitalpath.presentation.Home.components.EventSection
+import com.example.yourdigitalpath.presentation.Home.components.HeaderSection
 
 @Composable
 fun MainScreen(
@@ -21,7 +21,7 @@ fun MainScreen(
     userName: String,
     ordersList: List<OrderModel> = emptyList()
 ) {
-    val servicesCount = remember { getEvents().size }
+    val servicesCount = remember { eventsList().size }
 
     Column(
         modifier = Modifier

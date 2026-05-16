@@ -10,10 +10,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 
 @Composable
 fun RegisterStepsIndicator(currentStep: Int) {
-    val steps = listOf("البيانات الشخصية", "بيانات الحساب")
+    val steps = listOf(
+        stringResource(R.string.personal_information),
+        stringResource(R.string.account_information)
+    )
     Row(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)) {
         steps.forEachIndexed { index, label ->
             val isActive = index + 1 == currentStep

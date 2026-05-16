@@ -32,19 +32,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.profile.component.MenuItemRow
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
@@ -60,42 +61,49 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val profile by viewModel.userProfile.collectAsState()
-
     val initials = profile?.name
         ?.split(" ")
         ?.take(2)
         ?.mapNotNull { it.firstOrNull()?.toString() }
-        ?.joinToString("") ?: "؟"
-
+        ?.joinToString("")
+        ?: "؟"
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF9FAFB))
             .verticalScroll(rememberScrollState())
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(AppColors.Primary, Color(0xFF293241))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                AppColors.Primary,
+                                Color(0xFF293241)
+                            )
+                        )
                     )
-                )
-                .padding(horizontal = 24.dp, vertical = 28.dp),
-        ) {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    .padding(
+                        horizontal = 24.dp,
+                        vertical = 28.dp
+                    )
+            ) {
                 Column(
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp)
                 ) {
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(80.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f))
+                            .background(
+                                Color.White.copy(alpha = 0.2f)
+                            )
                     ) {
                         Text(
                             text = initials,
@@ -108,7 +116,8 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = profile?.name ?: "جاري التحميل...",
+                        text = profile?.name
+                            ?: stringResource(R.string.loading),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
@@ -119,113 +128,123 @@ fun ProfileScreen(
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
                         Text(
-                            text = "الرقم القومي: ",
+                            text = stringResource(R.string.national_id_label),
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
-                            text = (profile?.nationalId?.take(8) ?: "") + "XXXXX",
+                            text = (profile?.nationalId?.take(8)
+                                ?: "") + "XXXXX",
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.7f)
                         )
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            MenuGroup {
+                MenuItemRow(
+                    title = stringResource(R.string.my_profile),
+                    subtitle = stringResource(R.string.edit_profile_subtitle),
+                    icon = Icons.Outlined.Person,
+                    onClick = onNavigateToEditProfile
+                )
+                HorizontalDivider(
+                    color = AppColors.Border,
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                MenuItemRow(
+                    title = stringResource(R.string.my_orders),
+                    subtitle = stringResource(R.string.orders_subtitle),
+                    icon = Icons.Outlined.Description,
+                    onClick = onNavigateToOrders
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            MenuGroup {
+                MenuItemRow(
+                    title = stringResource(R.string.notifications),
+                    subtitle = stringResource(R.string.notifications_subtitle),
+                    icon = Icons.Outlined.Notifications,
+                    onClick = onNavigateToNotifications
+                )
+                HorizontalDivider(
+                    color = AppColors.Border,
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                MenuItemRow(
+                    title = stringResource(R.string.security_privacy),
+                    subtitle = stringResource(R.string.password_label),
+                    icon = Icons.Outlined.Lock,
+                    onClick = onNavigateToSecurity
+                )
+                HorizontalDivider(
+                    color = AppColors.Border,
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                MenuItemRow(
+                    title = stringResource(R.string.settings),
+                    subtitle = stringResource(R.string.language_units),
+                    icon = Icons.Outlined.Settings,
+                    onClick = onNavigateToSettings
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            MenuGroup {
+                MenuItemRow(
+                    title = stringResource(R.string.logout),
+                    subtitle = "",
+                    icon = Icons.Outlined.Logout,
+                    onClick = {
+                        viewModel.logout()
+                        onLogout()
+                    },
+                    iconTint = AppColors.Danger,
+                    iconBg = AppColors.DangerBg,
+                    titleColor = AppColors.Danger,
+                    showArrow = false
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        MenuGroup {
-            MenuItemRow(
-                title = "بياناتي الشخصية",
-                subtitle = "تعديل الاسم والتواصل",
-                icon = Icons.Outlined.Person,
-                onClick = onNavigateToEditProfile
-            )
-            HorizontalDivider(
-                color = AppColors.Border,
-                thickness = 0.5.dp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            MenuItemRow(
-                title = "سجل طلباتي",
-                subtitle = "عرض حالة طلباتك الحالية",
-                icon = Icons.Outlined.Description,
-                onClick = onNavigateToOrders
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        MenuGroup {
-            MenuItemRow(
-                title = "الإشعارات",
-                subtitle = "تفعيل / إيقاف التنبيهات",
-                icon = Icons.Outlined.Notifications,
-                onClick = onNavigateToNotifications
-            )
-            HorizontalDivider(
-                color = AppColors.Border,
-                thickness = 0.5.dp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            MenuItemRow(
-                title = "الأمان والخصوصية",
-                subtitle = "كلمة المرور — البصمة",
-                icon = Icons.Outlined.Lock,
-                onClick = onNavigateToSecurity
-            )
-            HorizontalDivider(
-                color = AppColors.Border,
-                thickness = 0.5.dp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            MenuItemRow(
-                title = "الإعدادات",
-                subtitle = "اللغة — الوحدات",
-                icon = Icons.Outlined.Settings,
-                onClick = onNavigateToSettings
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        MenuGroup {
-            MenuItemRow(
-                title = "تسجيل الخروج",
-                subtitle = "",
-                icon = Icons.Outlined.Logout,
-                onClick = {
-                    viewModel.logout()
-                    onLogout()
-                },
-                iconTint = AppColors.Danger,
-                iconBg = AppColors.DangerBg,
-                titleColor = AppColors.Danger,
-                showArrow = false
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-    }
 }
 
 @Composable
-private fun MenuGroup(content: @Composable ColumnScope.() -> Unit) {
+private fun MenuGroup(
+    content: @Composable ColumnScope.() -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, Color(0xFFEAECF0))
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp
+        ),
+        border = BorderStroke(
+            1.dp,
+            Color(0xFFEAECF0)
+        )
     ) {
-        Column(content = content)
+        Column(
+            content = content
+        )
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
     ProfileScreen(

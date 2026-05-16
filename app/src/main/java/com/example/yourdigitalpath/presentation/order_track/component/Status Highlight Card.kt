@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.ui.theme.AppColors
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 
 @Composable
 fun StatusHighlightCard(
@@ -60,14 +62,22 @@ fun StatusHighlightCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "حالة الطلب الحالية",
+                        text = stringResource(
+                            R.string.current_order_status
+                        ),
                         color = AppColors.TextSecond,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        currentOrder?.steps?.findLast { it.status == "current" || it.status == "completed" }?.title
-                            ?: "قيد المراجعة",
+                        text = currentOrder?.steps
+                            ?.findLast {
+                                it.status == "current" || it.status == "completed"
+                            }
+                            ?.let {
+                                stringResource(it.title)
+                            }
+                            ?: stringResource(R.string.under_review),
                         color = AppColors.Warning,
                         fontWeight = FontWeight.Black,
                         fontSize = 20.sp
@@ -94,7 +104,6 @@ fun StatusHighlightCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Progress Bar
             val progress = (currentOrder?.progressPercent ?: 0).toFloat() / 100f
             androidx.compose.material3.LinearProgressIndicator(
                 progress = { progress },
@@ -113,13 +122,18 @@ fun StatusHighlightCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    "${currentOrder?.progressPercent ?: 0}% مكتمل",
+                    stringResource(
+                        R.string.completed_percentage,
+                        currentOrder?.progressPercent ?: 0
+                    ),
                     color = AppColors.Warning,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    "مراجعة المستندات",
+                    stringResource(
+                        R.string.documents_review
+                    ),
                     color = AppColors.TextSecond,
                     fontSize = 12.sp
                 )

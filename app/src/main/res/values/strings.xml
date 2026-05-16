@@ -9,7 +9,7 @@
     <string name="birth_governorate">محافظة الميلاد</string>
     <string name="choose_governorate">اختر محافظة...</string>
     <string name="applicant_data">بيانات مقدم الطلب</string>
-    <string name="national_id_14">الرقم القومي (14 رقم)</string>
+    <string name="national_id_14">بطاقه الهوية</string>
     <string name="phone_number">رقم الهاتف</string>
     <string name="relationship">الصفة</string>
     <string name="document_owner">صاحب الوثيقة</string>

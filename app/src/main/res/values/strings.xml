@@ -133,7 +133,7 @@
     <string name="passwords_not_match">كلمتا المرور غير متطابقتين</string>
     <string name="password_warning">احرص على اختيار كلمة مرور قوية تحتوي على أحرف وأرقام ورموز</string>
     <string name="personal_data">البيانات الشخصية</string>
-    <string name="national_id">الرقم القومي (14 رقم)</string>
+    <string name="national_id">بطاقة الهوية</string>
     <string name="phone_placeholder">010XXXXXXXX</string>
     <string name="invalid_phone">رقم الهاتف غير صحيح</string>
     <string name="personal_data_warning">تأكد من إدخال بياناتك كما هي في بطاقة الهوية الوطنية لضمان صحة الطلبات</string>

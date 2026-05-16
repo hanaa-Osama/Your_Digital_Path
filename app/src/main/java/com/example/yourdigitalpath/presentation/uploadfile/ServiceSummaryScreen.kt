@@ -287,7 +287,7 @@ fun ServiceSummaryScreen(
                                 Text(
                                     text = stringResource(
                                         R.string.total_price,
-                                        requestState.totalFees
+                                        requestState.totalFees.toInt()
                                     ),
                                     fontSize = 36.sp,
                                     fontWeight = FontWeight.Bold,

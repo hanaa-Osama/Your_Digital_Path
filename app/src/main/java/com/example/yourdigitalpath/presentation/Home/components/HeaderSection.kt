@@ -39,12 +39,10 @@ fun HeaderSection(
 ) {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val appSettings by profileViewModel.appSettings.collectAsState()
+    val userProfile by profileViewModel.userProfile.collectAsState()
     val isDarkMode = appSettings?.displayMode == "dark"
 
-    val displayName =
-        if (userName.isBlank())
-            stringResource(R.string.default_user)
-        else userName
+    val displayName = userProfile?.name ?: stringResource(R.string.default_user)
 
     val headerGradientColors = if (isDarkMode) {
         listOf(

@@ -8,22 +8,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.Register.RegisterState
 import com.example.yourdigitalpath.presentation.Register.RegisterViewModel
 import com.example.yourdigitalpath.presentation.Register.components.*
-import com.example.yourdigitalpath.ui.components.PrimaryBlue
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun AccountDataScreen(
@@ -42,16 +36,11 @@ fun AccountDataScreen(
     val isPasswordValid = password.length >= 8
     val passwordsMatch = password == confirmPassword && confirmPassword.isNotEmpty()
 
-    val configuration = LocalConfiguration.current
-    val isArabic = configuration.locales[0].language == "ar"
-    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
-
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(PrimaryBlue)
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.Primary)
+    ) {
             RegisterTopBar(onBack = onBack)
             RegisterStepsIndicator(currentStep = 2)
 
@@ -59,10 +48,9 @@ fun AccountDataScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .background(Color.White, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                    .background(AppColors.Surface, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                     .padding(24.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.End
+                    .verticalScroll(rememberScrollState())
             ) {
 
                 RegisterSectionHeader(
@@ -140,7 +128,7 @@ fun AccountDataScreen(
                             text = stringResource(
                                 (state as RegisterState.Error).messageRes
                             ),
-                            color = Color.Red
+                            color = AppColors.Danger
                         )
                     }
 
@@ -148,7 +136,6 @@ fun AccountDataScreen(
                 }
             }
         }
-    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)

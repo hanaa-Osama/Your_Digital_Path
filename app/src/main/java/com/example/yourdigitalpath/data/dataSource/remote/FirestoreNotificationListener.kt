@@ -25,7 +25,6 @@ class FirestoreNotificationListener @Inject constructor(
     private val notificationDao: NotificationDao,
     private val context: Context
 ) {
-    // المتغير ده عشان ميجيبش كل الإشعارات القديمة أول ما نفتح الأبلكيشن ويطلع بيها تنبيهات
     private var isFirstLoad = true
 
     fun startListening() {
@@ -42,7 +41,6 @@ class FirestoreNotificationListener @Inject constructor(
                 }
 
                 snapshots?.documentChanges?.forEach { dc ->
-                    // لو في Document جديد اتضاف في الـ Firestore
                     if (dc.type == DocumentChange.Type.ADDED) {
                         val id = dc.document.id
                         val title = dc.document.getString("title") ?: "إشعار جديد"
@@ -57,13 +55,9 @@ class FirestoreNotificationListener @Inject constructor(
                             isRead = false,
                             createdAt = System.currentTimeMillis()
                         )
-
-                        // 1. نحفظه في الـ Room Database
                         CoroutineScope(Dispatchers.IO).launch {
                             notificationDao.insertNotification(newNotification)
                         }
-
-                        // 2. نظهر التنبيه فوق في الموبايل
                         showLocalNotification(title, message)
                     }
                 }

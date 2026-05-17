@@ -1,4 +1,4 @@
-package com.example.yourdigitalpath.presentation
+package com.example.yourdigitalpath.presentation.Home.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,13 +9,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun SearchBar(
@@ -27,29 +28,33 @@ fun SearchBar(
         onValueChange = onQueryChange,
         placeholder = {
             Text(
-                stringResource(R.string.search_service)
+                text = stringResource(R.string.search_service),
+                color = AppColors.TextHint
             )
         },
         leadingIcon = {
             Icon(
-                Icons.Outlined.Search,
+                imageVector = Icons.Outlined.Search,
                 contentDescription = null,
-                tint = Color(0xFF9BA3B2)
+                tint = AppColors.TextHint
             )
         },
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .border(0.5.dp, Color(0xFFE4E8ED), RoundedCornerShape(12.dp)),
+            .border(0.5.dp, AppColors.Border, RoundedCornerShape(12.dp)),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFFF7F8FA),
-            unfocusedContainerColor = Color(0xFFF7F8FA),
+            focusedContainerColor = AppColors.Surface,
+            unfocusedContainerColor = AppColors.Surface,
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedTextColor = AppColors.TextPrimary,
+            unfocusedTextColor = AppColors.TextPrimary
         ),
         singleLine = true
     )
 }
+
 @Composable
 @Preview
 private fun SearchBarprev() {

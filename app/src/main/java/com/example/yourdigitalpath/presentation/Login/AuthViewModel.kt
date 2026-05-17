@@ -26,7 +26,7 @@ sealed class LoginState {
         val userName: String
     ) : LoginState()
     data class Error(
-        val message: String
+        @androidx.annotation.StringRes val messageRes: Int
     ) : LoginState()
 }
 
@@ -80,9 +80,7 @@ class AuthViewModel @Inject constructor(
         if (email.isBlank() || password.isBlank()) {
             _loginState.value =
                 LoginState.Error(
-                    context.getString(
-                        R.string.enter_email_and_password
-                    )
+                    R.string.enter_email_and_password
                 )
             return
         }
@@ -96,9 +94,7 @@ class AuthViewModel @Inject constructor(
                     ).await()
                 val user =
                     result.user
-                        ?: throw Exception(
-                            context.getString(R.string.login_failed)
-                        )
+                        ?: throw Exception("Login failed")
                 user.reload().await()
                 val name =
                     fetchUserName(user.uid)
@@ -117,9 +113,7 @@ class AuthViewModel @Inject constructor(
             } catch (e: Exception) {
                 _loginState.value =
                     LoginState.Error(
-                        context.getString(
-                            R.string.invalid_email_or_password
-                        )
+                        R.string.invalid_email_or_password
                     )
             }
         }

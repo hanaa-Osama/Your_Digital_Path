@@ -2,6 +2,9 @@ package com.example.yourdigitalpath.data.repositoryImp
 
 import android.content.SharedPreferences
 import com.example.yourdigitalpath.domain.repository.PreferencesRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class PreferencesRepositoryImpl @Inject constructor(
@@ -18,55 +21,74 @@ class PreferencesRepositoryImpl @Inject constructor(
         private const val KEY_AUTH_TOKEN = "auth_token"
     }
 
-    override fun isNotificationEnabled(): Boolean {
-        return sharedPrefs.getBoolean(KEY_NOTIFICATIONS, true)
+    private fun <T> preferenceFlow(key: String, defaultValue: T): Flow<T> = callbackFlow {
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, changedKey ->
+            if (key == changedKey) {
+                @Suppress("UNCHECKED_CAST")
+                val value = when (defaultValue) {
+                    is Boolean -> prefs.getBoolean(key, defaultValue) as T
+                    is String -> (prefs.getString(key, defaultValue) ?: defaultValue) as T
+                    else -> throw IllegalArgumentException("Unsupported type")
+                }
+                trySend(value)
+            }
+        }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+        
+        @Suppress("UNCHECKED_CAST")
+        val initialValue = when (defaultValue) {
+            is Boolean -> sharedPrefs.getBoolean(key, defaultValue) as T
+            is String -> (sharedPrefs.getString(key, defaultValue) ?: defaultValue) as T
+            else -> throw IllegalArgumentException("Unsupported type")
+        }
+        trySend(initialValue)
+
+        awaitClose {
+            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
     }
+
+    override fun isNotificationEnabled(): Flow<Boolean> = preferenceFlow(KEY_NOTIFICATIONS, true)
 
     override suspend fun setNotificationEnabled(isEnabled: Boolean) {
         sharedPrefs.edit().putBoolean(KEY_NOTIFICATIONS, isEnabled).apply()
     }
 
-    override fun isOrderNotificationsEnabled(): Boolean {
-        return sharedPrefs.getBoolean(KEY_ORDER_NOTIFICATIONS, true)
-    }
+    override fun isOrderNotificationsEnabled(): Flow<Boolean> = preferenceFlow(KEY_ORDER_NOTIFICATIONS, true)
 
     override suspend fun setOrderNotificationsEnabled(isEnabled: Boolean) {
         sharedPrefs.edit().putBoolean(KEY_ORDER_NOTIFICATIONS, isEnabled).apply()
     }
 
-    override fun isOffersNotificationsEnabled(): Boolean {
-        return sharedPrefs.getBoolean(KEY_OFFERS_NOTIFICATIONS, false)
-    }
+    override fun isOffersNotificationsEnabled(): Flow<Boolean> = preferenceFlow(KEY_OFFERS_NOTIFICATIONS, false)
 
     override suspend fun setOffersNotificationsEnabled(isEnabled: Boolean) {
         sharedPrefs.edit().putBoolean(KEY_OFFERS_NOTIFICATIONS, isEnabled).apply()
     }
 
-    override fun isSystemNotificationsEnabled(): Boolean {
-        return sharedPrefs.getBoolean(KEY_SYSTEM_NOTIFICATIONS, true)
-    }
+    override fun isSystemNotificationsEnabled(): Flow<Boolean> = preferenceFlow(KEY_SYSTEM_NOTIFICATIONS, true)
 
     override suspend fun setSystemNotificationsEnabled(isEnabled: Boolean) {
         sharedPrefs.edit().putBoolean(KEY_SYSTEM_NOTIFICATIONS, isEnabled).apply()
     }
 
-    override fun getLanguage(): String {
-        return sharedPrefs.getString(KEY_LANGUAGE, "ar") ?: "ar"
-    }
+    override fun getLanguage(): Flow<String> = preferenceFlow(KEY_LANGUAGE, "ar")
 
     override suspend fun setLanguage(language: String) {
         sharedPrefs.edit().putString(KEY_LANGUAGE, language).apply()
     }
 
-    override fun getDisplayMode(): String {
-        return sharedPrefs.getString(KEY_DISPLAY_MODE, "light") ?: "light"
-    }
+    override fun getDisplayMode(): Flow<String> = preferenceFlow(KEY_DISPLAY_MODE, "light")
 
     override suspend fun setDisplayMode(mode: String) {
         sharedPrefs.edit().putString(KEY_DISPLAY_MODE, mode).apply()
     }
 
     override suspend fun clearSession() {
+        val currentLang = sharedPrefs.getString(KEY_LANGUAGE, "ar") ?: "ar"
+        val currentMode = sharedPrefs.getString(KEY_DISPLAY_MODE, "light") ?: "light"
         sharedPrefs.edit().clear().apply()
+        setLanguage(currentLang)
+        setDisplayMode(currentMode)
     }
 }

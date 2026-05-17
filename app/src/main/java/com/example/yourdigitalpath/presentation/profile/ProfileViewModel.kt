@@ -60,6 +60,7 @@ class ProfileViewModel @Inject constructor(
     init {
         loadProfileData()
         loadAppSettings()
+        loadNotificationSettings()
     }
 
     private fun loadProfileData() {
@@ -79,7 +80,7 @@ class ProfileViewModel @Inject constructor(
                 println("DOCUMENT EXISTS = ${document.exists()}")
                 if (document.exists()) {
                     _userProfileModel.value = UserProfileModel(
-                        name = document.getString("fullName") ?: "مستخدم",
+                        name = document.getString("fullName") ?: "User",
                         nationalId = document.getString("nationalId") ?: "",
                         email = document.getString("email") ?: "",
                         phoneNumber = document.getString("phone") ?: "",
@@ -163,8 +164,17 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadAppSettings() {
         viewModelScope.launch {
-            val settings = getAppSettingsUseCase()
-            _appSettingsModel.value = settings
+            getAppSettingsUseCase().collect { settings ->
+                _appSettingsModel.value = settings
+            }
+        }
+    }
+
+    private fun loadNotificationSettings() {
+        viewModelScope.launch {
+            getNotificationSettingsUseCase().collect { settings ->
+                _notificationSettingsModel.value = settings
+            }
         }
     }
 
@@ -184,10 +194,8 @@ class ProfileViewModel @Inject constructor(
             try {
                 val user = auth.currentUser
                 if (user != null && user.email != null) {
-                    // Reauthenticate with current password
                     val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
                     user.reauthenticate(credential).await()
-                    // Update password
                     user.updatePassword(newPassword).await()
                     _updateResult.value = Result.success(Unit)
                 } else {

@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
+import com.example.yourdigitalpath.ui.theme.AppColors
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
@@ -18,15 +23,18 @@ import com.example.yourdigitalpath.presentation.Home.components.HeaderSection
 fun MainScreen(
     onBack: () -> Unit,
     navController: NavController,
-    userName: String,
-    ordersList: List<OrderModel> = emptyList()
+    userName: String
 ) {
     val servicesCount = remember { eventsList().size }
-
+    val profileViewModel: ProfileViewModel = hiltViewModel()
+    val ordersViewModel: com.example.yourdigitalpath.presentation.orders_history.OrdersViewModel = hiltViewModel()
+    val appSettings by profileViewModel.appSettings.collectAsState()
+    val ordersList by ordersViewModel.orders.collectAsState()
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0XFF3D5A80))
+            .background(AppColors.Background)
     ) {
         HeaderSection(
             userName = userName,
@@ -37,7 +45,7 @@ fun MainScreen(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            EventSection(navController)
+            EventSection(navController, ordersList)
         }
     }
 }

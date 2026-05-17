@@ -8,20 +8,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.Register.RegisterViewModel
 import com.example.yourdigitalpath.presentation.Register.components.*
 import com.example.yourdigitalpath.ui.components.CustomDatePickerField
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun PersonalDataScreen(
@@ -34,16 +29,11 @@ fun PersonalDataScreen(
     var birthDate by remember { mutableStateOf(viewModel.birthDate) }
     var phone by remember { mutableStateOf(viewModel.phone) }
 
-    val configuration = LocalConfiguration.current
-    val isArabic = configuration.locales[0].language == "ar"
-    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
-
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF435D82))
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.Primary)
+    ) {
             RegisterTopBar(onBack = onBack)
             RegisterStepsIndicator(currentStep = 1)
 
@@ -51,7 +41,7 @@ fun PersonalDataScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        Color.White,
+                        AppColors.Surface,
                         RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                     )
                     .padding(24.dp)
@@ -82,7 +72,6 @@ fun PersonalDataScreen(
                     isVerified = nationalId.length == 14
                 )
                 Column(
-                    horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -122,5 +111,4 @@ fun PersonalDataScreen(
                 )
             }
         }
-    }
 }

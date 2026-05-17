@@ -22,8 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.yourdigitalpath.R
-
-val primary = Color(0xFF3D5A80)
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun BottomNavBar(
@@ -40,7 +39,7 @@ fun BottomNavBar(
         LocalLayoutDirection provides layoutDirection
     ) {
         NavigationBar(
-            containerColor = Color.White
+            containerColor = AppColors.Surface
         ) {
             val items = listOf(
                 BottomNavItem(
@@ -101,17 +100,16 @@ fun BottomNavBar(
                         Icon(
                             imageVector = item.icon,
                             contentDescription = item.label,
-                            tint = if (isSelected) primary else Color.LightGray
+                            tint = if (isSelected) AppColors.Primary else AppColors.TextHint
                         )
                     },
                     label = {
                         Text(
                             text = item.label,
-                            color = if (isSelected) primary else Color.LightGray
+                            color = if (isSelected) AppColors.Primary else AppColors.TextHint
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-
                         indicatorColor = Color.Transparent 
                     )
                 )

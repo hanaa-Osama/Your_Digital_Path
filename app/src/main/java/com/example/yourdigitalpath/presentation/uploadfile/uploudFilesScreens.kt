@@ -9,15 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
@@ -32,12 +27,8 @@ fun UploudFilesScreens(
 ) {
     val isReadyToNext by viewModel.isAllRequiredFilesUploaded.collectAsState()
 
-    val configuration = LocalConfiguration.current
-    val isArabic = configuration.locales[0].language == "ar"
-    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
-
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        Scaffold(
+    Scaffold(
+            containerColor = com.example.yourdigitalpath.ui.theme.AppColors.Background,
             bottomBar = {
                 if (isReadyToNext) {
                     Box(modifier = Modifier.padding(16.dp)) {
@@ -52,7 +43,7 @@ fun UploudFilesScreens(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
+                    .background(com.example.yourdigitalpath.ui.theme.AppColors.Background)
                     .padding(paddingValues)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
@@ -63,5 +54,4 @@ fun UploudFilesScreens(
                 )
             }
         }
-    }
 }

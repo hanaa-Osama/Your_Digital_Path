@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.yourdigitalpath.ui.components.PrimaryBlue
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun RegisterButton(
@@ -26,17 +26,28 @@ fun RegisterButton(
         modifier = Modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PrimaryBlue,
-            disabledContainerColor = PrimaryBlue.copy(alpha = 0.4f)
+            containerColor = AppColors.Primary,
+            disabledContainerColor = AppColors.Primary.copy(alpha = 0.4f),
+            contentColor = AppColors.Surface,
+            disabledContentColor = AppColors.Surface.copy(alpha = 0.7f)
         )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = Color.White)
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = null,
+                tint = Color.White
+            )
             Spacer(modifier = Modifier.width(6.dp))
-            Text(text = text, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text(
+                text = text,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
         }
     }
 }

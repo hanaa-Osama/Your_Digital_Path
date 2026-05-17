@@ -266,4 +266,12 @@
     <string name="step_data">البيانات</string>
     <string name="step_files">الملفات</string>
     <string name="step_payment">الدفع</string>
+    <string name="new_notification_title">إشعار جديد</string>
+    <string name="choose">اختر</string>
+    <string name="identity_keyword">هوية</string>
+    <string name="marriage_keyword">زواج</string>
+    <string name="death_keyword">وفاة</string>
+    <string name="divorce_keyword">طلاق</string>
+    <string name="no_orders_yet">لا توجد طلبات بعد</string>
+    <string name="request_keyword">طلب</string>
 </resources>

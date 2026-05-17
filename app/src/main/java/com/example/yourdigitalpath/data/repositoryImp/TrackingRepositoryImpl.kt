@@ -68,7 +68,6 @@ class TrackingRepositoryImpl(
                 trySend(null)
             }
         }
-
         awaitClose { listener.remove() }
     }
 }

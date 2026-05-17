@@ -15,7 +15,6 @@ class CertificatesRepoImpl @Inject constructor(
 ) : CertificatesRepository {
 
     override suspend fun saveBirthCertificate(form: CertificatesForm) {
-        // Save to Firebase
         val data = hashMapOf(
             "fullName" to form.fullName,
             "dateOfBirth" to form.dateOfBirth,
@@ -26,8 +25,6 @@ class CertificatesRepoImpl @Inject constructor(
             "timestamp" to Timestamp.now()
         )
         firestore.collection("birth_certificates").add(data).await()
-
-        // Clear local cache after successful remote save
         certificatesDao.clearCache()
     }
 

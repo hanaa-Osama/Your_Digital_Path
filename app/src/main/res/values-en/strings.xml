@@ -267,4 +267,12 @@
     <string name="step_payment">Payment</string>
     <string name="password_update_success">Password updated successfully</string>
     <string name="password_update_failed">Failed to update password. Please check your current password and try again.</string>
+    <string name="new_notification_title">New Notification</string>
+    <string name="choose">Choose</string>
+    <string name="identity_keyword">identity</string>
+    <string name="marriage_keyword">marriage</string>
+    <string name="death_keyword">death</string>
+    <string name="divorce_keyword">divorce</string>
+    <string name="no_orders_yet">No orders yet</string>
+    <string name="request_keyword">request</string>
 </resources>

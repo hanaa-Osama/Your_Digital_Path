@@ -10,27 +10,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.yourdigitalpath.ui.components.PrimaryBlue
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun RegisterSectionHeader(title: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
-            text = title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = PrimaryBlue
-        )
-        Spacer(modifier = Modifier.width(8.dp))
         Box(
             modifier = Modifier
                 .width(3.dp)
                 .height(20.dp)
-                .background(PrimaryBlue, RoundedCornerShape(2.dp))
+                .background(AppColors.Primary, RoundedCornerShape(2.dp))
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = title,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = AppColors.Primary
         )
     }
 }

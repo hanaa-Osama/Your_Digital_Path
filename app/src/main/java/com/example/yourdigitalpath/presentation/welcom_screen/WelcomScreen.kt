@@ -27,42 +27,40 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(AppColors.Background)
     ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.55f)
-                    .background(Color(0xFF3D5A80))
+                    .background(AppColors.Primary)
             ) {
                 Box(
                     modifier = Modifier
                         .size(180.dp)
                         .offset(x = 290.dp, y = (-40).dp)
                         .background(
-                            color = Color(0x334A6D9E),
+                            color = Color.White.copy(alpha = 0.15f),
                             shape = CircleShape
                         )
                 )
@@ -72,7 +70,7 @@ fun WelcomeScreen(navController: NavController) {
                         .align(Alignment.BottomStart)
                         .offset(x = (-40).dp, y = 30.dp)
                         .background(
-                            color = Color(0x334A6D9E),
+                            color = Color.White.copy(alpha = 0.15f),
                             shape = CircleShape
                         )
                 )
@@ -127,7 +125,7 @@ fun WelcomeScreen(navController: NavController) {
                     topEnd = 32.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = AppColors.Surface
                 ),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 8.dp
@@ -147,7 +145,7 @@ fun WelcomeScreen(navController: NavController) {
                         text = stringResource(R.string.get_started),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A1D23)
+                        color = AppColors.TextPrimary
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -155,7 +153,7 @@ fun WelcomeScreen(navController: NavController) {
                     Text(
                         text = stringResource(R.string.login_to_access_services),
                         fontSize = 13.sp,
-                        color = Color.Gray
+                        color = AppColors.TextSecond
                     )
 
                     Spacer(modifier = Modifier.height(28.dp))
@@ -169,7 +167,7 @@ fun WelcomeScreen(navController: NavController) {
                             .height(52.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF3D5A80),
+                            containerColor = AppColors.Primary,
                             contentColor = Color.White
                         )
                     ) {
@@ -192,13 +190,13 @@ fun WelcomeScreen(navController: NavController) {
                         shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(
                             1.dp,
-                            Color(0xFF3D5A80)
+                            AppColors.Primary
                         )
                     ) {
                         Text(
                             text = stringResource(R.string.create_new_account),
                             fontSize = 15.sp,
-                            color = Color(0xFF3D5A80),
+                            color = AppColors.Primary,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -211,17 +209,18 @@ fun WelcomeScreen(navController: NavController) {
                     ) {
                         HorizontalDivider(
                             modifier = Modifier.weight(1f),
-                            color = Color(0xFFE4E8ED),
+                            color = AppColors.Border,
                             thickness = 1.dp
                         )
                         Text(
                             text = stringResource(R.string.or_separator),
-                            color = Color.Gray,
-                            fontSize = 13.sp
+                            color = AppColors.TextHint,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(horizontal = 12.dp)
                         )
                         HorizontalDivider(
                             modifier = Modifier.weight(1f),
-                            color = Color(0xFFE4E8ED),
+                            color = AppColors.Border,
                             thickness = 1.dp
                         )
                     }
@@ -236,7 +235,7 @@ fun WelcomeScreen(navController: NavController) {
                         shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(
                             1.dp,
-                            Color(0xFFE4E8ED)
+                            AppColors.Border
                         )
                     ) {
 
@@ -247,7 +246,7 @@ fun WelcomeScreen(navController: NavController) {
                             Text(
                                 text = stringResource(R.string.login_with_national_id),
                                 fontSize = 14.sp,
-                                color = Color(0xFF3D5A80),
+                                color = AppColors.Primary,
                                 fontWeight = FontWeight.Medium
                             )
 

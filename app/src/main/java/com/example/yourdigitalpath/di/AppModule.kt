@@ -23,12 +23,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-
     @Provides
     fun provideNotificationDao(db: Database): NotificationDao {
         return db.notificationDao()
     }
-
 
     @Provides
     @Singleton

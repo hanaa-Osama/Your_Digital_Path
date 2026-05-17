@@ -6,22 +6,23 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.eventsList
-import com.example.yourdigitalpath.presentation.SearchBar
+import com.example.yourdigitalpath.ui.theme.AppColors
+import com.example.yourdigitalpath.domain.model.OrderModel
 
 @Composable
-fun EventSection(navController: NavController) {
+fun EventSection(
+    navController: NavController,
+    ordersList: List<OrderModel> = emptyList()
+) {
     var searchQuery by remember { mutableStateOf("") }
     val allEvents = eventsList()
     val filteredEvents = if (searchQuery.isBlank()) {
@@ -36,16 +37,13 @@ fun EventSection(navController: NavController) {
         }
     }
     val configuration = LocalConfiguration.current
-    val isArabic = configuration.locales[0].language == "ar"
-    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
 
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(vertical = 20.dp, horizontal = 14.dp)
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.Background)
+            .padding(vertical = 20.dp, horizontal = 14.dp)
+    ) {
             LazyVerticalGrid(
                 modifier = Modifier.weight(1f),
                 columns = GridCells.Fixed(2),
@@ -65,6 +63,7 @@ fun EventSection(navController: NavController) {
                         text = stringResource(R.string.official_services),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
+                        color = AppColors.TextPrimary,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -72,7 +71,7 @@ fun EventSection(navController: NavController) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             text = stringResource(R.string.no_results),
-                            color = Color(0xFF9BA3B2),
+                            color = AppColors.TextHint,
                             modifier = Modifier.padding(vertical = 16.dp)
                         )
                     }
@@ -85,9 +84,8 @@ fun EventSection(navController: NavController) {
                     }
                 }
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    LastOrdersSection()
+                    LastOrdersSection(ordersList)
                 }
             }
-        }
     }
 }

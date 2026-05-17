@@ -1,7 +1,6 @@
 package com.example.yourdigitalpath.presentation.order_track.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -27,9 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.TrackingStep
@@ -41,7 +38,7 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
     Card(
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -52,8 +49,7 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
                 fontWeight = FontWeight.Black,
                 fontSize = 18.sp,
                 color = AppColors.TextPrimary,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Right
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -79,40 +75,8 @@ fun TimelineItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.End
+            .height(IntrinsicSize.Min)
     ) {
-
-        Text(
-            text = if (date.isEmpty()) "-" else date,
-            fontSize = 13.sp,
-            color = AppColors.TextHint,
-            modifier = Modifier
-                .padding(top = 2.dp)
-                .weight(1f),
-            textAlign = TextAlign.Right
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Text(
-            text = status,
-            fontSize = 14.sp,
-            fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
-            color = when (stepStatus) {
-                "completed" -> AppColors.Success
-                "current" -> AppColors.TextPrimary
-                else -> AppColors.TextHint
-            },
-            modifier = Modifier
-                .padding(top = 2.dp)
-                .weight(2f),
-            textAlign = TextAlign.Right
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.width(30.dp)
@@ -150,7 +114,7 @@ fun TimelineItem(
                     "current" -> {
                         Surface(
                             shape = CircleShape,
-                            color = Color.White,
+                            color = AppColors.Surface,
                             border = androidx.compose.foundation.BorderStroke(
                                 2.dp,
                                 AppColors.Primary
@@ -168,7 +132,7 @@ fun TimelineItem(
                     else -> {
                         Surface(
                             shape = CircleShape,
-                            color = Color.White,
+                            color = AppColors.Surface,
                             border = androidx.compose.foundation.BorderStroke(
                                 2.dp,
                                 AppColors.Border
@@ -182,6 +146,33 @@ fun TimelineItem(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Text(
+            text = status,
+            fontSize = 14.sp,
+            fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
+            color = when (stepStatus) {
+                "completed" -> AppColors.Success
+                "current" -> AppColors.TextPrimary
+                else -> AppColors.TextHint
+            },
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .weight(2f)
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Text(
+            text = if (date.isEmpty()) "-" else date,
+            fontSize = 13.sp,
+            color = AppColors.TextHint,
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .weight(1f)
+        )
     }
 }
 

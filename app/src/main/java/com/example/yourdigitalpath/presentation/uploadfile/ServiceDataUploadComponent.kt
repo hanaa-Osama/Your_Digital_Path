@@ -43,12 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
-import com.example.yourdigitalpath.ui.components.DarkBlue
-import com.example.yourdigitalpath.ui.components.GrayText
-import com.example.yourdigitalpath.ui.components.PrimaryBlue
 import com.example.yourdigitalpath.ui.components.SectionCard
 import com.example.yourdigitalpath.ui.components.SectionHeader
 import com.example.yourdigitalpath.ui.components.StepperComponent
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun ServiceDataUploadComponent(
@@ -89,7 +87,7 @@ fun ServiceDataUploadComponent(
                 text = stringResource(R.string.national_id_front_back),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = DarkBlue,
+                color = AppColors.TextPrimary,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             uiState.nationalIdUrls.forEachIndexed { index, url ->
@@ -116,8 +114,8 @@ fun ServiceDataUploadComponent(
                         R.string.upload_national_id_notice
                     ),
                     isUploading = isUploading,
-                    backgroundColor = Color(0xFFFDF5E0),
-                    borderColor = Color(0xFFD4A843),
+                    backgroundColor = AppColors.WarningBg,
+                    borderColor = AppColors.Warning,
                     onUploadClick = {
                         nationalIdLauncher.launch("image/*")
                     }
@@ -126,8 +124,9 @@ fun ServiceDataUploadComponent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val birthKeyword = stringResource(R.string.birth_keyword)
             val docTitle =
-                if (serviceName.contains("ميلاد")) {
+                if (serviceName.contains(birthKeyword)) {
                     stringResource(R.string.old_birth_certificate)
                 } else {
                     stringResource(
@@ -140,7 +139,7 @@ fun ServiceDataUploadComponent(
                 text = docTitle,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = DarkBlue,
+                color = AppColors.TextPrimary,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             if (uiState.serviceDocumentUrl == null) {
@@ -150,8 +149,8 @@ fun ServiceDataUploadComponent(
                         R.string.file_upload_formats
                     ),
                     isUploading = isUploading,
-                    backgroundColor = Color(0xFFEEF4F9),
-                    borderColor = Color(0xFF98C1D9),
+                    backgroundColor = AppColors.PrimaryLight,
+                    borderColor = AppColors.PrimaryMid,
                     onUploadClick = {
                         serviceDocLauncher.launch("image/*")
                     }
@@ -190,8 +189,8 @@ fun UploadedDocumentItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFEAF4EE))
-            .border(1.dp, Color(0xFF3A7D5A), RoundedCornerShape(12.dp))
+            .background(AppColors.SuccessBg)
+            .border(1.dp, AppColors.Success, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -199,7 +198,7 @@ fun UploadedDocumentItem(
             Icon(
                 imageVector = Icons.Default.DeleteOutline,
                 contentDescription = null,
-                tint = Color.Red.copy(alpha = 0.7f)
+                tint = AppColors.Danger.copy(alpha = 0.7f)
             )
         }
 
@@ -211,12 +210,11 @@ fun UploadedDocumentItem(
                 text = name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
-                color = Color(0xFF3A7D5A)
-            )
+                color = AppColors.Success            )
             Text(
                 text = fileName,
                 fontSize = 12.sp,
-                color = GrayText,
+                color = AppColors.TextHint,
                 maxLines = 1
             )
         }
@@ -226,7 +224,7 @@ fun UploadedDocumentItem(
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = null,
-            tint = Color(0xFF3A7D5A),
+            tint = AppColors.Success,
             modifier = Modifier.size(24.dp)
         )
     }
@@ -262,7 +260,7 @@ fun UploadBox(
         }
 
         if (isUploading) {
-            CircularProgressIndicator(color = PrimaryBlue, modifier = Modifier.size(30.dp))
+            CircularProgressIndicator(color = AppColors.Primary, modifier = Modifier.size(30.dp))
         } else {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -271,7 +269,7 @@ fun UploadBox(
                 Icon(
                     imageVector = Icons.Default.CloudUpload,
                     contentDescription = null,
-                    tint = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFFD4A843) else PrimaryBlue,
+                    tint = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFFD4A843) else AppColors.Primary,
                     modifier = Modifier.size(32.dp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -279,12 +277,12 @@ fun UploadBox(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else DarkBlue
+                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else AppColors.TextPrimary
                 )
                 Text(
                     text = subtitle,
                     fontSize = 11.sp,
-                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else GrayText,
+                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else AppColors.TextHint,
                     textAlign = TextAlign.Center,
                     lineHeight = 16.sp
                 )
@@ -299,8 +297,8 @@ fun WarningBox(text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFFDF5E0))
-            .border(1.dp, Color(0xFFD4A843), RoundedCornerShape(12.dp))
+            .background(AppColors.WarningBg)
+            .border(1.dp, AppColors.Warning, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End

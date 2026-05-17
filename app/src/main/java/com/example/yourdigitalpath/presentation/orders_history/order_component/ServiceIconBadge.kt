@@ -15,23 +15,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import com.example.yourdigitalpath.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun ServiceIconBadge(serviceName: String) {
+    val birthKeyword = stringResource(R.string.birth_keyword)
+    val identityKeyword = stringResource(R.string.identity_keyword)
+    val marriageKeyword = stringResource(R.string.marriage_keyword)
+    val deathKeyword = stringResource(R.string.death_keyword)
+    val divorceKeyword = stringResource(R.string.divorce_keyword)
+
     val icon = when {
         serviceName.contains("birth", true) ||
-                serviceName.contains("ميلاد") -> Icons.Outlined.Article
+                serviceName.contains(birthKeyword) -> Icons.Outlined.Article
         serviceName.contains("identity", true) ||
-                serviceName.contains("هوية") -> Icons.Outlined.Badge
+                serviceName.contains(identityKeyword) -> Icons.Outlined.Badge
         serviceName.contains("marriage", true) ||
-                serviceName.contains("زواج") -> Icons.Outlined.Favorite
+                serviceName.contains(marriageKeyword) -> Icons.Outlined.Favorite
         serviceName.contains("death", true) ||
-                serviceName.contains("وفاة") -> Icons.Outlined.Person
+                serviceName.contains(deathKeyword) -> Icons.Outlined.Person
         serviceName.contains("divorce", true) ||
-                serviceName.contains("طلاق") -> Icons.Outlined.HeartBroken
+                serviceName.contains(divorceKeyword) -> Icons.Outlined.HeartBroken
         else -> Icons.Outlined.Article
     }
 
@@ -54,5 +62,5 @@ fun ServiceIconBadge(serviceName: String) {
 @Preview
 @Composable
 fun PreviewServiceIconBadge(modifier: Modifier = Modifier) {
-    ServiceIconBadge(serviceName = "ميلاد")
+    ServiceIconBadge(serviceName = "birth")
 }

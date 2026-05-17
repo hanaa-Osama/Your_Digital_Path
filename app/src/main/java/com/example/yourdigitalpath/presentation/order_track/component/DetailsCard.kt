@@ -9,22 +9,37 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.ui.theme.AppColors
+import com.example.yourdigitalpath.ui.components.getServiceTitle
+import com.example.yourdigitalpath.ui.components.getLocalizedType
 
 @Composable
 fun DetailsCard(
     currentOrder: OrderTrackingDetail?,
     orderId: String
 ) {
+    val localizedServiceType = currentOrder?.serviceType?.let { type ->
+        val parts = type.split(" - ")
+        if (parts.size >= 2) {
+            val localizedName = getServiceTitle(parts[0])
+            val localizedSubtype = getLocalizedType(parts[1])
+            "$localizedName - $localizedSubtype"
+        } else {
+            getServiceTitle(type)
+        }
+    } ?: stringResource(R.string.service_not_specified)
+
+    val localizedDelivery = currentOrder?.deliveryMethod?.let { getLocalizedType(it) }
+        ?: stringResource(R.string.not_specified)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(vertical = 12.dp, horizontal = 4.dp)) {
@@ -34,16 +49,15 @@ fun DetailsCard(
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFFF2F4F7)
+                color = AppColors.Border
             )
             DetailRow(
                 stringResource(R.string.service_type),
-                currentOrder?.serviceType
-                    ?: stringResource(R.string.service_not_specified)
+                localizedServiceType
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFFF2F4F7)
+                color = AppColors.Border
             )
             DetailRow(
                 stringResource(R.string.submission_date),
@@ -52,16 +66,15 @@ fun DetailsCard(
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFFF2F4F7)
+                color = AppColors.Border
             )
             DetailRow(
                 stringResource(R.string.delivery_method),
-                currentOrder?.deliveryMethod
-                    ?: stringResource(R.string.not_specified)
+                localizedDelivery
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFFF2F4F7)
+                color = AppColors.Border
             )
             DetailRow(
                 stringResource(R.string.paid_amount),

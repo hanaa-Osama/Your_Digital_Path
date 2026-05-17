@@ -95,6 +95,10 @@ class ServiceRequestViewModel @Inject constructor(
         }
     }
 
+    fun updateServiceName(name: String) {
+        _uiState.update { it.copy(serviceName = name) }
+    }
+
     fun saveServiceRequest(onSuccess: (String) -> Unit) {
         viewModelScope.launch {
             try {

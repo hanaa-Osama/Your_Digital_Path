@@ -22,15 +22,13 @@ import javax.inject.Inject
 class OrderRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao,
     private val firestore: FirebaseFirestore,
-    @ApplicationContext
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : OrderRepository {
 
     override fun getAllOrders(): Flow<List<OrderModel>> {
-        val localOrders =
-            orderDao.getAllOrders().map {
-                it.map { entity -> entity.toDomain(context) }
-            }
+        val localOrders = orderDao.getAllOrders().map { entities ->
+            entities.map { entity -> entity.toDomain(context) }
+        }
 
         val remoteOrders = callbackFlow {
             val listener = firestore.collection("orders")
@@ -40,17 +38,16 @@ class OrderRepositoryImpl @Inject constructor(
                         trySend(emptyList())
                         return@addSnapshotListener
                     }
+
                     val orders = snapshot?.documents?.mapNotNull { doc ->
-                        val steps =
-                            doc.get("steps") as? List<Map<String, Any>>
-                                ?: emptyList()
-                        val isCompleted =
-                            steps.all { it["status"] == "completed" }
+                        val steps = doc.get("steps") as? List<Map<String, Any>> ?: emptyList()
+                        val isCompleted = steps.all { it["status"] == "completed" }
+
                         val remoteServiceName = doc.getString("serviceName")
                         val serviceType = doc.getString("serviceType") ?: ""
                         val selectedType = doc.getString("selectedType") ?: ""
 
-                        val serviceName = when {
+                        val finalServiceName = when {
                             !remoteServiceName.isNullOrEmpty() && selectedType.isNotEmpty() ->
                                 "$remoteServiceName - $selectedType"
                             serviceType.isNotEmpty() && selectedType.isNotEmpty() ->
@@ -67,45 +64,34 @@ class OrderRepositoryImpl @Inject constructor(
 
                         OrderModel(
                             id = doc.id,
-                            serviceName = serviceName,
+                            serviceName = finalServiceName,
                             requestDate = requestTimestamp,
-                            status =
-                                if (isCompleted)
-                                    OrderStatus.Completed
-                                else
-                                    OrderStatus.InProgress,
-                            totalFee =
-                                doc.getString("price")
-                                    ?.toIntOrNull() ?: 0,
+                            status = if (isCompleted) OrderStatus.Completed else OrderStatus.InProgress,
+                            totalFee = doc.getString("price")?.toIntOrNull() ?: 0,
                             copiesCount = 1,
-                            deliveryMethod =
-                                doc.getString("deliveryMethod")
-                                    ?: context.getString(R.string.delivery),
-                            progressPercent =
-                                if (steps.isEmpty()) 0
-                                else {
-                                    val completedSteps =
-                                        steps.count {
-                                            it["status"] == "completed"
-                                        }
-                                    (completedSteps * 100) / steps.size
-                                }
+                            deliveryMethod = doc.getString("deliveryMethod")
+                                ?: context.getString(R.string.delivery),
+                            progressPercent = if (steps.isEmpty()) 0 else {
+                                val completedSteps = steps.count { it["status"] == "completed" }
+                                (completedSteps * 100) / steps.size
+                            }
                         )
                     } ?: emptyList()
+
                     trySend(orders)
                 }
+
             awaitClose { listener.remove() }
         }
 
         return combine(localOrders, remoteOrders) { local, remote ->
-            (local + remote)
-                .sortedByDescending { it.id }
+            (local + remote).sortedByDescending { it.id }
         }
     }
 
     override fun getOrderByStatus(status: OrderStatus): Flow<List<OrderModel>> =
-        orderDao.getOrdersByStatus(status.toDbStatus()).map {
-            it.map { entity -> entity.toDomain(context) }
+        orderDao.getOrdersByStatus(status.toDbStatus()).map { entities ->
+            entities.map { entity -> entity.toDomain(context) }
         }
 
     override suspend fun getOrderById(id: String): OrderModel? =

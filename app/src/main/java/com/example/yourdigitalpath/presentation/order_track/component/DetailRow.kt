@@ -14,7 +14,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
@@ -27,19 +26,19 @@ fun DetailRow(label: String, value: String, valueColor: Color = AppColors.TextPr
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            text = label,
+            color = AppColors.TextSecond,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.width(120.dp)
+        )
+        Text(
             text = value,
             color = valueColor,
             fontWeight = FontWeight.Bold,
             fontSize = 15.sp,
-            textAlign = TextAlign.Left,
+            textAlign = TextAlign.End,
             modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = label,
-            color = AppColors.TextSecond,
-            fontSize = 14.sp,
-            textAlign = TextAlign.Right,
-            modifier = Modifier.width(100.dp)
         )
     }
 }

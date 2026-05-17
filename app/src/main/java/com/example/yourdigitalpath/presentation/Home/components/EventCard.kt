@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.Event
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun EventCard(
@@ -33,21 +34,21 @@ fun EventCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
-            .border(0.5.dp, Color(0xFFE4E8ED), RoundedCornerShape(14.dp))
+            .background(AppColors.Surface)
+            .border(0.5.dp, AppColors.Border, RoundedCornerShape(14.dp))
             .clickable { navController.navigate(event.route) }
             .padding(12.dp)
     ) {
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(Color(0xFFEBF0F7), RoundedCornerShape(10.dp)),
+                .background(AppColors.PrimaryLight, RoundedCornerShape(10.dp)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = event.icon,
                 contentDescription = null,
-                tint = Color(0xFF3D5A80),
+                tint = AppColors.Primary,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -58,25 +59,25 @@ fun EventCard(
             text = stringResource(id = event.title),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
-            color = Color(0xFF1A1D23)
+            color = AppColors.TextPrimary
         )
         Text(
             text = stringResource(id = event.subtitle),
             fontSize = 11.sp,
-            color = Color(0xFF9BA3B2)
+            color = AppColors.TextHint
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Box(
             modifier = Modifier
-                .background(Color(0xFFEBF0F7), RoundedCornerShape(8.dp))
+                .background(AppColors.PrimaryLight, RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp, vertical = 3.dp)
         ) {
             Text(
                 text = stringResource(id = event.price),
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF3D5A80),
+                color = AppColors.Primary,
                 fontSize = 12.sp
             )
         }

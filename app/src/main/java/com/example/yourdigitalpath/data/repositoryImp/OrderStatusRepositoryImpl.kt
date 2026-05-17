@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
@@ -44,12 +46,29 @@ class OrderRepositoryImpl @Inject constructor(
                                 ?: emptyList()
                         val isCompleted =
                             steps.all { it["status"] == "completed" }
+                        val remoteServiceName = doc.getString("serviceName")
+                        val serviceType = doc.getString("serviceType") ?: ""
+                        val selectedType = doc.getString("selectedType") ?: ""
+
+                        val serviceName = when {
+                            !remoteServiceName.isNullOrEmpty() && selectedType.isNotEmpty() ->
+                                "$remoteServiceName - $selectedType"
+                            serviceType.isNotEmpty() && selectedType.isNotEmpty() ->
+                                "$serviceType - $selectedType"
+                            else -> serviceType.ifEmpty { context.getString(R.string.service) }
+                        }
+
+                        val requestTimestamp = doc.getTimestamp("timestamp")?.toDate()?.time
+                            ?: doc.getString("date")?.let { dateStr ->
+                                try {
+                                    SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).parse(dateStr)?.time
+                                } catch (e: Exception) { null }
+                            } ?: System.currentTimeMillis()
+
                         OrderModel(
                             id = doc.id,
-                            serviceName =
-                                doc.getString("serviceType")
-                                    ?: context.getString(R.string.service),
-                            requestDate = System.currentTimeMillis(),
+                            serviceName = serviceName,
+                            requestDate = requestTimestamp,
                             status =
                                 if (isCompleted)
                                     OrderStatus.Completed

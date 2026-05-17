@@ -1,7 +1,6 @@
 package com.example.yourdigitalpath.presentation.Login.component
 
 import androidx.compose.foundation.text.KeyboardOptions
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -10,6 +9,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -18,6 +18,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun CustomTextField(
@@ -44,9 +46,15 @@ fun CustomTextField(
         },
         modifier = Modifier.fillMaxWidth(),
         placeholder = {
-            Text(text = hint)
+            Text(text = hint, color = AppColors.TextHint)
         },
-
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = AppColors.Primary,
+            unfocusedBorderColor = AppColors.Border,
+            focusedTextColor = AppColors.TextPrimary,
+            unfocusedTextColor = AppColors.TextPrimary,
+            cursorColor = AppColors.Primary
+        ),
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
         visualTransformation =
@@ -79,8 +87,8 @@ fun CustomTextField(
                                 Icons.Default.Visibility
                             else
                                 Icons.Default.VisibilityOff,
-
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = AppColors.TextSecond
                     )
                 }
             }

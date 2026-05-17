@@ -40,7 +40,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,27 +48,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.ui.theme.AppColors
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-// Color Constants
-val PrimaryBlue = Color(0xFF3D5A80)
-val DarkBlue = Color(0xFF293241)
-val SecondaryBlue = Color(0xFFE0FBFC)
-val LightBlue = Color(0xFFEEF4F9)
-val GrayText = Color(0xFF98A2B3)
-val BackgroundGray = Color(0xFFF9FAFB)
-val UnselectedGray = Color(0xFFF2F4F7)
-
-// 1. StepperComponent
 @Composable
 fun StepperComponent(currentStep: Int) {
     val steps = listOf(
@@ -78,11 +71,10 @@ fun StepperComponent(currentStep: Int) {
         stringResource(R.string.step_files),
         stringResource(R.string.step_payment)
     )
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(AppColors.Surface)
             .padding(vertical = 16.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top
@@ -91,7 +83,6 @@ fun StepperComponent(currentStep: Int) {
             val stepNumber = index + 1
             val isSelected = stepNumber == currentStep
             val isCompleted = stepNumber < currentStep
-
             Row(
                 verticalAlignment = Alignment.Top,
                 modifier = if (index < steps.size - 1) Modifier.weight(1f) else Modifier
@@ -105,7 +96,7 @@ fun StepperComponent(currentStep: Int) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = title,
-                        color = if (isSelected || isCompleted) DarkBlue else GrayText,
+                        color = if (isSelected || isCompleted) AppColors.TextPrimary else AppColors.TextHint,
                         fontSize = 12.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     )
@@ -115,12 +106,12 @@ fun StepperComponent(currentStep: Int) {
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(36.dp), // Match StepCircle height for centering
+                            .height(36.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         HorizontalDivider(
                             modifier = Modifier.padding(horizontal = 8.dp),
-                            color = if (stepNumber < currentStep) PrimaryBlue else Color(0xFFEAECF0),
+                            color = if (stepNumber < currentStep) AppColors.Primary else AppColors.Border,
                             thickness = 2.dp
                         )
                     }
@@ -133,18 +124,18 @@ fun StepperComponent(currentStep: Int) {
 @Composable
 fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
     val backgroundColor = when {
-        isCompleted -> PrimaryBlue
-        isSelected -> Color.White
-        else -> Color(0xFFF2F4F7)
+        isCompleted -> AppColors.Primary
+        isSelected -> AppColors.Surface
+        else -> AppColors.Border
     }
     val borderColor = when {
-        isCompleted || isSelected -> PrimaryBlue
+        isCompleted || isSelected -> AppColors.Primary
         else -> Color.Transparent
     }
     val textColor = when {
         isCompleted -> Color.White
-        isSelected -> PrimaryBlue
-        else -> GrayText
+        isSelected -> AppColors.Primary
+        else -> AppColors.TextHint
     }
 
     Box(
@@ -180,7 +171,6 @@ fun StepCircle(step: Int, isSelected: Boolean, isCompleted: Boolean) {
     }
 }
 
-// 2. Section Header
 @Composable
 fun SectionHeader(title: String) {
     Row(
@@ -193,19 +183,18 @@ fun SectionHeader(title: String) {
             modifier = Modifier
                 .width(4.dp)
                 .height(20.dp)
-                .background(PrimaryBlue, RoundedCornerShape(2.dp))
+                .background(AppColors.Primary, RoundedCornerShape(2.dp))
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            color = DarkBlue
+            color = AppColors.TextPrimary
         )
     }
 }
 
-// 3. SelectionChipGroup
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SelectionChipGroup(
@@ -237,11 +226,11 @@ fun SelectionChipGroup(
                         .height(48.dp)
                         .border(
                             width = 1.dp,
-                            color = if (isSelected) PrimaryBlue else Color.Transparent,
+                            color = if (isSelected) AppColors.Primary else Color.Transparent,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .background(
-                            color = if (isSelected) LightBlue else UnselectedGray,
+                            color = if (isSelected) AppColors.PrimaryLight else AppColors.Border,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .clickable { onItemSelected(item) }
@@ -250,7 +239,7 @@ fun SelectionChipGroup(
                 ) {
                     Text(
                         text = item,
-                        color = if (isSelected) PrimaryBlue else DarkBlue,
+                        color = if (isSelected) AppColors.Primary else AppColors.TextPrimary,
                         fontSize = 14.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     )
@@ -260,7 +249,6 @@ fun SelectionChipGroup(
     }
 }
 
-// 4. CustomTextField
 @Composable
 fun CustomTextField(
     value: String,
@@ -282,7 +270,7 @@ fun CustomTextField(
         Text(
             text = label,
             fontSize = 12.sp,
-            color = GrayText,
+            color = AppColors.TextHint,
             modifier = Modifier.padding(bottom = 4.dp)
         )
         OutlinedTextField(
@@ -293,32 +281,32 @@ fun CustomTextField(
                 Text(
                     placeholder,
                     fontSize = 14.sp,
-                    color = GrayText.copy(alpha = 0.7f)
+                    color = AppColors.TextHint.copy(alpha = 0.7f)
                 )
             },
             shape = RoundedCornerShape(12.dp),
             leadingIcon = if (isValid) {
-                { Icon(Icons.Default.Check, contentDescription = null, tint = Color(0xFF10B981)) }
+                { Icon(Icons.Default.Check, contentDescription = null, tint = AppColors.Success) }
             } else leadingIcon?.let {
-                { Icon(it, contentDescription = null, tint = GrayText) }
+                { Icon(it, contentDescription = null, tint = AppColors.TextHint) }
             },
             isError = isError,
             keyboardOptions = keyboardOptions,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = LightBlue,
-                unfocusedContainerColor = UnselectedGray,
-                focusedBorderColor = PrimaryBlue,
-                unfocusedBorderColor = Color.Transparent,
-                cursorColor = PrimaryBlue,
-                errorBorderColor = Color.Red,
-                errorContainerColor = UnselectedGray
+                focusedContainerColor = AppColors.PrimaryLight,
+                unfocusedContainerColor = AppColors.Background,
+                focusedBorderColor = AppColors.Primary,
+                unfocusedBorderColor = AppColors.Border,
+                cursorColor = AppColors.Primary,
+                errorBorderColor = AppColors.Danger,
+                errorContainerColor = AppColors.DangerBg
             )
         )
         if (isError) {
             Text(
                 text = errorMessage ?: "",
-                color = Color.Red,
+                color = AppColors.Danger,
                 fontSize = 11.sp,
                 modifier = Modifier.padding(top = 2.dp, start = 4.dp)
             )
@@ -326,20 +314,20 @@ fun CustomTextField(
     }
 }
 
-// 5. ActionButton
 @Composable
 fun ActionButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val layoutDirection = LocalLayoutDirection.current
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+        colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -356,13 +344,16 @@ fun ActionButton(
                 imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier
+                    .size(16.dp)
+                    .graphicsLayer {
+                        rotationY = if (layoutDirection == LayoutDirection.Rtl) 0f else 180f
+                    }
             )
         }
     }
 }
 
-// 6. Section Card
 @Composable
 fun SectionCard(
     modifier: Modifier = Modifier,
@@ -373,9 +364,9 @@ fun SectionCard(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEAECF0))
+        border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Border)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -385,7 +376,6 @@ fun SectionCard(
     }
 }
 
-// 7. CustomDatePickerField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDatePickerField(
@@ -397,7 +387,6 @@ fun CustomDatePickerField(
     errorMessage: String? = null
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    
     val isError = errorMessage != null
 
     Column(
@@ -410,7 +399,7 @@ fun CustomDatePickerField(
             Text(
                 text = label,
                 fontSize = 12.sp,
-                color = GrayText,
+                color = AppColors.TextHint,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
@@ -419,10 +408,10 @@ fun CustomDatePickerField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .background(UnselectedGray, RoundedCornerShape(12.dp))
+                .background(AppColors.Background, RoundedCornerShape(12.dp))
                 .border(
                     1.dp,
-                    if (isError) Color.Red else Color.Transparent,
+                    if (isError) AppColors.Danger else AppColors.Border,
                     RoundedCornerShape(12.dp)
                 )
                 .clickable { showDatePicker = true }
@@ -435,12 +424,12 @@ fun CustomDatePickerField(
                 horizontalArrangement = Arrangement.Start
             ) {
                 leadingIcon?.let {
-                    Icon(it, contentDescription = null, tint = GrayText)
+                    Icon(it, contentDescription = null, tint = AppColors.TextHint)
                     Spacer(modifier = Modifier.width(12.dp))
                 }
                 Text(
                     text = value.ifEmpty { placeholder },
-                    color = if (value.isEmpty()) GrayText.copy(alpha = 0.7f) else DarkBlue,
+                    color = if (value.isEmpty()) AppColors.TextHint.copy(alpha = 0.7f) else AppColors.TextPrimary,
                     fontSize = 14.sp
                 )
             }
@@ -449,7 +438,7 @@ fun CustomDatePickerField(
         if (isError) {
             Text(
                 text = errorMessage ?: "",
-                color = Color.Red,
+                color = AppColors.Danger,
                 fontSize = 11.sp,
                 modifier = Modifier.padding(top = 2.dp, start = 4.dp)
             )
@@ -457,7 +446,6 @@ fun CustomDatePickerField(
     }
 
     if (showDatePicker) {
-        // Parse current value to set initial date in picker
         val initialDateMillis = remember(value) {
             if (value.isNotEmpty()) {
                 try {
@@ -502,7 +490,6 @@ fun CustomDatePickerField(
     }
 }
 
-// 8. CustomDropdown
 @Composable
 fun CustomDropdown(
     label: String,
@@ -523,7 +510,7 @@ fun CustomDropdown(
         Text(
             text = label,
             fontSize = 12.sp,
-            color = GrayText,
+            color = AppColors.TextHint,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
@@ -531,10 +518,10 @@ fun CustomDropdown(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .background(UnselectedGray, RoundedCornerShape(12.dp))
+                .background(AppColors.Background, RoundedCornerShape(12.dp))
                 .border(
                     1.dp,
-                    if (isError) Color.Red else Color.Transparent,
+                    if (isError) AppColors.Danger else AppColors.Border,
                     RoundedCornerShape(12.dp)
                 )
                 .clickable { expanded = true }
@@ -548,13 +535,13 @@ fun CustomDropdown(
             ) {
                 Text(
                     text = selectedOption,
-                    color = if (selectedOption.contains("اختر")) GrayText.copy(alpha = 0.7f) else DarkBlue,
+                    color = if (selectedOption.contains(stringResource(R.string.choose))) AppColors.TextHint.copy(alpha = 0.7f) else AppColors.TextPrimary,
                     fontSize = 14.sp
                 )
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = GrayText
+                    tint = AppColors.TextHint
                 )
             }
 
@@ -563,7 +550,7 @@ fun CustomDropdown(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(Color.White)
+                    .background(AppColors.Surface)
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
@@ -580,7 +567,7 @@ fun CustomDropdown(
         if (isError) {
             Text(
                 text = errorMessage ?: "",
-                color = Color.Red,
+                color = AppColors.Danger,
                 fontSize = 11.sp,
                 modifier = Modifier.padding(top = 2.dp, start = 4.dp)
             )

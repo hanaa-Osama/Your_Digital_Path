@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun RegisterTopBar(
@@ -30,7 +31,7 @@ fun RegisterTopBar(
     ) {
         Surface(
             shape = RoundedCornerShape(8.dp),
-            color = Color.White.copy(alpha = 0.15f),
+            color = AppColors.Surface.copy(alpha = 0.15f),
             modifier = Modifier
                 .size(40.dp)
                 .clickable { onBack() }

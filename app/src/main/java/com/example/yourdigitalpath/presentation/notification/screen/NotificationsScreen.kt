@@ -35,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,9 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
@@ -74,15 +71,20 @@ fun NotificationsScreen(
 
 
     Scaffold(
-        containerColor = Color(0xFFF9FAFB),
+        containerColor = AppColors.Background,
         topBar = {
             val primaryColor = AppColors.Primary
+            val headerGradientColors = if (com.example.yourdigitalpath.ui.theme.LocalDarkTheme.current) {
+                listOf(Color(0xFF1D2A44), Color(0xFF0F1929))
+            } else {
+                listOf(primaryColor, Color(0xFF293241))
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(primaryColor, Color(0xFF293241))
+                            colors = headerGradientColors
                         )
                     )
                     .padding(horizontal = 24.dp, vertical = 24.dp)
@@ -124,14 +126,14 @@ fun NotificationsScreen(
                         Icons.Default.NotificationsNone,
                         contentDescription = null,
                         modifier = Modifier.size(80.dp),
-                        tint = Color(0xFFD0D5DD)
+                        tint = AppColors.TextHint
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         stringResource(R.string.no_notifications),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xFF667085)
+                        color = AppColors.TextSecond
                     )
                 }
             }
@@ -234,6 +236,7 @@ fun NotificationsScreen(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
 
@@ -247,7 +250,7 @@ fun NotificationsScreen(
                                     modifier = Modifier
                                         .size(10.dp)
                                         .background(
-                                            color = Color(0xFF4A6CF7),
+                                            color = AppColors.Primary,
                                             shape = CircleShape
                                         )
                                 )
@@ -257,7 +260,7 @@ fun NotificationsScreen(
                                 Icon(
                                     imageVector = Icons.Default.Notifications,
                                     contentDescription = null,
-                                    tint = Color(0xFF6B7280)
+                                    tint = AppColors.TextHint
                                 )
 
                                 Spacer(modifier = Modifier.width(12.dp))
@@ -267,7 +270,7 @@ fun NotificationsScreen(
                                     Text(
                                         text = notification.title,
                                         style = MaterialTheme.typography.titleMedium,
-                                        color = Color.Black
+                                        color = AppColors.TextPrimary
                                     )
 
                                     Spacer(modifier = Modifier.height(4.dp))
@@ -275,14 +278,14 @@ fun NotificationsScreen(
                                     Text(
                                         text = notification.id,
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = Color(0xFF6B7280)
+                                        color = AppColors.TextSecond
                                     )
                                 }
 
                                 Text(
                                     text = stringResource(R.string.now),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Color(0xFF9CA3AF)
+                                    color = AppColors.TextHint
                                 )
                             }
                         }

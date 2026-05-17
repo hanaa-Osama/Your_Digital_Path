@@ -67,7 +67,8 @@ val DarkAppColors = AppColorScheme(
 
 @Composable
 fun appColors(): AppColorScheme {
-    return if (LocalDarkTheme.current) DarkAppColors else LightAppColors
+    val isDark = LocalDarkTheme.current
+    return if (isDark) DarkAppColors else LightAppColors
 }
 
 object AppColors {

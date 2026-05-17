@@ -27,7 +27,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val title = message.notification?.title ?: message.data["title"] ?: "إشعار جديد"
+        val title = message.notification?.title ?: message.data["title"] ?: getString(R.string.new_notification_title)
         val body = message.notification?.body ?: message.data["body"] ?: ""
         val type = message.data["type"] ?: "info"
 
@@ -57,7 +57,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         val builder = NotificationCompat.Builder(this, YourDigitalPathApp.CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher) // Make sure this icon exists
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

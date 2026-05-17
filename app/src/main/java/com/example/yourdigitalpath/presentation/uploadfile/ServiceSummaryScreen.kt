@@ -27,28 +27,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
+import com.example.yourdigitalpath.ui.theme.AppColors
+import com.example.yourdigitalpath.ui.theme.LocalDarkTheme
 import com.example.yourdigitalpath.ui.components.ActionButton
-import com.example.yourdigitalpath.ui.components.DarkBlue
-import com.example.yourdigitalpath.ui.components.GrayText
-import com.example.yourdigitalpath.ui.components.PrimaryBlue
+import com.example.yourdigitalpath.ui.components.getServiceTitle
+import com.example.yourdigitalpath.ui.components.getLocalizedType
 
 @Composable
 fun ServiceSummaryScreen(
@@ -59,50 +56,60 @@ fun ServiceSummaryScreen(
 ) {
     val requestState by serviceRequestViewModel.uiState.collectAsState()
     val personalState by birthCertificateViewModel.uiState.collectAsState()
+    val localizedServiceName = getServiceTitle(serviceName)
 
-    val configuration = LocalConfiguration.current
-    val isArabic = configuration.locales[0].language == "ar"
-    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
-
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        Scaffold(
-            bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ActionButton(
-                        text = stringResource(R.string.confirm_and_pay),
-                        onClick = onConfirm
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = stringResource(R.string.confirm_data_notice),
-                        fontSize = 12.sp,
-                        color = GrayText
-                    )
-                }
-            }
-        ) { paddingValues ->
+    Scaffold(
+        containerColor = AppColors.Background,
+        bottomBar = {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .background(AppColors.Surface)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .background(PrimaryBlue)
-                        .padding(24.dp)
-                ) {
+                ActionButton(
+                    text = stringResource(R.string.confirm_and_pay),
+                    onClick = onConfirm
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = stringResource(R.string.confirm_data_notice),
+                    fontSize = 12.sp,
+                    color = AppColors.TextHint
+                )
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(AppColors.Background)
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                            colors = if (LocalDarkTheme.current)
+                                listOf(
+                                    Color(0xFF1D2A44),
+                                    Color(0xFF0F1929)
+                                )
+                            else
+                                listOf(
+                                    AppColors.Primary,
+                                    Color(0xFF293241)
+                                )
+                        )
+                    )
+                    .padding(24.dp)
+            ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Bottom,
@@ -148,47 +155,49 @@ fun ServiceSummaryScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            Color(0xFFF2F4F7)
+                            AppColors.Border
                         )
                     ) {
                         Column {
                             SummaryRow(
                                 label = stringResource(R.string.service),
-                                value = serviceName
+                                value = localizedServiceName
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.request_type),
-                                value = requestState.selectedType.ifEmpty {
+                                value = if (requestState.selectedType.isNotEmpty()) {
+                                    getLocalizedType(requestState.selectedType)
+                                } else {
                                     stringResource(R.string.not_specified)
                                 }
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.document_owner_name),
                                 value = personalState.fullName.ifEmpty {
                                     stringResource(R.string.not_available)
                                 }
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.national_id),
                                 value = personalState.applicantNationalId.ifEmpty {
                                     stringResource(R.string.not_available)
                                 }
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.applicant),
                                 value = personalState.relationship.ifEmpty {
                                     stringResource(R.string.document_owner)
                                 }
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.copies_label),
                                 value = when (requestState.copiesCount) {
@@ -200,18 +209,20 @@ fun ServiceSummaryScreen(
                                     )
                                 }
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.delivery_method),
-                                value = requestState.deliveryMethod.ifEmpty {
+                                value = if (requestState.deliveryMethod.isNotEmpty()) {
+                                    getLocalizedType(requestState.deliveryMethod)
+                                } else {
                                     stringResource(R.string.home_delivery)
                                 }
                             )
-                            HorizontalDivider(color = Color(0xFFF2F4F7))
+                            HorizontalDivider(color = AppColors.Border)
                             SummaryRow(
                                 label = stringResource(R.string.processing_time),
                                 value = stringResource(R.string.processing_days),
-                                valueColor = Color(0xFF3A7D5A)
+                                valueColor = AppColors.Success
                             )
                         }
                     }
@@ -221,18 +232,18 @@ fun ServiceSummaryScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            Color(0xFFF2F4F7)
+                            AppColors.Border
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = stringResource(R.string.uploaded_documents),
                                 fontWeight = FontWeight.Bold,
-                                color = DarkBlue
+                                color = AppColors.TextPrimary
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))
@@ -269,11 +280,11 @@ fun ServiceSummaryScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFEEF4F9)
+                            containerColor = AppColors.PrimaryLight
                         ),
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            Color(0xFF98C1D9)
+                            AppColors.PrimaryMid
                         )
                     ) {
                         Row(
@@ -287,23 +298,23 @@ fun ServiceSummaryScreen(
                                 Text(
                                     text = stringResource(
                                         R.string.total_price,
-                                        requestState.totalFees
+                                        requestState.totalFees.toInt()
                                     ),
                                     fontSize = 36.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = PrimaryBlue
+                                    color = AppColors.Primary
                                 )
                                 Text(
                                     text = stringResource(R.string.egp),
                                     fontSize = 12.sp,
-                                    color = GrayText
+                                    color = AppColors.TextHint
                                 )
                             }
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
                                     text = stringResource(R.string.total_fees),
                                     fontWeight = FontWeight.Bold,
-                                    color = DarkBlue
+                                    color = AppColors.TextPrimary
                                 )
                                 Text(
                                     text = stringResource(
@@ -311,7 +322,7 @@ fun ServiceSummaryScreen(
                                         requestState.copiesCount
                                     ),
                                     fontSize = 12.sp,
-                                    color = GrayText
+                                    color = AppColors.TextSecond
                                 )
                             }
                         }
@@ -319,14 +330,13 @@ fun ServiceSummaryScreen(
                 }
             }
         }
-    }
 }
 
 @Composable
 fun SummaryRow(
     label: String,
     value: String,
-    valueColor: Color = DarkBlue
+    valueColor: Color = AppColors.TextPrimary
 ) {
     Row(
         modifier = Modifier
@@ -337,7 +347,7 @@ fun SummaryRow(
     ) {
         Text(
             text = label,
-            color = GrayText,
+            color = AppColors.TextSecond,
             fontSize = 14.sp
         )
         Text(
@@ -355,38 +365,40 @@ fun DocumentCheckItem(
     count: Int
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = stringResource(R.string.document_count, count),
-            color = PrimaryBlue,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(end = 4.dp)
-        )
-        Text(
-            text = name,
-            color = GrayText,
-            fontSize = 13.sp
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
         Box(
             modifier = Modifier
-                .size(20.dp)
-                .background(Color(0xFFEAF4EE), CircleShape)
-                .border(1.dp, Color(0xFF3A7D5A), CircleShape),
+                .size(24.dp)
+                .background(AppColors.SuccessBg, CircleShape)
+                .border(1.dp, AppColors.Success, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 Icons.Default.Check,
                 contentDescription = null,
-                tint = Color(0xFF3A7D5A),
-                modifier = Modifier.size(12.dp)
+                tint = AppColors.Success,
+                modifier = Modifier.size(14.dp)
             )
         }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Text(
+            text = name,
+            color = AppColors.TextSecond,
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1f)
+        )
+
+        Text(
+            text = stringResource(R.string.document_count, count),
+            color = AppColors.Primary,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

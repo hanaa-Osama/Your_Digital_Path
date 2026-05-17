@@ -36,9 +36,14 @@ fun ProfileTextField(
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = AppColors.TextPrimary,
+                unfocusedTextColor = AppColors.TextPrimary,
+                focusedContainerColor = AppColors.PrimaryLight,
+                unfocusedContainerColor = AppColors.Background,
                 focusedBorderColor = AppColors.Primary,
                 unfocusedBorderColor = AppColors.Border,
                 focusedLabelColor = AppColors.Primary,
+                unfocusedLabelColor = AppColors.TextSecond,
                 cursorColor = AppColors.Primary
             )
         )

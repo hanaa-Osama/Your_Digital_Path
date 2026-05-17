@@ -69,7 +69,7 @@ class SubmitFinalOrderUseCase @Inject constructor(
 
         val finalOrder = OrderTrackingDetail(
             orderId = orderId,
-            serviceType = "Birth Certificate - ${requestDetails.selectedType}",
+            serviceType = "${requestDetails.serviceName} - ${requestDetails.selectedType}",
             date = date,
             price = totalPrice,
             deliveryMethod = requestDetails.deliveryMethod.ifEmpty {
@@ -82,11 +82,3 @@ class SubmitFinalOrderUseCase @Inject constructor(
         return orderId
     }
 }
-
-//  لما هاله تعمل زرار تاكيد الطلب دا الحدث
-
-//onClick = {
-//    trackingViewModel.confirmAndSubmitOrder { newOrderId ->
-//        navController.navigate("tracking_details/$newOrderId")
-//    }
-//}

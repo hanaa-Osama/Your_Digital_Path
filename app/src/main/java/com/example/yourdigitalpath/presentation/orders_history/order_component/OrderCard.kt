@@ -18,15 +18,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.domain.model.OrderModel
@@ -37,6 +33,8 @@ import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.res.stringResource
 import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.ui.components.getServiceTitle
+import com.example.yourdigitalpath.ui.components.getLocalizedType
 
 @Composable
 fun OrderCard(
@@ -45,17 +43,28 @@ fun OrderCard(
     modifier: Modifier = Modifier
 ) {
     val dateFormatted = remember(orderModel.requestDate) {
-        SimpleDateFormat("d MMMM yyyy", Locale("ar")).format(Date(orderModel.requestDate))
+        SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(Date(orderModel.requestDate))
     }
-    val displayTitle =
-        if (orderModel.serviceName.contains("طلب")) {
-            orderModel.serviceName
-        } else {
-            stringResource(
-                R.string.extract_request,
-                orderModel.serviceName
-            )
-        }
+    val requestKeyword = stringResource(R.string.request_keyword)
+
+    val serviceNameParts = orderModel.serviceName.split(" - ")
+    val rawPart1 = if (serviceNameParts.isNotEmpty()) serviceNameParts[0].trim() else ""
+    val rawPart2 = if (serviceNameParts.size > 1) serviceNameParts[1].trim() else ""
+
+    val mainService = getServiceTitle(rawPart1)
+    val subService = getLocalizedType(rawPart2)
+
+    val displayTitle = if (subService.isNotEmpty() && mainService.isNotEmpty() && mainService != subService) {
+        val typePart = stringResource(R.string.extract_request, subService)
+        "$typePart - $mainService"
+    } else if (mainService.isNotEmpty()) {
+        if (mainService.contains(requestKeyword, true)) mainService
+        else stringResource(R.string.extract_request, mainService)
+    } else if (subService.isNotEmpty()) {
+        stringResource(R.string.extract_request, subService)
+    } else {
+        orderModel.serviceName
+    }
 
     Card(
         modifier = modifier
@@ -63,11 +72,10 @@ fun OrderCard(
             .padding(vertical = 4.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Column(modifier = Modifier.padding(18.dp)) {
+        Column(modifier = Modifier.padding(18.dp)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
@@ -91,7 +99,7 @@ fun OrderCard(
                             text = displayTitle,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF293241)
+                            color = AppColors.TextPrimary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -100,7 +108,7 @@ fun OrderCard(
                                 orderModel.id
                             ),
                             fontSize = 12.sp,
-                            color = Color.Gray
+                            color = AppColors.TextHint
                         )
                     }
 
@@ -117,7 +125,7 @@ fun OrderCard(
                     Text(
                         text = dateFormatted,
                         fontSize = 12.sp,
-                        color = Color.Gray,
+                        color = AppColors.TextHint,
                         fontWeight = FontWeight.Medium
                     )
 
@@ -147,43 +155,5 @@ fun OrderCard(
                     )
                 }
             }
-        }
     }
 }
-
-//@Preview(showBackground = true, locale = "ar")
-//@Composable
-//fun PreviewOrderCard() {
-//    Column(
-//        modifier = Modifier
-//            .padding(16.dp)
-//            .fillMaxWidth(),
-//        verticalArrangement = Arrangement.spacedBy(16.dp)
-//    ) {
-//        OrderCard(
-//            orderModel = OrderModel(
-//                id = "REQ-2025-00841",
-//                serviceName = "تجديد بطاقة الهوية",
-//                requestDate = System.currentTimeMillis(),
-//                status = OrderStatus.InProgress,
-//                progressPercent = 45,
-//                totalFee = 100,
-//                copiesCount = 1,
-//                deliveryMethod = "البريد"
-//            )
-//        )
-//
-//        OrderCard(
-//            orderModel = OrderModel(
-//                id = "REQ-2025-00838",
-//                serviceName = "شهادة ميلاد",
-//                requestDate = System.currentTimeMillis() - 864000000,
-//                status = OrderStatus.Completed,
-//                progressPercent = 100,
-//                totalFee = 50,
-//                copiesCount = 1,
-//                deliveryMethod = "استلام يدوي"
-//            )
-//        )
-//    }
-//}

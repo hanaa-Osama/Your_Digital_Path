@@ -67,8 +67,9 @@ class ServiceRequestRepoImpl @Inject constructor(
         )
 
         val data = hashMapOf(
+            "serviceName" to request.serviceName,
             "selectedType" to request.selectedType,
-            "serviceType" to request.selectedType,
+            "serviceType" to request.serviceName,
             "requestReason" to request.requestReason,
             "otherReason" to request.otherReason,
             "deliveryMethod" to request.deliveryMethod,

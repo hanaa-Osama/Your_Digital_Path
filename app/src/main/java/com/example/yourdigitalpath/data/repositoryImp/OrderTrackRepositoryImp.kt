@@ -9,8 +9,6 @@ import javax.inject.Inject
 class OrderTrackRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : OrderTrackRepository {
-
-
     override suspend fun addNewOrder(order: OrderTrackingDetail) {
         try {
             firestore.collection("orders")

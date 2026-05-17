@@ -8,34 +8,34 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-val WarningYellow = Color(0xFFFDF5E0)
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun RegisterWarningCard(message: String) {
     Surface(
-        color = WarningYellow,
+        color = AppColors.WarningBg,
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Top
         ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = null,
+                tint = AppColors.Warning,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = message,
                 fontSize = 12.sp,
-                color = Color(0xFF8A6A1F),
-                textAlign = TextAlign.End,
+                color = AppColors.Warning,
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(Icons.Outlined.Info, contentDescription = null, tint = Color(0xFF8A6A1F), modifier = Modifier.size(18.dp))
         }
     }
 }

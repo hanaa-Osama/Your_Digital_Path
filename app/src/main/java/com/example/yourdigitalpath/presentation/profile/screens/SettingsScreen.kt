@@ -38,37 +38,27 @@ import com.example.yourdigitalpath.presentation.profile.component.NotificationSw
 import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleTopBar
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.runtime.CompositionLocalProvider
-
 @Composable
 fun SettingsScreen(
     onBackClick: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val appSettings by viewModel.appSettings.collectAsState()
-
     val isDarkMode =
         appSettings?.displayMode == "dark"
-
     val isArabic =
         appSettings?.language == "ar"
-
     val activity = LocalContext.current as Activity
 
-    val layoutDirection = if (isArabic) LayoutDirection.Rtl else LayoutDirection.Ltr
-
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        Scaffold(
-            topBar = {
-                ProfileSimpleTopBar(
-                    title = stringResource(R.string.settings),
-                    onBackClick = onBackClick
-                )
-            },
-            containerColor = AppColors.Background
-        ) { padding ->
+    Scaffold(
+        topBar = {
+            ProfileSimpleTopBar(
+                title = stringResource(R.string.settings),
+                onBackClick = onBackClick
+            )
+        },
+        containerColor = AppColors.Background
+    ) { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -118,13 +108,7 @@ fun SettingsScreen(
                                     Icons.Outlined.LightMode,
                             isChecked = isDarkMode,
                             onCheckedChange = {
-                                viewModel.updateDisplayMode(
-                                    if (it)
-                                        "dark"
-                                    else
-                                        "light"
-                                )
-                                activity.recreate()
+                                viewModel.updateDisplayMode(if (it) "dark" else "light")
                             }
                         )
                         HorizontalDivider(
@@ -155,7 +139,6 @@ fun SettingsScreen(
                                         android.R.anim.fade_out
                                     )
                                 }
-                                // Restart the app to apply locale change
                                 val intent = Intent(activity, MainActivity::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 activity.startActivity(intent)
@@ -166,13 +149,11 @@ fun SettingsScreen(
                 }
             }
         }
-    }
 }
 
 @Preview(showBackground = true, locale = "ar")
 @Composable
 fun PreviewSettingsScreen() {
-
     SettingsScreen(
         onBackClick = {}
     )

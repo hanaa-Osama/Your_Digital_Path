@@ -9,10 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.ui.theme.AppColors
 import androidx.compose.ui.res.stringResource
@@ -30,7 +28,7 @@ fun ProfileSimpleTopBar(
                 text = title,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = AppColors.Surface
+                color = Color.White
             )
         },
         navigationIcon = {
@@ -38,7 +36,7 @@ fun ProfileSimpleTopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back),
-                    tint = AppColors.Surface
+                    tint = Color.White
                 )
             }
         },

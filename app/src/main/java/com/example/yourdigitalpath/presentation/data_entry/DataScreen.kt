@@ -22,23 +22,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.Register.components.HintColor
 import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.ui.components.ActionButton
-import com.example.yourdigitalpath.ui.components.BackgroundGray
 import com.example.yourdigitalpath.ui.components.CustomDatePickerField
 import com.example.yourdigitalpath.ui.components.CustomDropdown
 import com.example.yourdigitalpath.ui.components.CustomTextField
@@ -47,6 +42,8 @@ import com.example.yourdigitalpath.ui.components.SectionHeader
 import com.example.yourdigitalpath.ui.components.SelectionChipGroup
 import com.example.yourdigitalpath.ui.components.StepperComponent
 import com.example.yourdigitalpath.ui.theme.AppColors
+
+import com.example.yourdigitalpath.ui.components.getServiceTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +55,7 @@ fun DataScreen(
     viewModel: BirthCertificateViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val localizedServiceName = getServiceTitle(serviceName)
     val egyptGovernorates = listOf(
         stringResource(R.string.cairo),
         stringResource(R.string.giza),
@@ -91,7 +89,7 @@ fun DataScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(AppColors.Background)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.Start
     ) {
@@ -99,7 +97,7 @@ fun DataScreen(
                 title = {
                     Column(horizontalAlignment = Alignment.Start) {
                         Text(
-                            text = serviceName,
+                            text = localizedServiceName,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = AppColors.PrimaryLight
@@ -140,7 +138,7 @@ fun DataScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.birth_date),
-                        color = HintColor,
+                        color = AppColors.TextHint,
                         fontSize = 13.sp
                     )
                     CustomDatePickerField(

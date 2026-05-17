@@ -16,6 +16,7 @@ import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationL
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
 import dagger.hilt.android.AndroidEntryPoint
+import android.util.Log
 import java.util.Locale
 import javax.inject.Inject
 
@@ -28,6 +29,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val language = sharedPrefs.getString("app_language", "ar") ?: "ar"
+        val displayMode = sharedPrefs.getString("display_mode", "light") ?: "light"
+        
         LocaleManager.setLocale(language)
 
         val locale = Locale(language)
@@ -41,7 +44,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val profileViewModel: ProfileViewModel = hiltViewModel()
             val appSettings by profileViewModel.appSettings.collectAsState()
-            val isDarkMode = appSettings?.displayMode == "dark"
+
+            val isDarkMode = (appSettings?.displayMode ?: displayMode) == "dark"
+            
             YourDigitalPathTheme(darkTheme = isDarkMode) {
                 val navController = rememberAppNavController()
                 AppNavHost(navController = navController)

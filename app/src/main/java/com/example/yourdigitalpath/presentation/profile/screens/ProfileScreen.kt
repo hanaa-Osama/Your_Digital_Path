@@ -29,7 +29,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,11 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,6 +58,9 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val profile by viewModel.userProfile.collectAsState()
+    val appSettings by viewModel.appSettings.collectAsState()
+    val isDarkMode = appSettings?.displayMode == "dark"
+
     val initials = profile?.name
         ?.split(" ")
         ?.take(2)
@@ -70,7 +70,7 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF9FAFB))
+            .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
     ) {
             Box(
@@ -78,10 +78,11 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(
-                                AppColors.Primary,
-                                Color(0xFF293241)
-                            )
+                            colors = if (isDarkMode) {
+                                listOf(Color(0xFF1D2A44), Color(0xFF0F1929))
+                            } else {
+                                listOf(AppColors.Primary, Color(0xFF293241))
+                            }
                         )
                     )
                     .padding(
@@ -228,14 +229,14 @@ private fun MenuGroup(
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = AppColors.Surface
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp
         ),
         border = BorderStroke(
             1.dp,
-            Color(0xFFEAECF0)
+            AppColors.Border
         )
     ) {
         Column(

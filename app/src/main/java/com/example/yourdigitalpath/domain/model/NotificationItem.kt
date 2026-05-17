@@ -1,6 +1,5 @@
 package com.example.yourdigitalpath.domain.model
 
-
 data class NotificationItem(
     val id: String,
     val title: String,

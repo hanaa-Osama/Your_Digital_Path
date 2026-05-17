@@ -59,7 +59,7 @@ fun TrackingDetailsScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFFF9FAFB),
+        containerColor = com.example.yourdigitalpath.ui.theme.AppColors.Background,
         topBar = {
             Box(
                 modifier = Modifier
@@ -68,7 +68,10 @@ fun TrackingDetailsScreen(
                         brush = androidx.compose.ui.graphics.Brush.verticalGradient(
                             colors = listOf(
                                 com.example.yourdigitalpath.ui.theme.AppColors.Primary,
-                                Color(0xFF293241)
+                                if (com.example.yourdigitalpath.ui.theme.LocalDarkTheme.current)
+                                    Color(0xFF0F1929)
+                                else
+                                    Color(0xFF293241)
                             )
                         )
                     )
@@ -136,16 +139,16 @@ fun TrackingDetailsScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedButton(
-                    onClick = { /* Inquiry */ },
+                    onClick = {  },
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, Color(0xFFEAECF0))
+                    border = BorderStroke(1.dp, com.example.yourdigitalpath.ui.theme.AppColors.Border)
                 ) {
                     Text(
                         text = stringResource(R.string.inquiry)
-                        , color = Color(0xFF344054),
+                        , color = com.example.yourdigitalpath.ui.theme.AppColors.TextPrimary,
                         fontSize = 16.sp
                     )
                 }
@@ -171,7 +174,7 @@ fun TrackingDetailsScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFFDFDFD))
+                .background(com.example.yourdigitalpath.ui.theme.AppColors.Background)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -197,7 +200,7 @@ fun TrackingDetailsScreen(
                         .height(200.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = Color(0xFF3B5474))
+                    CircularProgressIndicator(color = com.example.yourdigitalpath.ui.theme.AppColors.Primary)
                 }
             }
 

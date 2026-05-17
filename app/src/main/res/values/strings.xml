@@ -9,7 +9,7 @@
     <string name="birth_governorate">محافظة الميلاد</string>
     <string name="choose_governorate">اختر محافظة...</string>
     <string name="applicant_data">بيانات مقدم الطلب</string>
-    <string name="national_id_14">الرقم القومي (14 رقم)</string>
+    <string name="national_id_14">بطاقه الهوية</string>
     <string name="phone_number">رقم الهاتف</string>
     <string name="relationship">الصفة</string>
     <string name="document_owner">صاحب الوثيقة</string>
@@ -133,7 +133,7 @@
     <string name="passwords_not_match">كلمتا المرور غير متطابقتين</string>
     <string name="password_warning">احرص على اختيار كلمة مرور قوية تحتوي على أحرف وأرقام ورموز</string>
     <string name="personal_data">البيانات الشخصية</string>
-    <string name="national_id">الرقم القومي (14 رقم)</string>
+    <string name="national_id">بطاقة الهوية</string>
     <string name="phone_placeholder">010XXXXXXXX</string>
     <string name="invalid_phone">رقم الهاتف غير صحيح</string>
     <string name="personal_data_warning">تأكد من إدخال بياناتك كما هي في بطاقة الهوية الوطنية لضمان صحة الطلبات</string>
@@ -266,4 +266,12 @@
     <string name="step_data">البيانات</string>
     <string name="step_files">الملفات</string>
     <string name="step_payment">الدفع</string>
+    <string name="new_notification_title">إشعار جديد</string>
+    <string name="choose">اختر</string>
+    <string name="identity_keyword">هوية</string>
+    <string name="marriage_keyword">زواج</string>
+    <string name="death_keyword">وفاة</string>
+    <string name="divorce_keyword">طلاق</string>
+    <string name="no_orders_yet">لا توجد طلبات بعد</string>
+    <string name="request_keyword">طلب</string>
 </resources>

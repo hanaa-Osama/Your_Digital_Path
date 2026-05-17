@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "last_service_request")
 data class ServiceRequestEntity(
     @PrimaryKey(autoGenerate = false)
-    val id: Int = 0, // We only want to store the last one, so we can use a constant ID
+    val id: Int = 0,
     val selectedType: String,
     val requestReason: String,
     val otherReason: String?,

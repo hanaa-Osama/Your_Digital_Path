@@ -10,7 +10,7 @@
     <string name="birth_governorate">Birth Governorate</string>
     <string name="choose_governorate">Choose governorate...</string>
     <string name="applicant_data">Applicant Information</string>
-    <string name="national_id_14">National ID (14 digits)</string>
+    <string name="national_id_14">National ID</string>
     <string name="phone_number">Phone Number</string>
     <string name="relationship">Relationship</string>
     <string name="document_owner">Document Owner</string>
@@ -134,7 +134,7 @@
     <string name="passwords_not_match">Passwords do not match</string>
     <string name="password_warning">Choose a strong password containing letters, numbers, and symbols</string>
     <string name="personal_data">Personal Information</string>
-    <string name="national_id">National ID (14 digits)</string>
+    <string name="national_id">National ID Card</string>
     <string name="phone_placeholder">010XXXXXXXX</string>
     <string name="invalid_phone">Invalid phone number</string>
     <string name="personal_data_warning">Make sure your data matches your national ID card to ensure request accuracy</string>
@@ -267,4 +267,12 @@
     <string name="step_payment">Payment</string>
     <string name="password_update_success">Password updated successfully</string>
     <string name="password_update_failed">Failed to update password. Please check your current password and try again.</string>
+    <string name="new_notification_title">New Notification</string>
+    <string name="choose">Choose</string>
+    <string name="identity_keyword">identity</string>
+    <string name="marriage_keyword">marriage</string>
+    <string name="death_keyword">death</string>
+    <string name="divorce_keyword">divorce</string>
+    <string name="no_orders_yet">No orders yet</string>
+    <string name="request_keyword">request</string>
 </resources>

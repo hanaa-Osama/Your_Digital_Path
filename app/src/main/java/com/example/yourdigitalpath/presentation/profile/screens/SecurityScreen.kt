@@ -18,7 +18,6 @@ import com.example.yourdigitalpath.presentation.profile.component.ProfileSimpleT
 import com.example.yourdigitalpath.ui.theme.AppColors
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.let
 
@@ -33,16 +32,13 @@ fun SecurityScreen(
     var showCurrent by remember { mutableStateOf(false) }
     var showNew by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
-
     val updateResult by viewModel.updateResult.collectAsState()
-
     val isPasswordValid = newPassword.length >= 8
     val passwordsMatch =
         newPassword == confirmPassword && confirmPassword.isNotEmpty()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
     val successMessage = stringResource(R.string.password_update_success)
     val failureMessage = stringResource(R.string.password_update_failed)
 
@@ -62,7 +58,6 @@ fun SecurityScreen(
             viewModel.resetUpdateResult()
         }
     }
-
 
     Scaffold(
         topBar = {

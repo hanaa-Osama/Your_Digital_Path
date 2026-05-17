@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -15,16 +16,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,6 +32,7 @@ import com.example.yourdigitalpath.presentation.Login.AuthViewModel
 import com.example.yourdigitalpath.presentation.Login.LoginState
 import com.example.yourdigitalpath.presentation.Login.component.CustomTextField
 import com.example.yourdigitalpath.presentation.Login.component.SavedAccount
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
 fun LoginScreen(
@@ -44,15 +43,20 @@ fun LoginScreen(
         authViewModel.resetState()
     }
 
-    LoginContent(
-        authViewModel = authViewModel,
-        navController = navController,
-        onLoginSuccess = {
-            navController.navigate("home_screen") {
-                popUpTo("login_screen") { inclusive = true }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = AppColors.Background
+    ) {
+        LoginContent(
+            authViewModel = authViewModel,
+            navController = navController,
+            onLoginSuccess = {
+                navController.navigate("home_screen") {
+                    popUpTo("login_screen") { inclusive = true }
+                }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable
@@ -69,13 +73,11 @@ fun LoginContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(16.dp)
     ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -107,7 +109,7 @@ fun LoginContent(
                 ),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF3D5A80),
+                color = AppColors.Primary,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -116,8 +118,9 @@ fun LoginContent(
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFF5F7FA)
+                    containerColor = AppColors.Surface
                 ),
+                border = BorderStroke(0.5.dp, AppColors.Border),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 LazyColumn(
@@ -135,7 +138,7 @@ fun LoginContent(
                         )
                         if (savedAccounts.last() != account) {
                             HorizontalDivider(
-                                color = Color(0xFFEAECF0),
+                                color = AppColors.Border,
                                 thickness = 0.5.dp
                             )
                         }
@@ -186,12 +189,11 @@ fun LoginContent(
             }
             is LoginState.Error -> {
                 Text(
-                    text = (state as LoginState.Error).message,
-                    color = Color.Red
+                    text = stringResource(id = (state as LoginState.Error).messageRes),
+                    color = AppColors.Danger
                 )
             }
             is LoginState.Success -> {
-
                 LaunchedEffect(Unit) {
                     onLoginSuccess()
                 }
@@ -227,47 +229,45 @@ fun SavedAccountItem(
             Icon(
                 Icons.Outlined.Close,
                 contentDescription = null,
-                tint = Color(0xFF9BA3B2),
+                tint = AppColors.TextHint,
                 modifier = Modifier.size(16.dp)
             )
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
             modifier = Modifier.weight(1f)
         ) {
-
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = account.name,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A2E)
-                )
-                Text(
-                    text = account.email,
-                    fontSize = 12.sp,
-                    color = Color(0xFF9BA3B2)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
 
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF3D5A80))
+                    .background(AppColors.Primary)
             ) {
                 Text(
                     text = account.initials,
                     color = Color.White,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(
+            ) {
+                Text(
+                    text = account.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AppColors.TextPrimary
+                )
+                Text(
+                    text = account.email,
+                    fontSize = 12.sp,
+                    color = AppColors.TextSecond
                 )
             }
         }

@@ -10,7 +10,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-
 class YourDigitalPathApp : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -26,8 +25,8 @@ class YourDigitalPathApp : Application() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "General Notifications"
-            val descriptionText = "Used for general app notifications"
+            val name = getString(R.string.notification_channel_name)
+            val descriptionText = getString(R.string.notification_channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText

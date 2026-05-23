@@ -3,6 +3,7 @@ package com.example.yourdigitalpath.presentation.uploadfile
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -45,7 +47,6 @@ import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.ui.components.SectionCard
 import com.example.yourdigitalpath.ui.components.SectionHeader
-import com.example.yourdigitalpath.ui.components.StepperComponent
 import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
@@ -56,124 +57,77 @@ fun ServiceDataUploadComponent(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isUploading by viewModel.isUploading.collectAsState()
+    val config = viewModel.getServiceConfig(serviceName)
 
-    val nationalIdLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { viewModel.uploadNationalId(it) }
-    }
-
-    val serviceDocLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { viewModel.uploadServiceDocument(it) }
-    }
-
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        StepperComponent(currentStep = 3)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
+    Column(modifier = modifier.fillMaxWidth()) {
         SectionCard {
-            SectionHeader(
-                title = stringResource(R.string.required_files)
-            )
+            SectionHeader(title = stringResource(R.string.required_files))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(R.string.national_id_front_back),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.TextPrimary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            uiState.nationalIdUrls.forEachIndexed { index, url ->
-                UploadedDocumentItem(
-                    name = stringResource(
-                        R.string.national_id_image_number,
-                        index + 1
-                    ),
-                    fileName = url.substringAfterLast("_"),
-                    onDelete = {
-                        viewModel.removeNationalId(url)
+            config?.requiredFiles?.let { requiredFiles ->
+                for (req in requiredFiles) {
+                    if (req.isRequired(uiState.selectedType)) {
+                        DynamicFileSection(
+                            requirement = req,
+                            urls = uiState.fileUrls[req.id] ?: emptyList(),
+                            isUploading = isUploading,
+                            onUpload = { uri -> viewModel.uploadFile(req.id, uri, req.maxCount) },
+                            onRemove = { url -> viewModel.removeFile(req.id, url) }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            if (uiState.nationalIdUrls.size < 2) {
-                UploadBox(
-                    title =
-                        if (uiState.nationalIdUrls.isEmpty())
-                            stringResource(R.string.upload_national_id_front)
-                        else
-                            stringResource(R.string.upload_national_id_back),
-                    subtitle = stringResource(
-                        R.string.upload_national_id_notice
-                    ),
-                    isUploading = isUploading,
-                    backgroundColor = AppColors.WarningBg,
-                    borderColor = AppColors.Warning,
-                    onUploadClick = {
-                        nationalIdLauncher.launch("image/*")
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val birthKeyword = stringResource(R.string.birth_keyword)
-            val docTitle =
-                if (serviceName.contains(birthKeyword)) {
-                    stringResource(R.string.old_birth_certificate)
-                } else {
-                    stringResource(
-                        R.string.original_required_document,
-                        serviceName
-                    )
                 }
-
-            Text(
-                text = docTitle,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.TextPrimary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            if (uiState.serviceDocumentUrl == null) {
-                UploadBox(
-                    title = stringResource(R.string.click_to_upload),
-                    subtitle = stringResource(
-                        R.string.file_upload_formats
-                    ),
-                    isUploading = isUploading,
-                    backgroundColor = AppColors.PrimaryLight,
-                    borderColor = AppColors.PrimaryMid,
-                    onUploadClick = {
-                        serviceDocLauncher.launch("image/*")
-                    }
-                )
-            } else {
-                UploadedDocumentItem(
-                    name = docTitle,
-                    fileName =
-                        uiState.serviceDocumentUrl
-                            ?.substringAfterLast("/")
-                            ?: "document.jpg",
-                    onDelete = {
-                        viewModel.removeServiceDocument()
-                    }
-                )
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
+@Composable
+fun DynamicFileSection(
+    requirement: com.example.yourdigitalpath.presentation.service_request.FileRequirement,
+    urls: List<String>,
+    isUploading: Boolean,
+    onUpload: (Uri) -> Unit,
+    onRemove: (String) -> Unit
+) {
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { it?.let { onUpload(it) } }
 
-            WarningBox(
-                text = stringResource(
-                    R.string.police_report_warning
-                )
+    val label = stringResource(requirement.labelRes)
+
+    Column {
+        Text(
+            text = label,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Normal,
+            color = AppColors.TextHint,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        if (requirement.descriptionRes != 0) {
+            WarningBox(text = stringResource(requirement.descriptionRes), isInfo = true)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        for (index in urls.indices) {
+            val url = urls[index]
+            UploadedDocumentItem(
+                name = if (requirement.maxCount > 1) {
+                    stringResource(R.string.national_id_image_number, index + 1)
+                } else label,
+                fileName = url.substringAfterLast("/").substringAfterLast("_"),
+                onDelete = { onRemove(url) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        if (urls.size < requirement.maxCount) {
+            UploadBox(
+                title = stringResource(R.string.click_to_upload_file, label),
+                subtitle = stringResource(R.string.file_formats_limit),
+                isUploading = isUploading,
+                onUploadClick = { launcher.launch("*/*") }
             )
         }
     }
@@ -201,7 +155,6 @@ fun UploadedDocumentItem(
                 tint = AppColors.Danger.copy(alpha = 0.7f)
             )
         }
-
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.End
@@ -210,7 +163,8 @@ fun UploadedDocumentItem(
                 text = name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
-                color = AppColors.Success            )
+                color = AppColors.Success
+            )
             Text(
                 text = fileName,
                 fontSize = 12.sp,
@@ -218,9 +172,7 @@ fun UploadedDocumentItem(
                 maxLines = 1
             )
         }
-
         Spacer(modifier = Modifier.width(8.dp))
-
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = null,
@@ -235,32 +187,34 @@ fun UploadBox(
     title: String,
     subtitle: String,
     isUploading: Boolean,
-    backgroundColor: Color = Color(0xFFEEF4F9),
-    borderColor: Color = Color(0xFF98C1D9),
+    backgroundColor: Color = AppColors.PrimaryLight,
+    borderColor: Color = AppColors.PrimaryMid,
     onUploadClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(100.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
             .clickable(enabled = !isUploading) { onUploadClick() },
         contentAlignment = Alignment.Center
     ) {
-        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
             drawRoundRect(
                 color = borderColor,
                 style = Stroke(
                     width = 2f,
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
                 ),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(12.dp.toPx())
+                cornerRadius = CornerRadius(12.dp.toPx())
             )
         }
-
         if (isUploading) {
-            CircularProgressIndicator(color = AppColors.Primary, modifier = Modifier.size(30.dp))
+            CircularProgressIndicator(
+                color = AppColors.Primary,
+                modifier = Modifier.size(30.dp)
+            )
         } else {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -269,22 +223,22 @@ fun UploadBox(
                 Icon(
                     imageVector = Icons.Default.CloudUpload,
                     contentDescription = null,
-                    tint = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFFD4A843) else AppColors.Primary,
-                    modifier = Modifier.size(32.dp)
+                    tint = AppColors.Primary,
+                    modifier = Modifier.size(28.dp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else AppColors.TextPrimary
+                    fontSize = 13.sp,
+                    color = AppColors.TextPrimary,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = subtitle,
-                    fontSize = 11.sp,
-                    color = if (backgroundColor == Color(0xFFFDF5E0)) Color(0xFF8A6A1F) else AppColors.TextHint,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 16.sp
+                    fontSize = 10.sp,
+                    color = AppColors.TextHint,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -292,13 +246,21 @@ fun UploadBox(
 }
 
 @Composable
-fun WarningBox(text: String) {
+fun WarningBox(
+    text: String,
+    isInfo: Boolean = false
+) {
+    val bgColor = if (isInfo) AppColors.PrimaryLight else AppColors.WarningBg
+    val borderColor = if (isInfo) AppColors.PrimaryMid else AppColors.Warning
+    val textColor = if (isInfo) AppColors.Primary else Color(0xFF8A6A1F)
+    val iconColor = if (isInfo) AppColors.PrimaryMid else AppColors.Warning
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AppColors.WarningBg)
-            .border(1.dp, AppColors.Warning, RoundedCornerShape(12.dp))
+            .background(bgColor)
+            .border(1.dp, borderColor, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
@@ -306,24 +268,16 @@ fun WarningBox(text: String) {
         Text(
             text = text,
             fontSize = 12.sp,
-            color = Color(0xFF8A6A1F),
+            color = textColor,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.End
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                imageVector = Icons.Default.ErrorOutline,
-                contentDescription = null,
-                tint = Color(0xFFD4A843),
-                modifier = Modifier.size(24.dp)
-            )
-            Text(
-                text = stringResource(R.string.warning),
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFD4A843)
-            )
-        }
+        Icon(
+            imageVector = Icons.Default.ErrorOutline,
+            contentDescription = null,
+            tint = iconColor,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }

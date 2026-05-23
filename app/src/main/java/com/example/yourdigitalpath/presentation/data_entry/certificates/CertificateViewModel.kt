@@ -1,18 +1,18 @@
 package com.example.yourdigitalpath.presentation.data_entry.certificates
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.certificates.CertificatesForm
 import com.example.yourdigitalpath.domain.usecase.certificates.CacheCertificatesUseCase
 import com.example.yourdigitalpath.domain.usecase.certificates.GetCachedCertificatesUseCase
 import com.example.yourdigitalpath.domain.usecase.certificates.SaveCertificatesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import android.content.Context
-import com.example.yourdigitalpath.R
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -82,13 +82,22 @@ class BirthCertificateViewModel @Inject constructor(
     }
 
     fun updateNationalId(value: String) {
-        _uiState.update { it.copy(applicantNationalId = value, applicantNationalIdError = null) }
-        autoCache()
+        if (value.length <= 14 && value.all { it.isDigit() }) {
+            _uiState.update {
+                it.copy(
+                    applicantNationalId = value,
+                    applicantNationalIdError = null
+                )
+            }
+            autoCache()
+        }
     }
 
     fun updatePhone(value: String) {
-        _uiState.update { it.copy(applicantPhone = value, applicantPhoneError = null) }
-        autoCache()
+        if (value.length <= 11 && value.all { it.isDigit() }) {
+            _uiState.update { it.copy(applicantPhone = value, applicantPhoneError = null) }
+            autoCache()
+        }
     }
 
     fun updateRelationship(value: String) {
@@ -113,37 +122,36 @@ class BirthCertificateViewModel @Inject constructor(
 
     private fun validate(): Boolean {
         var isValid = true
-        val currentState = _uiState.value
 
-        if (currentState.fullName.isBlank()) {
-            _uiState.update { it.copy(fullNameError = context.getString(R.string.enter_full_name)) }
-            isValid = false
-        } else if (currentState.fullName.trim().split(" ").size < 4) {
+        if (_uiState.value.fullName.trim().split(" ").size < 4) {
             _uiState.update { it.copy(fullNameError = context.getString(R.string.full_name_must_be_four)) }
             isValid = false
         }
 
-        if (currentState.dateOfBirth.isBlank()) {
-            _uiState.update { it.copy(dateOfBirthError = context.getString(R.string.enter_birth_date)) }
-            isValid = false
-        }
-
-        if (currentState.governorate.isBlank()) {
-            _uiState.update { it.copy(governorateError = context.getString(R.string.choose_governorate_error)) }
-            isValid = false
-        }
-
-        if (currentState.applicantNationalId.length != 14) {
+        if (_uiState.value.applicantNationalId.length != 14) {
             _uiState.update { it.copy(applicantNationalIdError = context.getString(R.string.national_id_invalid)) }
             isValid = false
         }
 
-        if (currentState.applicantPhone.length != 11 || !currentState.applicantPhone.startsWith("01")) {
+        if (_uiState.value.applicantPhone.length != 11 || !_uiState.value.applicantPhone.startsWith(
+                "01"
+            )
+        ) {
             _uiState.update { it.copy(applicantPhoneError = context.getString(R.string.phone_invalid)) }
             isValid = false
         }
 
-        if (currentState.relationship.isBlank()) {
+        if (_uiState.value.dateOfBirth.isBlank()) {
+            _uiState.update { it.copy(dateOfBirthError = context.getString(R.string.enter_birth_date)) }
+            isValid = false
+        }
+
+        if (_uiState.value.governorate.isBlank()) {
+            _uiState.update { it.copy(governorateError = context.getString(R.string.choose_governorate_error)) }
+            isValid = false
+        }
+
+        if (_uiState.value.relationship.isBlank()) {
             _uiState.update { it.copy(relationshipError = context.getString(R.string.choose_relationship)) }
             isValid = false
         }
@@ -154,31 +162,6 @@ class BirthCertificateViewModel @Inject constructor(
     fun submitForm(onSuccess: () -> Unit) {
         if (validate()) {
             onSuccess()
-        }
-    }
-
-    fun submitFinalForm(onSuccess: () -> Unit) {
-        if (!validate()) return
-
-        val currentState = _uiState.value
-        val form = CertificatesForm(
-            fullName = currentState.fullName,
-            dateOfBirth = currentState.dateOfBirth,
-            governorate = currentState.governorate,
-            applicantNationalId = currentState.applicantNationalId,
-            applicantPhone = currentState.applicantPhone,
-            relationship = currentState.relationship
-        )
-
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                saveCertificatesUseCase(form)
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
-                onSuccess()
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = e.message) }
-            }
         }
     }
 }

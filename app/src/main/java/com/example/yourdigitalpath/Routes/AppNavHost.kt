@@ -27,6 +27,7 @@ import com.example.yourdigitalpath.presentation.Login.LoginState
 import com.example.yourdigitalpath.presentation.Login.screens.LoginScreen
 import com.example.yourdigitalpath.presentation.Register.RegisterViewModel
 import com.example.yourdigitalpath.presentation.Register.screens.AccountDataScreen
+import com.example.yourdigitalpath.presentation.Register.screens.PersonalDataScreen
 import com.example.yourdigitalpath.presentation.data_entry.DataScreen
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.presentation.notification.screen.NotificationsScreen
@@ -41,7 +42,6 @@ import com.example.yourdigitalpath.presentation.service_request.ServiceRequestSc
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
-import com.example.yourdigitalpath.presentation.Register.screens.PersonalDataScreen
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 
 @Composable
@@ -136,7 +136,7 @@ fun AppNavHost(navController: NavHostController) {
             composable("home_screen") {
                 MainScreen(
                     navController = navController,
-                    onBack = { navController.navigate("home_screen") },
+                    onBack = { },
                     userName = userName
                 )
             }
@@ -168,8 +168,13 @@ fun AppNavHost(navController: NavHostController) {
                     arguments = listOf(navArgument("serviceName") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("service_root")
+                    }
+                    val viewModel: ServiceRequestViewModel = hiltViewModel(parentEntry)
                     DataScreen(
                         serviceName = serviceName,
+                        viewModel = viewModel,
                         onNext = { navController.navigate("file_upload_screen/$serviceName") },
                         onBack = { navController.popBackStack() }
                     )
@@ -201,7 +206,7 @@ fun AppNavHost(navController: NavHostController) {
                         onConfirm = {
                             viewModel.saveServiceRequest { orderId ->
                                 navController.navigate("tracking_details/$orderId") {
-                                    popUpTo("home_screen")
+                                    popUpTo("home_screen") { inclusive = false }
                                 }
                             }
                         }

@@ -7,43 +7,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.ui.res.stringResource
-import com.example.yourdigitalpath.R
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
+import com.example.yourdigitalpath.R
+import com.example.yourdigitalpath.presentation.service_request.DataField
+import com.example.yourdigitalpath.presentation.service_request.FieldType
+import com.example.yourdigitalpath.presentation.service_request.ServiceConfigs
+import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
+import com.example.yourdigitalpath.presentation.service_request.ValidationType
 import com.example.yourdigitalpath.ui.components.ActionButton
 import com.example.yourdigitalpath.ui.components.CustomDatePickerField
 import com.example.yourdigitalpath.ui.components.CustomDropdown
 import com.example.yourdigitalpath.ui.components.CustomTextField
+import com.example.yourdigitalpath.ui.components.InputTypes
 import com.example.yourdigitalpath.ui.components.SectionCard
 import com.example.yourdigitalpath.ui.components.SectionHeader
-import com.example.yourdigitalpath.ui.components.SelectionChipGroup
 import com.example.yourdigitalpath.ui.components.StepperComponent
-import com.example.yourdigitalpath.ui.theme.AppColors
-
 import com.example.yourdigitalpath.ui.components.getServiceTitle
+import com.example.yourdigitalpath.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,169 +54,164 @@ fun DataScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: BirthCertificateViewModel = hiltViewModel(),
+    viewModel: ServiceRequestViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isStep2Valid by viewModel.isStep2Valid.collectAsState()
+    val config = viewModel.getServiceConfig(serviceName)
     val localizedServiceName = getServiceTitle(serviceName)
-    val egyptGovernorates = listOf(
-        stringResource(R.string.cairo),
-        stringResource(R.string.giza),
-        stringResource(R.string.alexandria),
-        stringResource(R.string.dakahlia),
-        stringResource(R.string.red_sea),
-        stringResource(R.string.beheira),
-        stringResource(R.string.fayoum),
-        stringResource(R.string.gharbia),
-        stringResource(R.string.ismailia),
-        stringResource(R.string.monufia),
-        stringResource(R.string.minya),
-        stringResource(R.string.qalyubia),
-        stringResource(R.string.new_valley),
-        stringResource(R.string.suez),
-        stringResource(R.string.sharqia),
-        stringResource(R.string.aswan),
-        stringResource(R.string.assiut),
-        stringResource(R.string.beni_suef),
-        stringResource(R.string.port_said),
-        stringResource(R.string.damietta),
-        stringResource(R.string.south_sinai),
-        stringResource(R.string.kafr_el_sheikh),
-        stringResource(R.string.matrouh),
-        stringResource(R.string.luxor),
-        stringResource(R.string.qena),
-        stringResource(R.string.north_sinai),
-        stringResource(R.string.sohag)
-    )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AppColors.Background)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.Start
-    ) {
-            TopAppBar(
-                title = {
-                    Column(horizontalAlignment = Alignment.Start) {
-                        Text(
-                            text = localizedServiceName,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AppColors.PrimaryLight
-                        )
-                        Text(
-                            text = stringResource(R.string.step_2_document_owner),
-                            fontSize = 12.sp,
-                            color = AppColors.PrimaryLight
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBackIos,
-                            contentDescription = stringResource(R.string.back),
-                            tint = AppColors.PrimaryLight
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.Primary
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Column(horizontalAlignment = Alignment.Start) {
+                            Text(
+                                text = localizedServiceName,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AppColors.PrimaryLight
+                            )
+                            Text(
+                                text = stringResource(R.string.step_2_document_owner),
+                                fontSize = 12.sp,
+                                color = AppColors.PrimaryLight
+                            )
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBackIos,
+                                contentDescription = null,
+                                tint = AppColors.PrimaryLight
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.Primary)
                 )
-            )
-            StepperComponent(currentStep = 2)
-            Column(modifier = Modifier.padding(16.dp)) {
-                SectionCard {
-                    SectionHeader(stringResource(R.string.document_owner_data))
+            },
+            containerColor = AppColors.Background
+        ) { innerPadding ->
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(AppColors.Background)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.Start
+            ) {
+                StepperComponent(currentStep = 2)
 
-                    CustomTextField(
-                        value = uiState.fullName,
-                        onValueChange = { viewModel.updateFullName(it) },
-                        label = stringResource(R.string.full_name_arabic),
-                        placeholder = stringResource(R.string.full_name_placeholder),
-                        isValid = uiState.fullName.trim().split(" ").size >= 4,
-                        errorMessage = uiState.fullNameError
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.birth_date),
-                        color = AppColors.TextHint,
-                        fontSize = 13.sp
-                    )
-                    CustomDatePickerField(
-                        value = uiState.dateOfBirth,
-                        onValueChange = { viewModel.updateDateOfBirth(it) },
-                        placeholder = stringResource(R.string.birth_date_placeholder),
-                        leadingIcon = Icons.Default.CalendarMonth,
-                        errorMessage = uiState.dateOfBirthError
-                    )
+                if (config != null) {
+                    val groupedFields = config.dataFields.groupBy { it.sectionRes }
 
-                    CustomDropdown(
-                        label = stringResource(R.string.birth_governorate),
-                        selectedOption = uiState.governorate.ifEmpty {
-                            stringResource(R.string.choose_governorate)
-                        },
-                        options = egyptGovernorates,
-                        onOptionSelected = { viewModel.updateGovernorate(it) },
-                        errorMessage = uiState.governorateError
-                    )
-                }
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        for ((sectionRes, fields) in groupedFields) {
+                            SectionCard {
+                                SectionHeader(stringResource(sectionRes))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                                for (field in fields) {
+                                    if (field.isRequired(uiState.selectedType)) {
+                                        DynamicFieldRenderer(
+                                            field = field,
+                                            value = uiState.dataValues[field.id] ?: "",
+                                            error = uiState.dataErrors[field.id],
+                                            onValueChange = { newValue ->
+                                                viewModel.updateDataValue(
+                                                    field.id,
+                                                    newValue,
+                                                    field.validation
+                                                )
+                                            }
+                                        )
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
 
-                SectionCard {
-                    SectionHeader(stringResource(R.string.applicant_data))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    CustomTextField(
-                        value = uiState.applicantNationalId,
-                        onValueChange = { viewModel.updateNationalId(it) },
-                        label = stringResource(R.string.national_id_14),
-                        placeholder = "2990115012345XX",
-                        isValid = uiState.applicantNationalId.length == 14,
-                        errorMessage = uiState.applicantNationalIdError,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-
-                    CustomTextField(
-                        value = uiState.applicantPhone,
-                        onValueChange = { viewModel.updatePhone(it) },
-                        label = stringResource(R.string.phone_number),
-                        placeholder = "010XXXXXXXX",
-                        leadingIcon = Icons.Default.Phone,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        errorMessage = uiState.applicantPhoneError
-                    )
-
-                    SelectionChipGroup(
-                        title = stringResource(R.string.relationship),
-                        items = listOf(
-                            stringResource(R.string.document_owner),
-                            stringResource(R.string.guardian),
-                            stringResource(R.string.agent)
-                        ),
-                        selectedItem = uiState.relationship,
-                        onItemSelected = { viewModel.updateRelationship(it) }
-                    )
-                    if (uiState.relationshipError != null) {
-                        Text(
-                            text = uiState.relationshipError!!,
-                            color = Color.Red,
-                            fontSize = 11.sp,
-                            modifier = Modifier.padding(top = 4.dp, start = 4.dp)
+                        ActionButton(
+                            text = stringResource(R.string.next),
+                            onClick = onNext,
+                            enabled = isStep2Valid
                         )
+
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                ActionButton(
-                    text = stringResource(R.string.next),
-                    onClick = {
-                        viewModel.submitForm(onSuccess = onNext)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
             }
         }
+    }
+}
+
+@Composable
+fun DynamicFieldRenderer(
+    field: DataField,
+    value: String,
+    error: String?,
+    onValueChange: (String) -> Unit
+) {
+    val label = stringResource(field.labelRes)
+    val placeholder = if (field.placeholderRes != 0) stringResource(field.placeholderRes) else ""
+
+    when (field.type) {
+        FieldType.DATE -> {
+            Text(
+                text = label,
+                color = AppColors.TextHint,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            CustomDatePickerField(
+                value = value,
+                onValueChange = onValueChange,
+                placeholder = placeholder.ifEmpty { stringResource(R.string.select_date) },
+                errorMessage = error
+            )
+        }
+
+        FieldType.DROPDOWN -> {
+            val options =
+                if (field.id.contains("gov")) ServiceConfigs.getGovernorates() else listOf(
+                    stringResource(R.string.document_owner),
+                    stringResource(R.string.guardian),
+                    stringResource(R.string.agent)
+                )
+            CustomDropdown(
+                label = label,
+                selectedOption = value.ifEmpty { "" },
+                placeholder = placeholder.ifEmpty { stringResource(R.string.select_from_list) },
+                options = options,
+                onOptionSelected = onValueChange,
+                errorMessage = error
+            )
+        }
+
+        FieldType.PHONE -> {
+            CustomTextField(
+                value = value,
+                onValueChange = onValueChange,
+                label = label,
+                placeholder = placeholder.ifEmpty { stringResource(R.string.phone_placeholder) },
+                errorMessage = error,
+                inputType = InputTypes.PHONE
+            )
+        }
+
+        else -> {
+            CustomTextField(
+                value = value,
+                onValueChange = onValueChange,
+                label = label,
+                placeholder = placeholder,
+                errorMessage = error,
+                inputType = if (field.validation == ValidationType.NATIONAL_ID) InputTypes.NATIONAL_ID else InputTypes.DEFAULT
+            )
+        }
+    }
 }

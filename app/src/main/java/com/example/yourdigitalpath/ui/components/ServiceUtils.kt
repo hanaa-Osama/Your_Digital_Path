@@ -39,6 +39,21 @@ fun getLocalizedType(typeSlug: String): String {
         AppStrings.DELIVERY -> stringResource(R.string.delivery)
         AppStrings.DIGITAL -> stringResource(R.string.digital)
         AppStrings.HOME_DELIVERY -> stringResource(R.string.home_delivery)
+
+        AppStrings.REASON_EXPIRY -> stringResource(R.string.reason_expiry)
+        AppStrings.REASON_LOST -> stringResource(R.string.reason_lost)
+        AppStrings.REASON_DAMAGED -> stringResource(R.string.reason_damaged)
+        AppStrings.REASON_CHANGE_DATA -> stringResource(R.string.reason_change_data)
+        AppStrings.REASON_INHERITANCE -> stringResource(R.string.reason_inheritance)
+        AppStrings.REASON_INSURANCE -> stringResource(R.string.reason_insurance)
+        AppStrings.REASON_EMBASSY -> stringResource(R.string.reason_embassy)
+        AppStrings.REASON_LEGAL -> stringResource(R.string.reason_legal)
+        AppStrings.REASON_TRAVEL -> stringResource(R.string.reason_travel)
+        AppStrings.REASON_REMARRIAGE -> stringResource(R.string.reason_remarriage)
+        AppStrings.REASON_RESIDENCY -> stringResource(R.string.reason_residency)
+        AppStrings.REASON_WORK -> stringResource(R.string.reason_work)
+        AppStrings.REASON_RENEWAL -> stringResource(R.string.reason_renewal)
+
         else -> typeSlug
     }
 }

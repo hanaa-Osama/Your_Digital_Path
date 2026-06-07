@@ -111,50 +111,50 @@ class ServiceRequestViewModel @Inject constructor(
 
     fun getRequestReasons(serviceName: String): List<String> = when (getServiceType(serviceName)) {
         ServiceTypes.NATIONAL_ID -> listOf(
-            context.getString(R.string.reason_expiry),
-            context.getString(R.string.reason_lost),
-            context.getString(R.string.reason_damaged),
-            context.getString(R.string.reason_change_data)
+            AppStrings.REASON_EXPIRY,
+            AppStrings.REASON_LOST,
+            AppStrings.REASON_DAMAGED,
+            AppStrings.REASON_CHANGE_DATA
         )
 
         ServiceTypes.DEATH_CERTIFICATE -> listOf(
-            context.getString(R.string.reason_inheritance),
-            context.getString(R.string.reason_insurance),
-            context.getString(R.string.reason_embassy),
-            context.getString(R.string.reason_legal)
+            AppStrings.REASON_INHERITANCE,
+            AppStrings.REASON_INSURANCE,
+            AppStrings.REASON_EMBASSY,
+            AppStrings.REASON_LEGAL
         )
 
         ServiceTypes.DIVORCE_CERTIFICATE -> listOf(
-            context.getString(R.string.reason_travel),
-            context.getString(R.string.reason_remarriage),
-            context.getString(R.string.reason_residency),
-            context.getString(R.string.reason_legal)
+            AppStrings.REASON_TRAVEL,
+            AppStrings.REASON_REMARRIAGE,
+            AppStrings.REASON_RESIDENCY,
+            AppStrings.REASON_LEGAL
         )
 
         ServiceTypes.MARRIAGE_CERTIFICATE -> listOf(
-            context.getString(R.string.reason_travel),
-            context.getString(R.string.reason_work),
-            context.getString(R.string.reason_embassy),
-            context.getString(R.string.reason_legal)
+            AppStrings.REASON_TRAVEL,
+            AppStrings.REASON_WORK,
+            AppStrings.REASON_EMBASSY,
+            AppStrings.REASON_LEGAL
         )
 
         else -> listOf(
-            context.getString(R.string.reason_renewal),
-            context.getString(R.string.reason_travel),
-            context.getString(R.string.reason_work)
+            AppStrings.REASON_RENEWAL,
+            AppStrings.REASON_TRAVEL,
+            AppStrings.REASON_WORK
         )
     }
 
     fun getDeliveryOptions(serviceName: String): List<String> = when (getServiceType(serviceName)) {
         ServiceTypes.NATIONAL_ID -> listOf(
-            context.getString(R.string.office_pickup),
-            context.getString(R.string.delivery)
+            AppStrings.OFFICE_PICKUP,
+            AppStrings.DELIVERY
         )
 
         else -> listOf(
-            context.getString(R.string.office_pickup),
-            context.getString(R.string.delivery),
-            context.getString(R.string.digital)
+            AppStrings.OFFICE_PICKUP,
+            AppStrings.DELIVERY,
+            AppStrings.DIGITAL
         )
     }
 

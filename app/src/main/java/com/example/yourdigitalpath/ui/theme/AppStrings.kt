@@ -29,4 +29,19 @@ object AppStrings {
     const val DELIVERY = "delivery"
     const val DIGITAL = "digital"
     const val HOME_DELIVERY = "home_delivery"
+
+    // Reason Slugs
+    const val REASON_EXPIRY = "reason_expiry"
+    const val REASON_LOST = "reason_lost"
+    const val REASON_DAMAGED = "reason_damaged"
+    const val REASON_CHANGE_DATA = "reason_change_data"
+    const val REASON_INHERITANCE = "reason_inheritance"
+    const val REASON_INSURANCE = "reason_insurance"
+    const val REASON_EMBASSY = "reason_embassy"
+    const val REASON_LEGAL = "reason_legal"
+    const val REASON_TRAVEL = "reason_travel"
+    const val REASON_REMARRIAGE = "reason_remarriage"
+    const val REASON_RESIDENCY = "reason_residency"
+    const val REASON_WORK = "reason_work"
+    const val REASON_RENEWAL = "reason_renewal"
 }

@@ -92,19 +92,35 @@ object ServiceConfigs {
                 )
             ),
             requiredFiles = listOf(
-                FileRequirement("applicant_id_img", R.string.applicant_id_img_label, maxCount = 2),
+                FileRequirement(
+                    "applicant_id_img",
+                    R.string.applicant_id_img_label,
+                    minCount = 2,
+                    maxCount = 2
+                ),
                 FileRequirement(
                     "old_cert",
                     R.string.old_birth_certificate,
-                    descriptionRes = R.string.reason_lost,
-                    isRequired = { type -> type == AppStrings.LOST_REPLACEMENT }),
-                FileRequirement("payment_receipt", R.string.payment_receipt_label)
+                    isRequired = { type -> type != AppStrings.LOST_REPLACEMENT }
+                ),
+                FileRequirement(
+                    "police_report",
+                    R.string.police_report_label,
+                    descriptionRes = R.string.police_report_notice,
+                    isRequired = { type -> type == AppStrings.LOST_REPLACEMENT }
+                ),
             )
         ),
+
         ServiceTypes.NATIONAL_ID to ServiceConfig(
             serviceType = ServiceTypes.NATIONAL_ID,
             basePrice = 35.0,
-            availableTypes = listOf(AppStrings.ISSUANCE, AppStrings.RENEWAL),
+            availableTypes = listOf(
+                AppStrings.ISSUANCE,
+                AppStrings.RENEWAL,
+                AppStrings.LOST_REPLACEMENT,
+                AppStrings.DAMAGED_REPLACEMENT
+            ),
             dataFields = listOf(
                 DataField(
                     "owner_name",
@@ -129,7 +145,12 @@ object ServiceConfigs {
                     R.string.national_id,
                     validation = ValidationType.NATIONAL_ID,
                     sectionRes = R.string.basic_data_label,
-                    isRequired = { type -> type == AppStrings.RENEWAL }),
+                    isRequired = { type ->
+                        type == AppStrings.RENEWAL ||
+                                type == AppStrings.LOST_REPLACEMENT ||
+                                type == AppStrings.DAMAGED_REPLACEMENT
+                    }
+                ),
                 DataField(
                     "applicant_phone",
                     R.string.phone_number,
@@ -140,19 +161,39 @@ object ServiceConfigs {
             ),
             requiredFiles = listOf(
                 FileRequirement("personal_photo", R.string.personal_photo_label),
-                FileRequirement("birth_cert", R.string.original_birth_certificate_label),
+                FileRequirement(
+                    "birth_cert",
+                    R.string.original_birth_certificate_label,
+                    isRequired = { type -> type == AppStrings.ISSUANCE }
+                ),
                 FileRequirement(
                     "old_id",
-                    R.string.lost_replacement,
-                    descriptionRes = R.string.reason_renewal,
-                    isRequired = { type -> type == AppStrings.RENEWAL }),
-                FileRequirement("payment_receipt", R.string.payment_receipt_label)
+                    R.string.old_national_id_label,
+                    descriptionRes = R.string.old_id_notice,
+                    minCount = 2,
+                    maxCount = 2,
+                    isRequired = { type ->
+                        type == AppStrings.RENEWAL || type == AppStrings.DAMAGED_REPLACEMENT
+                    }
+                ),
+                FileRequirement(
+                    "police_report",
+                    R.string.police_report_label,
+                    descriptionRes = R.string.police_report_notice,
+                    isRequired = { type -> type == AppStrings.LOST_REPLACEMENT }
+                ),
             )
         ),
+
         ServiceTypes.MARRIAGE_CERTIFICATE to ServiceConfig(
             serviceType = ServiceTypes.MARRIAGE_CERTIFICATE,
             basePrice = 30.0,
-            availableTypes = listOf(AppStrings.OFFICIAL, AppStrings.EMBASSY_CERTIFIED),
+            availableTypes = listOf(
+                AppStrings.FULL_COPY,
+                AppStrings.SHORT_COPY,
+                AppStrings.EMBASSY_CERTIFIED,
+                AppStrings.LOST_REPLACEMENT
+            ),
             dataFields = listOf(
                 DataField(
                     "husband_name",
@@ -205,16 +246,45 @@ object ServiceConfigs {
                 )
             ),
             requiredFiles = listOf(
-                FileRequirement("husband_id_img", R.string.husband_id_img_label, maxCount = 2),
-                FileRequirement("wife_id_img", R.string.wife_id_img_label, maxCount = 2),
-                FileRequirement("marriage_contract", R.string.marriage_contract_label),
-                FileRequirement("payment_receipt", R.string.payment_receipt_label)
+                FileRequirement(
+                    "husband_id_img",
+                    R.string.husband_id_img_label,
+                    minCount = 2,
+                    maxCount = 2
+                ),
+                FileRequirement(
+                    "wife_id_img",
+                    R.string.wife_id_img_label,
+                    minCount = 2,
+                    maxCount = 2
+                ),
+                FileRequirement(
+                    "marriage_contract",
+                    R.string.marriage_contract_label,
+                    isRequired = { type -> type != AppStrings.LOST_REPLACEMENT }
+                ),
+                FileRequirement(
+                    "original_contract_embassy",
+                    R.string.original_contract_embassy_label,
+                    isRequired = { type -> type == AppStrings.EMBASSY_CERTIFIED }
+                ),
+                FileRequirement(
+                    "police_report",
+                    R.string.police_report_label,
+                    descriptionRes = R.string.police_report_notice,
+                    isRequired = { type -> type == AppStrings.LOST_REPLACEMENT }
+                ),
             )
         ),
+
         ServiceTypes.DEATH_CERTIFICATE to ServiceConfig(
             serviceType = ServiceTypes.DEATH_CERTIFICATE,
             basePrice = 20.0,
-            availableTypes = listOf(AppStrings.ISSUANCE, AppStrings.OFFICIAL_COPIES),
+            availableTypes = listOf(
+                AppStrings.ISSUANCE,
+                AppStrings.ADDITIONAL_COPY,
+                AppStrings.LOST_REPLACEMENT
+            ),
             dataFields = listOf(
                 DataField(
                     "deceased_name",
@@ -224,13 +294,13 @@ object ServiceConfigs {
                 ),
                 DataField(
                     "death_date",
-                    R.string.birth_date,
+                    R.string.death_date_label,
                     type = FieldType.DATE,
                     sectionRes = R.string.deceased_data_label
                 ),
                 DataField(
                     "death_gov",
-                    R.string.birth_governorate,
+                    R.string.death_governorate_label,
                     type = FieldType.DROPDOWN,
                     sectionRes = R.string.deceased_data_label
                 ),
@@ -260,19 +330,45 @@ object ServiceConfigs {
                 )
             ),
             requiredFiles = listOf(
-                FileRequirement("applicant_id_img", R.string.applicant_id_img_label, maxCount = 2),
-                FileRequirement("death_report", R.string.death_report_label),
+                FileRequirement(
+                    "applicant_id_img",
+                    R.string.applicant_id_img_label,
+                    minCount = 2,
+                    maxCount = 2
+                ),
+                FileRequirement(
+                    "death_report",
+                    R.string.death_report_label,
+                    descriptionRes = R.string.death_report_notice,
+                    isRequired = { type -> type == AppStrings.ISSUANCE }
+                ),
+                FileRequirement(
+                    "original_death_cert",
+                    R.string.original_death_cert_label,
+                    isRequired = { type -> type == AppStrings.ADDITIONAL_COPY }
+                ),
+                FileRequirement(
+                    "police_report",
+                    R.string.police_report_label,
+                    descriptionRes = R.string.police_report_notice,
+                    isRequired = { type -> type == AppStrings.LOST_REPLACEMENT }
+                ),
                 FileRequirement(
                     "deceased_id",
                     R.string.deceased_id_optional_label,
-                    isRequired = { false }),
-                FileRequirement("payment_receipt", R.string.payment_receipt_label)
+                    isRequired = { false }
+                ),
             )
         ),
+
         ServiceTypes.DIVORCE_CERTIFICATE to ServiceConfig(
             serviceType = ServiceTypes.DIVORCE_CERTIFICATE,
             basePrice = 30.0,
-            availableTypes = listOf(AppStrings.JUDICIAL, AppStrings.AUTHORIZED_OFFICER),
+            availableTypes = listOf(
+                AppStrings.JUDICIAL,
+                AppStrings.AUTHORIZED_OFFICER,
+                AppStrings.KHULA
+            ),
             dataFields = listOf(
                 DataField(
                     "husband_name",
@@ -325,7 +421,8 @@ object ServiceConfigs {
                 DataField(
                     "divorce_no",
                     R.string.divorce_no_label,
-                    sectionRes = R.string.divorce_data_label
+                    sectionRes = R.string.divorce_data_label,
+                    isRequired = { type -> type == AppStrings.JUDICIAL }
                 ),
                 DataField(
                     "divorce_date",
@@ -335,10 +432,22 @@ object ServiceConfigs {
                 )
             ),
             requiredFiles = listOf(
-                FileRequirement("husband_id_img", R.string.husband_id_img_label, maxCount = 2),
-                FileRequirement("wife_id_img", R.string.wife_id_img_label, maxCount = 2),
-                FileRequirement("divorce_doc", R.string.divorce_doc_label),
-                FileRequirement("payment_receipt", R.string.payment_receipt_label)
+                FileRequirement(
+                    "husband_id_img",
+                    R.string.husband_id_img_label,
+                    minCount = 2,
+                    maxCount = 2
+                ),
+                FileRequirement(
+                    "wife_id_img",
+                    R.string.wife_id_img_label,
+                    minCount = 2,
+                    maxCount = 2
+                ),
+                FileRequirement(
+                    "divorce_doc",
+                    R.string.divorce_doc_label
+                ),
             )
         )
     )

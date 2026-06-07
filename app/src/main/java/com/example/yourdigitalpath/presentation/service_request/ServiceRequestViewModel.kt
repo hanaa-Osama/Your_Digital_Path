@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.ServiceRequestModel
 import com.example.yourdigitalpath.domain.usecase.SaveServiceRequestUseCase
+import com.example.yourdigitalpath.ui.theme.AppStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,24 +48,55 @@ class ServiceRequestViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     val isAllRequiredFilesUploaded: StateFlow<Boolean> = _uiState.map { state ->
-        val config = getServiceConfig(state.serviceName) ?: return@map false
-        config.requiredFiles.all { req ->
-            if (req.isRequired(state.selectedType)) {
-                val urls = state.fileUrls[req.id] ?: emptyList()
-                urls.size >= req.minCount
-            } else true
+        val serviceType = getServiceType(state.serviceName)
+        val selectedType = state.selectedType
+        val files = state.fileUrls
+
+        val hasNationalId = (files["national_id"] ?: emptyList()).size >= 2
+        val hasServiceDoc = !(files["service_doc"] ?: emptyList()).isEmpty()
+        val hasPersonalPhoto = !(files["personal_photo"] ?: emptyList()).isEmpty()
+        val hasPoliceReport = !(files["police_report"] ?: emptyList()).isEmpty()
+        val isLost = selectedType == AppStrings.LOST_REPLACEMENT
+
+        when (serviceType) {
+            ServiceTypes.NATIONAL_ID -> {
+                val needsOldId = selectedType == AppStrings.RENEWAL ||
+                        selectedType == AppStrings.DAMAGED_REPLACEMENT
+                val needsBirthCert = selectedType == AppStrings.ISSUANCE
+                hasPersonalPhoto &&
+                        (if (needsOldId) hasNationalId else true) &&
+                        (if (needsBirthCert) hasServiceDoc else true) &&
+                        (if (isLost) hasPoliceReport else true)
+            }
+
+            ServiceTypes.DEATH_CERTIFICATE -> {
+                hasNationalId && (if (isLost) hasPoliceReport else hasServiceDoc)
+            }
+
+            else -> {
+                hasNationalId &&
+                        (if (isLost) hasPoliceReport else hasServiceDoc) &&
+                        (if (isLost) true else hasServiceDoc)
+            }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     fun getServiceType(serviceName: String): ServiceTypes = when {
-        serviceName.contains("ميلاد") || serviceName.contains("birth") -> ServiceTypes.BIRTH_CERTIFICATE
-        serviceName.contains("بطاقة") || serviceName.contains("الهوية") || serviceName.contains("id") || serviceName.contains(
-            "national"
-        ) -> ServiceTypes.NATIONAL_ID
+        serviceName.contains("ميلاد") || serviceName.contains("birth") ||
+                serviceName == AppStrings.BIRTH_CERTIFICATE -> ServiceTypes.BIRTH_CERTIFICATE
 
-        serviceName.contains("زواج") || serviceName.contains("marriage") -> ServiceTypes.MARRIAGE_CERTIFICATE
-        serviceName.contains("وفاة") || serviceName.contains("death") -> ServiceTypes.DEATH_CERTIFICATE
-        serviceName.contains("طلاق") || serviceName.contains("divorce") -> ServiceTypes.DIVORCE_CERTIFICATE
+        serviceName.contains("بطاقة") || serviceName.contains("الهوية") ||
+                serviceName.contains("id") || serviceName.contains("national") ||
+                serviceName == AppStrings.NATIONAL_ID -> ServiceTypes.NATIONAL_ID
+
+        serviceName.contains("زواج") || serviceName.contains("marriage") ||
+                serviceName == AppStrings.MARRIAGE_CERTIFICATE -> ServiceTypes.MARRIAGE_CERTIFICATE
+
+        serviceName.contains("وفاة") || serviceName.contains("death") ||
+                serviceName == AppStrings.DEATH_CERTIFICATE -> ServiceTypes.DEATH_CERTIFICATE
+
+        serviceName.contains("طلاق") || serviceName.contains("divorce") ||
+                serviceName == AppStrings.DIVORCE_CERTIFICATE -> ServiceTypes.DIVORCE_CERTIFICATE
         else -> ServiceTypes.BIRTH_CERTIFICATE
     }
 
@@ -96,6 +128,13 @@ class ServiceRequestViewModel @Inject constructor(
             context.getString(R.string.reason_travel),
             context.getString(R.string.reason_remarriage),
             context.getString(R.string.reason_residency),
+            context.getString(R.string.reason_legal)
+        )
+
+        ServiceTypes.MARRIAGE_CERTIFICATE -> listOf(
+            context.getString(R.string.reason_travel),
+            context.getString(R.string.reason_work),
+            context.getString(R.string.reason_embassy),
             context.getString(R.string.reason_legal)
         )
 
@@ -156,7 +195,7 @@ class ServiceRequestViewModel @Inject constructor(
     fun uploadFile(fileId: String, uri: Uri, maxCount: Int) {
         val currentUrls = _uiState.value.fileUrls[fileId] ?: emptyList()
         if (currentUrls.size >= maxCount) return
-        
+
         viewModelScope.launch {
             _isUploading.value = true
             try {

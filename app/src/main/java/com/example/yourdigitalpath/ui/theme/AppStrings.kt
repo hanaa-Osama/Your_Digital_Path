@@ -20,6 +20,9 @@ object AppStrings {
     const val OFFICIAL_COPIES = "official_copies"
     const val JUDICIAL = "judicial"
     const val AUTHORIZED_OFFICER = "authorized_officer"
+    const val DAMAGED_REPLACEMENT = "damaged_replacement"
+    const val KHULA = "khula"
+    const val ADDITIONAL_COPY = "additional_copy"
 
     // Delivery Slugs
     const val OFFICE_PICKUP = "office_pickup"

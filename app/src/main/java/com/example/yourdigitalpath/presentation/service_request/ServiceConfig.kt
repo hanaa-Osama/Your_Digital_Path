@@ -20,7 +20,6 @@ data class DataField(
     val validation: ValidationType = ValidationType.NONE,
     @StringRes val sectionRes: Int = R.string.data_label,
     val isRequired: (String) -> Boolean = { true },
-    /** لو الـ id هو "applicant_relation"، بيحدد أي قايمة صفة تظهر */
     val relationshipType: RelationshipType = RelationshipType.NONE
 )
 
@@ -32,20 +31,13 @@ enum class ValidationType {
     NONE, ARABIC_NAME, NATIONAL_ID, PHONE, NUMERIC
 }
 
-/**
- * أنواع الصفة حسب الخدمة:
- * - GENERAL         → صاحب الوثيقة / ولي الأمر / وكيل
- * - MARRIAGE        → الزوج / الزوجة / وكيل
- * - DEATH           → قريب / وكيل قانوني (صاحب الوثيقة مش منطقي)
- * - DIVORCE         → الزوج / الزوجة / وكيل
- * - NONE            → مش خانة صفة
- */
+
 enum class RelationshipType {
     NONE,
-    GENERAL,    // شهادة ميلاد — صاحب الوثيقة / ولي الأمر / وكيل
-    MARRIAGE,   // زواج — الزوج / الزوجة / وكيل
-    DEATH,      // وفاة — ابن/ابنة / أخ/أخت / زوج/زوجة / وكيل
-    DIVORCE     // طلاق — الزوج / الزوجة / وكيل
+    GENERAL,
+    MARRIAGE,
+    DEATH,
+    DIVORCE
 }
 
 data class FileRequirement(

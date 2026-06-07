@@ -43,9 +43,3 @@ fun getLocalizedType(typeSlug: String): String {
     }
 }
 
-//@Composable
-//fun getLocalizedGovernorate(key: String): String {
-//    val context = LocalContext.current
-//    val resId = context.resources.getIdentifier(key, "string", context.packageName)
-//    return if (resId != 0) stringResource(resId) else key
-//}

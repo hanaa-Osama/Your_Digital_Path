@@ -177,10 +177,8 @@ fun DynamicFieldRenderer(
         }
 
         FieldType.DROPDOWN -> {
-            // ★ المحافظات
             val options = when {
                 field.id.contains("gov") -> ServiceConfigs.getGovernorates()
-                // ★ الصفة — تختلف حسب الخدمة
                 field.id == "applicant_relation" -> when (field.relationshipType) {
                     RelationshipType.MARRIAGE -> listOf(
                         stringResource(R.string.relationship_husband),

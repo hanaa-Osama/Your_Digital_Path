@@ -52,11 +52,6 @@ import com.example.yourdigitalpath.ui.components.SectionHeader
 import com.example.yourdigitalpath.ui.components.StepperComponent
 import com.example.yourdigitalpath.ui.theme.AppColors
 import com.example.yourdigitalpath.ui.theme.AppStrings
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Main Component
-// ═══════════════════════════════════════════════════════════════════════════════
-
 @Composable
 fun ServiceDataUploadComponent(
     serviceName: String,
@@ -123,11 +118,6 @@ fun ServiceDataUploadComponent(
         }
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// بطاقة الهوية
-// ═══════════════════════════════════════════════════════════════════════════════
-
 @Composable
 private fun NationalIdSection(
     uiState: ServiceRequestModel,
@@ -138,7 +128,6 @@ private fun NationalIdSection(
     policeLauncher: ActivityResultLauncher<String>,
     viewModel: ServiceRequestViewModel
 ) {
-    // صورة شخصية — دائماً مطلوبة
     UploadSectionTitle(stringResource(R.string.personal_photo_label))
     Spacer(modifier = Modifier.height(4.dp))
     WarningBox(text = stringResource(R.string.personal_photo_notice), isInfo = true)
@@ -159,8 +148,6 @@ private fun NationalIdSection(
             onDelete = { viewModel.removeFile("personal_photo", photoUrls.first()) }
         )
     }
-
-    // البطاقة القديمة — للتجديد والبدل التالف
     if (uiState.selectedType == AppStrings.RENEWAL ||
         uiState.selectedType == AppStrings.DAMAGED_REPLACEMENT
     ) {
@@ -174,8 +161,6 @@ private fun NationalIdSection(
             onRemove = { url -> viewModel.removeFile("national_id", url) }
         )
     }
-
-    // شهادة الميلاد — للإصدار لأول مرة
     if (uiState.selectedType == AppStrings.ISSUANCE) {
         Spacer(modifier = Modifier.height(16.dp))
         UploadSectionTitle(stringResource(R.string.original_birth_certificate_label))
@@ -196,8 +181,6 @@ private fun NationalIdSection(
             )
         }
     }
-
-    // محضر الشرطة — للفاقد
     if (uiState.selectedType == AppStrings.LOST_REPLACEMENT) {
         Spacer(modifier = Modifier.height(16.dp))
         PoliceReportSection(
@@ -210,11 +193,6 @@ private fun NationalIdSection(
 
     Spacer(modifier = Modifier.height(16.dp))
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// باقي الخدمات
-// ═══════════════════════════════════════════════════════════════════════════════
-
 @Composable
 private fun OtherServicesSection(
     uiState: ServiceRequestModel,
@@ -262,11 +240,6 @@ private fun OtherServicesSection(
 
     Spacer(modifier = Modifier.height(16.dp))
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// محضر الشرطة
-// ═══════════════════════════════════════════════════════════════════════════════
-
 @Composable
 private fun PoliceReportSection(
     uiState: ServiceRequestModel,
@@ -294,11 +267,6 @@ private fun PoliceReportSection(
         )
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// بلوك رفع البطاقة القومية (وجه وظهر)
-// ═══════════════════════════════════════════════════════════════════════════════
-
 @Composable
 private fun NationalIdUploadBlock(
     urls: List<String>,
@@ -326,10 +294,6 @@ private fun NationalIdUploadBlock(
         )
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// منطق تحديد المستند الرئيسي لكل خدمة
-// ═══════════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun getMainDocConfig(
@@ -381,9 +345,6 @@ private fun getMainDocConfig(
     ServiceTypes.NATIONAL_ID -> Triple("", "", false)
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Reusable UI Components
-// ═══════════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun UploadSectionTitle(title: String) {

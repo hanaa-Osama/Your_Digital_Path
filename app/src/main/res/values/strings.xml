@@ -278,8 +278,6 @@
     <string name="divorce_keyword">طلاق</string>
     <string name="no_orders_yet">لا توجد طلبات بعد</string>
     <string name="request_keyword">طلب</string>
-
-    <!-- Fix 3 & 4 Missing Translations -->
     <string name="copies_calculation">عدد %1$d نسخ × %2$s جنيه = %3$s جنيه</string>
     <string name="service_label">الخدمة</string>
     <string name="request_type_label">نوع الطلب</string>
@@ -297,8 +295,6 @@
     <string name="copies_and_delivery_title">عدد النسخ وطريقة التسليم</string>
     <string name="select_date">اختر التاريخ</string>
     <string name="select_from_list">اختر من القائمة</string>
-
-    <!-- Reasons and Options -->
     <string name="reason_expiry">انتهاء الصلاحية</string>
     <string name="reason_lost">فقدان</string>
     <string name="reason_damaged">تلف</string>
@@ -313,8 +309,6 @@
     <string name="reason_work">عمل</string>
     <string name="reason_renewal">تجديد</string>
     <string name="data_verification">جاري التأكد من البيانات</string>
-
-    <!-- New Missing Strings -->
     <string name="data_label">بيانات</string>
     <string name="owner_name_label">الاسم الكامل لصاحب الوثيقة</string>
     <string name="full_name_arabic_placeholder">الاسم رباعي باللغة العربية</string>
@@ -374,7 +368,6 @@
     <string name="upload_birth_certificate">اضغط لرفع شهادة الميلاد</string>
     <string name="upload_police_report">اضغط لرفع محضر الشرطة</string>
     <string name="authorized_officer_doc_label">وثيقة الماذون</string>
-    <!-- Relationship Options per Service -->
     <string name="relationship_husband">الزوج</string>
     <string name="relationship_wife">الزوجة</string>
     <string name="relationship_son_daughter">ابن / ابنة</string>

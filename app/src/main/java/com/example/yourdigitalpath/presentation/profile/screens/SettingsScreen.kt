@@ -114,7 +114,6 @@ fun SettingsScreen(
                         isChecked = !isArabic,
                         onCheckedChange = {
                             val language = if (it) "en" else "ar"
-                            // ★ viewModel.updateLanguage بتحفظ وتطبق اللغة عن طريق LocaleManager
                             viewModel.updateLanguage(language)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                                 activity.overrideActivityTransition(

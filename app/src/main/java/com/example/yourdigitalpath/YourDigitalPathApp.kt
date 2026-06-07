@@ -13,8 +13,6 @@ import dagger.hilt.android.HiltAndroidApp
 class YourDigitalPathApp : Application() {
     override fun onCreate() {
         super.onCreate()
-
-        // اضمن أن العربية هي الافتراضية لو مفيش لغة محفوظة
         val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         if (!sharedPrefs.contains("app_language")) {
             sharedPrefs.edit().putString("app_language", "ar").apply()
@@ -25,7 +23,6 @@ class YourDigitalPathApp : Application() {
         createNotificationChannel()
         Firebase.firestore
     }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.notification_channel_name)
@@ -39,7 +36,6 @@ class YourDigitalPathApp : Application() {
             notificationManager.createNotificationChannel(channel)
         }
     }
-
     companion object {
         const val CHANNEL_ID = "digital_path_channel"
     }

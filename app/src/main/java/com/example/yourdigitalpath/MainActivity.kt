@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
     lateinit var firestoreNotificationListener: FirestoreNotificationListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // ★ طبّق اللغة قبل أي حاجة تانية عشان الـ Resources تتحمّل صح
         val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val language = sharedPrefs.getString("app_language", "ar") ?: "ar"
         val displayMode = sharedPrefs.getString("display_mode", "light") ?: "light"

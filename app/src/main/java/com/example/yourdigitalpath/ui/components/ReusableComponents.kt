@@ -60,10 +60,6 @@ import androidx.compose.ui.unit.sp
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.ui.theme.AppColors
 import com.example.yourdigitalpath.ui.theme.DateUtils
-
-// ─────────────────────────────────────────────────────────────
-// DatePicker — ألوانه من الثيم مش الافتراضي
-// ─────────────────────────────────────────────────────────────
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDatePickerField(
@@ -148,8 +144,6 @@ fun CustomDatePickerField(
                     DateUtils.isYearInPastOrPresent(year)
             }
         )
-
-        // ★ ألوان الـ DatePicker من الثيم
         val primary = AppColors.Primary
         val onPrimary = AppColors.PrimaryLight
         val surface = AppColors.Surface
@@ -224,10 +218,6 @@ fun CustomDatePickerField(
         }
     }
 }
-
-// ─────────────────────────────────────────────────────────────
-// Dropdown — ألوانه من الثيم
-// ─────────────────────────────────────────────────────────────
 @Composable
 fun CustomDropdown(
     label: String,
@@ -289,8 +279,6 @@ fun CustomDropdown(
                     tint = if (expanded) primary else AppColors.TextHint
                 )
             }
-
-            // ★ ألوان الـ DropdownMenu من الثيم
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
@@ -334,10 +322,6 @@ fun CustomDropdown(
         }
     }
 }
-
-// ─────────────────────────────────────────────────────────────
-// باقي المكونات (بدون تغيير)
-// ─────────────────────────────────────────────────────────────
 @Composable
 fun SectionCard(
     modifier: Modifier = Modifier,
@@ -510,10 +494,6 @@ fun ActionButton(
         )
     }
 }
-
-// ─────────────────────────────────────────────────────────────
-// CustomTextField — التحقق من رقم التليفون يبدأ بـ 01
-// ─────────────────────────────────────────────────────────────
 @Composable
 fun CustomTextField(
     value: String,
@@ -544,10 +524,8 @@ fun CustomTextField(
                     }
 
                     InputTypes.PHONE -> {
-                        // ★ يقبل فقط أرقام، أول رقمين لازم يكونوا "01"
                         if (newVal.length <= 11 && newVal.all { it.isDigit() }) {
                             if (newVal.length >= 2 && !newVal.startsWith("01")) {
-                                // إذا حاول يكتب حاجة غير "01" في الأول، مش هيقبلها
                                 return@OutlinedTextField
                             }
                             onValueChange(newVal)

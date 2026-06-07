@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -34,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SelectableDates
@@ -59,6 +61,9 @@ import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.ui.theme.AppColors
 import com.example.yourdigitalpath.ui.theme.DateUtils
 
+// ─────────────────────────────────────────────────────────────
+// DatePicker — ألوانه من الثيم مش الافتراضي
+// ─────────────────────────────────────────────────────────────
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDatePickerField(
@@ -136,41 +141,93 @@ fun CustomDatePickerField(
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = initialDateMillis,
             selectableDates = object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    return DateUtils.isDateInPastOrPresent(utcTimeMillis)
-                }
+                override fun isSelectableDate(utcTimeMillis: Long) =
+                    DateUtils.isDateInPastOrPresent(utcTimeMillis)
 
-                override fun isSelectableYear(year: Int): Boolean {
-                    return DateUtils.isYearInPastOrPresent(year)
-                }
+                override fun isSelectableYear(year: Int) =
+                    DateUtils.isYearInPastOrPresent(year)
             }
         )
+
+        // ★ ألوان الـ DatePicker من الثيم
+        val primary = AppColors.Primary
+        val onPrimary = AppColors.PrimaryLight
+        val surface = AppColors.Surface
+        val onSurface = AppColors.TextPrimary
+        val primaryContainer = AppColors.PrimaryMid
 
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        datePickerState.selectedDateMillis?.let {
-                            onValueChange(DateUtils.formatDateForPicker(it))
-                        }
-                        showDatePicker = false
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        onValueChange(DateUtils.formatDateForPicker(it))
                     }
-                ) {
-                    Text(stringResource(R.string.yes))
+                    showDatePicker = false
+                }) {
+                    Text(stringResource(R.string.yes), color = primary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text(stringResource(R.string.cancel))
+                    Text(stringResource(R.string.cancel), color = primary)
                 }
-            }
+            },
+            colors = DatePickerDefaults.colors(
+                containerColor = surface,
+                titleContentColor = onSurface,
+                headlineContentColor = onSurface,
+                weekdayContentColor = AppColors.TextSecond,
+                subheadContentColor = onSurface,
+                navigationContentColor = primary,
+                yearContentColor = onSurface,
+                disabledYearContentColor = AppColors.TextHint,
+                currentYearContentColor = primary,
+                selectedYearContentColor = onPrimary,
+                selectedYearContainerColor = primary,
+                dayContentColor = onSurface,
+                disabledDayContentColor = AppColors.TextHint,
+                selectedDayContentColor = onPrimary,
+                selectedDayContainerColor = primary,
+                todayContentColor = primary,
+                todayDateBorderColor = primary,
+                dayInSelectionRangeContentColor = onSurface,
+                dayInSelectionRangeContainerColor = primaryContainer,
+                dividerColor = AppColors.Border
+            )
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = surface,
+                    titleContentColor = onSurface,
+                    headlineContentColor = onSurface,
+                    weekdayContentColor = AppColors.TextSecond,
+                    subheadContentColor = onSurface,
+                    navigationContentColor = primary,
+                    yearContentColor = onSurface,
+                    disabledYearContentColor = AppColors.TextHint,
+                    currentYearContentColor = primary,
+                    selectedYearContentColor = onPrimary,
+                    selectedYearContainerColor = primary,
+                    dayContentColor = onSurface,
+                    disabledDayContentColor = AppColors.TextHint,
+                    selectedDayContentColor = onPrimary,
+                    selectedDayContainerColor = primary,
+                    todayContentColor = primary,
+                    todayDateBorderColor = primary,
+                    dayInSelectionRangeContentColor = onSurface,
+                    dayInSelectionRangeContainerColor = primaryContainer,
+                    dividerColor = AppColors.Border
+                )
+            )
         }
     }
 }
 
+// ─────────────────────────────────────────────────────────────
+// Dropdown — ألوانه من الثيم
+// ─────────────────────────────────────────────────────────────
 @Composable
 fun CustomDropdown(
     label: String,
@@ -182,6 +239,9 @@ fun CustomDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val isError = errorMessage != null
+    val primary = AppColors.Primary
+    val surface = AppColors.Surface
+    val textPrimary = AppColors.TextPrimary
 
     Column(
         modifier = Modifier
@@ -201,9 +261,13 @@ fun CustomDropdown(
                 .height(56.dp)
                 .background(AppColors.Background, RoundedCornerShape(12.dp))
                 .border(
-                    1.dp,
-                    if (isError) AppColors.Danger else AppColors.Border,
-                    RoundedCornerShape(12.dp)
+                    width = if (expanded) 2.dp else 1.dp,
+                    color = when {
+                        isError -> AppColors.Danger
+                        expanded -> primary
+                        else -> AppColors.Border
+                    },
+                    shape = RoundedCornerShape(12.dp)
                 )
                 .clickable { expanded = true }
                 .padding(horizontal = 16.dp),
@@ -216,28 +280,45 @@ fun CustomDropdown(
             ) {
                 Text(
                     text = selectedOption.ifEmpty { placeholder },
-                    color = if (selectedOption.isEmpty()) AppColors.TextHint.copy(alpha = 0.7f) else AppColors.TextPrimary,
+                    color = if (selectedOption.isEmpty()) AppColors.TextHint.copy(alpha = 0.7f) else textPrimary,
                     fontSize = 14.sp
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
-                    tint = AppColors.TextHint
+                    tint = if (expanded) primary else AppColors.TextHint
                 )
             }
 
+            // ★ ألوان الـ DropdownMenu من الثيم
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .background(surface)
             ) {
                 options.forEach { option ->
+                    val isSelected = option == selectedOption
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = {
+                            Text(
+                                option,
+                                color = if (isSelected) primary else textPrimary,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
                         onClick = {
                             onOptionSelected(option)
                             expanded = false
-                        }
+                        },
+                        modifier = Modifier.background(
+                            if (isSelected) primary.copy(alpha = 0.08f) else Color.Transparent
+                        ),
+                        colors = MenuDefaults.itemColors(
+                            textColor = textPrimary,
+                            leadingIconColor = primary,
+                        )
                     )
                 }
             }
@@ -254,6 +335,9 @@ fun CustomDropdown(
     }
 }
 
+// ─────────────────────────────────────────────────────────────
+// باقي المكونات (بدون تغيير)
+// ─────────────────────────────────────────────────────────────
 @Composable
 fun SectionCard(
     modifier: Modifier = Modifier,
@@ -427,6 +511,9 @@ fun ActionButton(
     }
 }
 
+// ─────────────────────────────────────────────────────────────
+// CustomTextField — التحقق من رقم التليفون يبدأ بـ 01
+// ─────────────────────────────────────────────────────────────
 @Composable
 fun CustomTextField(
     value: String,
@@ -449,13 +536,25 @@ fun CustomTextField(
 
         OutlinedTextField(
             value = value,
-            onValueChange = {
-                if (inputType == InputTypes.NATIONAL_ID) {
-                    if (it.length <= 14 && it.all { char -> char.isDigit() }) onValueChange(it)
-                } else if (inputType == InputTypes.PHONE) {
-                    if (it.length <= 11 && it.all { char -> char.isDigit() }) onValueChange(it)
-                } else {
-                    onValueChange(it)
+            onValueChange = { newVal ->
+                when (inputType) {
+                    InputTypes.NATIONAL_ID -> {
+                        if (newVal.length <= 14 && newVal.all { it.isDigit() })
+                            onValueChange(newVal)
+                    }
+
+                    InputTypes.PHONE -> {
+                        // ★ يقبل فقط أرقام، أول رقمين لازم يكونوا "01"
+                        if (newVal.length <= 11 && newVal.all { it.isDigit() }) {
+                            if (newVal.length >= 2 && !newVal.startsWith("01")) {
+                                // إذا حاول يكتب حاجة غير "01" في الأول، مش هيقبلها
+                                return@OutlinedTextField
+                            }
+                            onValueChange(newVal)
+                        }
+                    }
+
+                    else -> onValueChange(newVal)
                 }
             },
             modifier = Modifier.fillMaxWidth(),

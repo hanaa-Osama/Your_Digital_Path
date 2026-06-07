@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.service_request.DataField
 import com.example.yourdigitalpath.presentation.service_request.FieldType
+import com.example.yourdigitalpath.presentation.service_request.RelationshipType
 import com.example.yourdigitalpath.presentation.service_request.ServiceConfigs
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
 import com.example.yourdigitalpath.presentation.service_request.ValidationType
@@ -176,12 +177,43 @@ fun DynamicFieldRenderer(
         }
 
         FieldType.DROPDOWN -> {
-            val options =
-                if (field.id.contains("gov")) ServiceConfigs.getGovernorates() else listOf(
+            // ★ المحافظات
+            val options = when {
+                field.id.contains("gov") -> ServiceConfigs.getGovernorates()
+                // ★ الصفة — تختلف حسب الخدمة
+                field.id == "applicant_relation" -> when (field.relationshipType) {
+                    RelationshipType.MARRIAGE -> listOf(
+                        stringResource(R.string.relationship_husband),
+                        stringResource(R.string.relationship_wife),
+                        stringResource(R.string.agent)
+                    )
+
+                    RelationshipType.DEATH -> listOf(
+                        stringResource(R.string.relationship_son_daughter),
+                        stringResource(R.string.relationship_sibling),
+                        stringResource(R.string.relationship_spouse),
+                        stringResource(R.string.agent)
+                    )
+
+                    RelationshipType.DIVORCE -> listOf(
+                        stringResource(R.string.relationship_husband),
+                        stringResource(R.string.relationship_wife),
+                        stringResource(R.string.agent)
+                    )
+
+                    else -> listOf(  // GENERAL — شهادة ميلاد
+                        stringResource(R.string.document_owner),
+                        stringResource(R.string.guardian),
+                        stringResource(R.string.agent)
+                    )
+                }
+
+                else -> listOf(
                     stringResource(R.string.document_owner),
                     stringResource(R.string.guardian),
                     stringResource(R.string.agent)
                 )
+            }
             CustomDropdown(
                 label = label,
                 selectedOption = value.ifEmpty { "" },

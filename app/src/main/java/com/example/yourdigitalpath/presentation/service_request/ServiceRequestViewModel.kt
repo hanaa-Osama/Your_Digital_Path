@@ -176,9 +176,12 @@ class ServiceRequestViewModel @Inject constructor(
             }
 
             ValidationType.PHONE -> {
-                if (value.isNotEmpty() && (value.length != 11 || !value.all { it.isDigit() })) context.getString(
-                    R.string.error_phone_11
-                ) else null
+                if (value.isNotEmpty() && (
+                            value.length != 11 ||
+                                    !value.all { it.isDigit() } ||
+                                    !value.startsWith("01")
+                            )
+                ) context.getString(R.string.error_phone_11) else null
             }
 
             else -> null

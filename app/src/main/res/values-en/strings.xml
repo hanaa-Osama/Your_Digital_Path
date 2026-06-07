@@ -294,7 +294,7 @@
     <string name="file_formats_limit">PNG / JPG / PDF - Max size 5 MB</string>
     <string name="error_name_four_parts">Full name must be 4 parts in Arabic</string>
     <string name="error_national_id_14">National ID must be 14 digits</string>
-    <string name="error_phone_11">Phone number must be 11 digits</string>
+    <string name="error_phone_11">Phone must be 11 digits and start with 01</string>
     <string name="file_count">%1$d file(s)</string>
     <string name="copies_and_delivery_title">Copies and Delivery Method</string>
     <string name="select_date">Select Date</string>
@@ -375,4 +375,10 @@
     <string name="upload_police_report">Click to upload police report</string>
     <string name="authorized_officer_doc_label">Authorized Officer Document</string>
     <string name="notification_channel_name">General Notifications</string>
+    <!-- Relationship Options per Service -->
+    <string name="relationship_husband">Husband</string>
+    <string name="relationship_wife">Wife</string>
+    <string name="relationship_son_daughter">Son / Daughter</string>
+    <string name="relationship_sibling">Brother / Sister</string>
+    <string name="relationship_spouse">Spouse</string>
 </resources>

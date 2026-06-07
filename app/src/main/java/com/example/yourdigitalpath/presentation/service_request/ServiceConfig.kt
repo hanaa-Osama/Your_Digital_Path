@@ -19,7 +19,9 @@ data class DataField(
     val type: FieldType = FieldType.TEXT,
     val validation: ValidationType = ValidationType.NONE,
     @StringRes val sectionRes: Int = R.string.data_label,
-    val isRequired: (String) -> Boolean = { true }
+    val isRequired: (String) -> Boolean = { true },
+    /** لو الـ id هو "applicant_relation"، بيحدد أي قايمة صفة تظهر */
+    val relationshipType: RelationshipType = RelationshipType.NONE
 )
 
 enum class FieldType {
@@ -28,6 +30,22 @@ enum class FieldType {
 
 enum class ValidationType {
     NONE, ARABIC_NAME, NATIONAL_ID, PHONE, NUMERIC
+}
+
+/**
+ * أنواع الصفة حسب الخدمة:
+ * - GENERAL         → صاحب الوثيقة / ولي الأمر / وكيل
+ * - MARRIAGE        → الزوج / الزوجة / وكيل
+ * - DEATH           → قريب / وكيل قانوني (صاحب الوثيقة مش منطقي)
+ * - DIVORCE         → الزوج / الزوجة / وكيل
+ * - NONE            → مش خانة صفة
+ */
+enum class RelationshipType {
+    NONE,
+    GENERAL,    // شهادة ميلاد — صاحب الوثيقة / ولي الأمر / وكيل
+    MARRIAGE,   // زواج — الزوج / الزوجة / وكيل
+    DEATH,      // وفاة — ابن/ابنة / أخ/أخت / زوج/زوجة / وكيل
+    DIVORCE     // طلاق — الزوج / الزوجة / وكيل
 }
 
 data class FileRequirement(
@@ -235,7 +253,8 @@ object ServiceConfigs {
                     "applicant_relation",
                     R.string.relationship,
                     type = FieldType.DROPDOWN,
-                    sectionRes = R.string.applicant_data
+                    sectionRes = R.string.applicant_data,
+                    relationshipType = RelationshipType.MARRIAGE
                 ),
                 DataField(
                     "applicant_phone",
@@ -319,7 +338,9 @@ object ServiceConfigs {
                 DataField(
                     "applicant_relation",
                     R.string.relationship,
-                    sectionRes = R.string.applicant_data
+                    type = FieldType.DROPDOWN,
+                    sectionRes = R.string.applicant_data,
+                    relationshipType = RelationshipType.DEATH
                 ),
                 DataField(
                     "applicant_phone",
@@ -409,7 +430,9 @@ object ServiceConfigs {
                 DataField(
                     "applicant_relation",
                     R.string.relationship,
-                    sectionRes = R.string.applicant_data
+                    type = FieldType.DROPDOWN,
+                    sectionRes = R.string.applicant_data,
+                    relationshipType = RelationshipType.DIVORCE
                 ),
                 DataField(
                     "applicant_phone",

@@ -144,32 +144,28 @@ fun ServiceRequestScreen(
                                 color = AppColors.Primary,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
+                            val copyOptions = listOf(
+                                stringResource(R.string.one_copy),
+                                stringResource(R.string.two_copies),
+                                stringResource(R.string.three_copies),
+                                stringResource(R.string.four_copies),
+                                stringResource(R.string.five_copies)
+                            )
                             CustomDropdown(
                                 label = stringResource(R.string.copies_count_label),
                                 selectedOption = when (state.copiesCount) {
-                                    1 -> stringResource(R.string.one_copy)
-                                    2 -> stringResource(R.string.two_copies)
-                                    3 -> stringResource(R.string.three_copies)
-                                    4 -> stringResource(R.string.four_copies)
-                                    5 -> stringResource(R.string.five_copies)
+                                    1 -> copyOptions[0]
+                                    2 -> copyOptions[1]
+                                    3 -> copyOptions[2]
+                                    4 -> copyOptions[3]
+                                    5 -> copyOptions[4]
                                     else -> "${state.copiesCount} ${stringResource(R.string.copies)}"
                                 },
-                                options = listOf(
-                                    stringResource(R.string.one_copy),
-                                    stringResource(R.string.two_copies),
-                                    stringResource(R.string.three_copies),
-                                    stringResource(R.string.four_copies),
-                                    stringResource(R.string.five_copies)
-                                ),
+                                options = copyOptions,
                                 onOptionSelected = { option ->
-                                    val count = when (option) {
-                                        "نسخة واحدة", "One Copy" -> 1
-                                        "نسختان", "Two Copies" -> 2
-                                        "3 نسخ", "3 Copies" -> 3
-                                        "4 نسخ", "4 Copies" -> 4
-                                        "5 نسخ", "5 Copies" -> 5
-                                        else -> option.filter { it.isDigit() }.toIntOrNull() ?: 1
-                                    }
+                                    val count =
+                                        copyOptions.indexOf(option).takeIf { it >= 0 }?.plus(1)
+                                            ?: option.filter { it.isDigit() }.toIntOrNull() ?: 1
                                     viewModel.updateCopiesCount(count, serviceName)
                                 }
                             )

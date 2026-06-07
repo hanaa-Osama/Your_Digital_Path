@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -178,7 +179,7 @@ fun DynamicFieldRenderer(
 
         FieldType.DROPDOWN -> {
             val options = when {
-                field.id.contains("gov") -> ServiceConfigs.getGovernorates()
+                field.id.contains("gov") -> ServiceConfigs.getGovernorates(LocalContext.current)
                 field.id == "applicant_relation" -> when (field.relationshipType) {
                     RelationshipType.MARRIAGE -> listOf(
                         stringResource(R.string.relationship_husband),

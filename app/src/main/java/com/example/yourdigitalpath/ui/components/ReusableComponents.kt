@@ -442,10 +442,11 @@ fun SelectionChipGroup(
         ) {
             items.forEach { item ->
                 val isSelected = item == selectedItem
+                val displayLabel = getLocalizedType(item)
                 FilterChip(
                     selected = isSelected,
                     onClick = { onItemSelected(item) },
-                    label = { Text(item) },
+                    label = { Text(displayLabel) },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = AppColors.Primary,
                         selectedLabelColor = Color.White,

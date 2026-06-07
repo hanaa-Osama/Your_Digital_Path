@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.presentation.service_request
 
+import android.content.Context
 import androidx.annotation.StringRes
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.ui.theme.AppStrings
@@ -50,11 +51,34 @@ data class FileRequirement(
 )
 
 object ServiceConfigs {
-    private val EGYPT_GOVERNORATES = listOf(
-        "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "البحر الأحمر", "البحيرة", "الفيوم",
-        "الغربية", "الإسماعيلية", "المنوفية", "المنيا", "القليوبية", "الوادي الجديد", "السويس",
-        "الشرقية", "أسوان", "أسيوط", "بني سويف", "بورسعيد", "دمياط", "جنوب سيناء",
-        "كفر الشيخ", "مطروح", "الأقصر", "قنا", "شمال سيناء", "سوهاج"
+    fun getGovernorates(context: Context): List<String> = listOf(
+        context.getString(R.string.cairo),
+        context.getString(R.string.giza),
+        context.getString(R.string.alexandria),
+        context.getString(R.string.dakahlia),
+        context.getString(R.string.red_sea),
+        context.getString(R.string.beheira),
+        context.getString(R.string.fayoum),
+        context.getString(R.string.gharbia),
+        context.getString(R.string.ismailia),
+        context.getString(R.string.monufia),
+        context.getString(R.string.minya),
+        context.getString(R.string.qalyubia),
+        context.getString(R.string.new_valley),
+        context.getString(R.string.suez),
+        context.getString(R.string.sharqia),
+        context.getString(R.string.aswan),
+        context.getString(R.string.assiut),
+        context.getString(R.string.beni_suef),
+        context.getString(R.string.port_said),
+        context.getString(R.string.damietta),
+        context.getString(R.string.south_sinai),
+        context.getString(R.string.kafr_el_sheikh),
+        context.getString(R.string.matrouh),
+        context.getString(R.string.luxor),
+        context.getString(R.string.qena),
+        context.getString(R.string.north_sinai),
+        context.getString(R.string.sohag)
     )
 
     val configs = mapOf(
@@ -467,5 +491,4 @@ object ServiceConfigs {
         )
     )
 
-    fun getGovernorates() = EGYPT_GOVERNORATES
 }

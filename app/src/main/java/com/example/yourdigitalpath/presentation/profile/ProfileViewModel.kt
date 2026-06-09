@@ -1,16 +1,27 @@
 package com.example.yourdigitalpath.presentation.viewModel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdigitalpath.LocaleManager
 import com.example.yourdigitalpath.domain.model.AppSettingsModel
 import com.example.yourdigitalpath.domain.model.NotificationSettingsModel
 import com.example.yourdigitalpath.domain.model.UserProfileModel
-import com.example.yourdigitalpath.domain.usecase.*
-import com.google.firebase.auth.FirebaseAuth
+import com.example.yourdigitalpath.domain.usecase.GetAppSettingsUseCase
+import com.example.yourdigitalpath.domain.usecase.GetNotificationSettingsUseCase
+import com.example.yourdigitalpath.domain.usecase.GetUserProfileUseCase
+import com.example.yourdigitalpath.domain.usecase.LogoutUseCase
+import com.example.yourdigitalpath.domain.usecase.ToggleOffersNotificationsUseCase
+import com.example.yourdigitalpath.domain.usecase.ToggleOrderNotificationsUseCase
+import com.example.yourdigitalpath.domain.usecase.ToggleSystemNotificationsUseCase
+import com.example.yourdigitalpath.domain.usecase.UpdateDisplayModeUseCase
+import com.example.yourdigitalpath.domain.usecase.UpdateLanguageUseCase
+import com.example.yourdigitalpath.domain.usecase.UpdateUserProfileUseCase
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -20,6 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val updateUserProfileUseCase: UpdateUserProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
@@ -40,10 +52,10 @@ class ProfileViewModel @Inject constructor(
 
     private val _notificationSettingsModel = MutableStateFlow<NotificationSettingsModel?>(null)
     val notificationSettings = _notificationSettingsModel.asStateFlow()
-    
+
     private val _appSettingsModel = MutableStateFlow<AppSettingsModel?>(null)
     val appSettings = _appSettingsModel.asStateFlow()
-    
+
     private val _updateResult = MutableStateFlow<Result<Unit>?>(null)
     val updateResult = _updateResult.asStateFlow()
 
@@ -75,10 +87,10 @@ class ProfileViewModel @Inject constructor(
     fun updateProfile(updatedProfile: UserProfileModel) {
         viewModelScope.launch {
             _userProfileModel.value = updatedProfile
-            
+
             val result = updateUserProfileUseCase(updatedProfile)
             _updateResult.value = result
-            
+
             if (result.isFailure) {
                 syncProfileWithRemote()
             }
@@ -109,7 +121,7 @@ class ProfileViewModel @Inject constructor(
     fun updateLanguage(language: String) {
         viewModelScope.launch {
             updateLanguageUseCase(language)
-            LocaleManager.setLocale(language)
+            LocaleManager.setLocale(context = context, language = language)
             _appSettingsModel.value = _appSettingsModel.value?.copy(language = language)
                 ?: AppSettingsModel(language = language, displayMode = "light")
         }

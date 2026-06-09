@@ -1,21 +1,25 @@
 package com.example.yourdigitalpath
 
+import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
 object LocaleManager {
 
-    fun setLocale(language: String) {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = Resources.getSystem().configuration
-        config.setLocale(locale)
-        Resources.getSystem().updateConfiguration(config, Resources.getSystem().displayMetrics)
+
+    fun setLocale(context: Context, language: String = "ar") {
         AppCompatDelegate.setApplicationLocales(
             LocaleListCompat.forLanguageTags(language)
         )
+
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)
+        @Suppress("DEPRECATION")
+        context.resources.updateConfiguration(config, context.resources.displayMetrics)
     }
+
 }

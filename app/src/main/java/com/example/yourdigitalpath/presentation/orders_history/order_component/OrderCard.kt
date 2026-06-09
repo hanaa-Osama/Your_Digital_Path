@@ -22,19 +22,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
-import com.example.yourdigitalpath.ui.theme.AppColors
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import androidx.compose.ui.res.stringResource
-import com.example.yourdigitalpath.R
-import com.example.yourdigitalpath.ui.components.getServiceTitle
 import com.example.yourdigitalpath.ui.components.getLocalizedType
+import com.example.yourdigitalpath.ui.components.getServiceTitle
+import com.example.yourdigitalpath.ui.theme.AppColors
+import com.example.yourdigitalpath.ui.theme.DateUtils
 
 @Composable
 fun OrderCard(
@@ -43,7 +41,7 @@ fun OrderCard(
     modifier: Modifier = Modifier
 ) {
     val dateFormatted = remember(orderModel.requestDate) {
-        SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(Date(orderModel.requestDate))
+        DateUtils.formatOrderDate(orderModel.requestDate)
     }
     val requestKeyword = stringResource(R.string.request_keyword)
 

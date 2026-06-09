@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.data.repositoryImp
 
+import android.content.Context
 import android.net.Uri
 import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.data.dataSource.local.Dao.ServiceRequestDao
@@ -7,18 +8,18 @@ import com.example.yourdigitalpath.data.dataSource.local.Entity.ServiceRequestEn
 import com.example.yourdigitalpath.domain.model.ServiceRequestModel
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
+import com.example.yourdigitalpath.ui.theme.DateUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 class ServiceRequestRepoImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val serviceRequestDao: ServiceRequestDao
+    private val serviceRequestDao: ServiceRequestDao,
+    @ApplicationContext private val context: Context
 ) : ServiceRequestRepository {
 
     override suspend fun saveServiceRequest(request: ServiceRequestModel): String {
@@ -38,13 +39,13 @@ class ServiceRequestRepoImpl @Inject constructor(
                 id = 1,
                 status = "completed",
                 title = R.string.order_received,
-                timestamp = "Now"
+                timestamp = context.getString(R.string.now)
             ),
             TrackingStep(
                 id = 2,
                 status = "current",
                 title = R.string.under_review,
-                timestamp = "Checking data"
+                timestamp = context.getString(R.string.data_verification)
             ),
             TrackingStep(
                 id = 3,
@@ -69,16 +70,17 @@ class ServiceRequestRepoImpl @Inject constructor(
         val data = hashMapOf(
             "serviceName" to request.serviceName,
             "selectedType" to request.selectedType,
-            "serviceType" to request.serviceName,
+            "serviceType" to "${request.serviceName} - ${request.selectedType}",
             "requestReason" to request.requestReason,
             "otherReason" to request.otherReason,
             "deliveryMethod" to request.deliveryMethod,
             "copiesCount" to request.copiesCount,
             "price" to request.totalFees.toString(),
-            "date" to SimpleDateFormat(
-                "d MMMM yyyy",
-                Locale.getDefault()
-            ).format(Date()),
+            "nationalIdNumber" to request.nationalIdNumber,
+            "phoneNumber" to request.phoneNumber,
+            "dataValues" to request.dataValues,
+            "fileUrls" to request.fileUrls,
+            "date" to DateUtils.formatOrderDate(System.currentTimeMillis()),
             "steps" to initialSteps,
             "status" to "InProgress",
             "progressPercent" to 45,

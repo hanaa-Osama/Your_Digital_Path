@@ -1,12 +1,10 @@
 package com.example.yourdigitalpath
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,13 +14,11 @@ import com.example.yourdigitalpath.data.dataSource.remote.FirestoreNotificationL
 import com.example.yourdigitalpath.presentation.viewModel.ProfileViewModel
 import com.example.yourdigitalpath.ui.theme.YourDigitalPathTheme
 import dagger.hilt.android.AndroidEntryPoint
-import android.util.Log
-import java.util.Locale
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     @Inject
     lateinit var firestoreNotificationListener: FirestoreNotificationListener
 
@@ -30,23 +26,17 @@ class MainActivity : ComponentActivity() {
         val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val language = sharedPrefs.getString("app_language", "ar") ?: "ar"
         val displayMode = sharedPrefs.getString("display_mode", "light") ?: "light"
-        
-        LocaleManager.setLocale(language)
-
-        val locale = Locale(language)
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
+        LocaleManager.setLocale(this, language)
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         firestoreNotificationListener.startListening()
+
         setContent {
             val profileViewModel: ProfileViewModel = hiltViewModel()
             val appSettings by profileViewModel.appSettings.collectAsState()
-
             val isDarkMode = (appSettings?.displayMode ?: displayMode) == "dark"
-            
+
             YourDigitalPathTheme(darkTheme = isDarkMode) {
                 val navController = rememberAppNavController()
                 AppNavHost(navController = navController)

@@ -43,7 +43,8 @@ class FirestoreNotificationListener @Inject constructor(
                 snapshots?.documentChanges?.forEach { dc ->
                     if (dc.type == DocumentChange.Type.ADDED) {
                         val id = dc.document.id
-                        val title = dc.document.getString("title") ?: "إشعار جديد"
+                        val title = dc.document.getString("title")
+                            ?: context.getString(R.string.new_notification_title)
                         val message = dc.document.getString("message") ?: ""
                         val type = dc.document.getString("type") ?: "info"
 

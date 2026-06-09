@@ -37,26 +37,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yourdigitalpath.R
-import com.example.yourdigitalpath.presentation.data_entry.certificates.BirthCertificateViewModel
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
+import com.example.yourdigitalpath.ui.components.ActionButton
+import com.example.yourdigitalpath.ui.components.getLocalizedType
+import com.example.yourdigitalpath.ui.components.getServiceTitle
 import com.example.yourdigitalpath.ui.theme.AppColors
 import com.example.yourdigitalpath.ui.theme.LocalDarkTheme
-import com.example.yourdigitalpath.ui.components.ActionButton
-import com.example.yourdigitalpath.ui.components.getServiceTitle
-import com.example.yourdigitalpath.ui.components.getLocalizedType
 
 @Composable
 fun ServiceSummaryScreen(
     serviceName: String,
     serviceRequestViewModel: ServiceRequestViewModel,
-    birthCertificateViewModel: BirthCertificateViewModel = hiltViewModel(),
     onConfirm: () -> Unit
 ) {
     val requestState by serviceRequestViewModel.uiState.collectAsState()
-    val personalState by birthCertificateViewModel.uiState.collectAsState()
+    val config = serviceRequestViewModel.getServiceConfig(serviceName)
     val localizedServiceName = getServiceTitle(serviceName)
+    val basePrice = config?.basePrice ?: 0.0
+    val totalFees = requestState.totalFees
 
     Scaffold(
         containerColor = AppColors.Background,
@@ -72,9 +71,7 @@ fun ServiceSummaryScreen(
                     text = stringResource(R.string.confirm_and_pay),
                     onClick = onConfirm
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = stringResource(R.string.confirm_data_notice),
                     fontSize = 12.sp,
@@ -97,239 +94,179 @@ fun ServiceSummaryScreen(
                     .background(
                         brush = androidx.compose.ui.graphics.Brush.verticalGradient(
                             colors = if (LocalDarkTheme.current)
-                                listOf(
-                                    Color(0xFF1D2A44),
-                                    Color(0xFF0F1929)
-                                )
+                                listOf(Color(0xFF1D2A44), Color(0xFF0F1929))
                             else
-                                listOf(
-                                    AppColors.Primary,
-                                    Color(0xFF293241)
-                                )
+                                listOf(AppColors.Primary, Color(0xFF293241))
                         )
                     )
                     .padding(24.dp)
             ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Bottom,
-                        horizontalAlignment = Alignment.Start
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(Color.White.copy(alpha = 0.2f))
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(Color.White.copy(alpha = 0.2f))
-                                .padding(horizontal = 12.dp, vertical = 4.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.review_request),
-                                color = Color.White,
-                                fontSize = 12.sp
-                            )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
-                            Icon(
-                                Icons.Default.AssignmentTurnedIn,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = stringResource(R.string.order_summary),
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            text = stringResource(R.string.review_request),
+                            color = Color.White,
+                            fontSize = 12.sp
                         )
-                        Text(
-                            text = stringResource(R.string.review_data_before_payment),
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.8f)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            Icons.Default.AssignmentTurnedIn,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.order_summary),
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+
+            Column(modifier = Modifier.padding(16.dp)) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Border)
+                ) {
+                    Column {
+                        SummaryRow(
+                            label = stringResource(R.string.service_label),
+                            value = localizedServiceName
+                        )
+                        HorizontalDivider(color = AppColors.Border)
+                        SummaryRow(
+                            label = stringResource(R.string.request_type_label),
+                            value = getLocalizedType(requestState.selectedType)
+                        )
+                        HorizontalDivider(color = AppColors.Border)
+
+                        // Dynamic Data Fields
+                        config?.dataFields?.forEach { field ->
+                            if (field.isRequired(requestState.selectedType)) {
+                                val value = requestState.dataValues[field.id] ?: ""
+                                if (value.isNotEmpty()) {
+                                    SummaryRow(
+                                        label = stringResource(field.labelRes),
+                                        value = value
+                                    )
+                                    HorizontalDivider(color = AppColors.Border)
+                                }
+                            }
+                        }
+
+                        SummaryRow(
+                            label = stringResource(R.string.copies_count_label),
+                            value = when (requestState.copiesCount) {
+                                1 -> stringResource(R.string.one_copy)
+                                2 -> stringResource(R.string.two_copies)
+                                else -> "${requestState.copiesCount} ${stringResource(R.string.copies)}"
+                            }
+                        )
+                        HorizontalDivider(color = AppColors.Border)
+                        SummaryRow(
+                            label = stringResource(R.string.delivery_method_label),
+                            value = getLocalizedType(requestState.deliveryMethod)
                         )
                     }
                 }
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            AppColors.Border
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Border)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = stringResource(R.string.uploaded_files_label),
+                            fontWeight = FontWeight.Bold,
+                            color = AppColors.TextPrimary
                         )
-                    ) {
-                        Column {
-                            SummaryRow(
-                                label = stringResource(R.string.service),
-                                value = localizedServiceName
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.request_type),
-                                value = if (requestState.selectedType.isNotEmpty()) {
-                                    getLocalizedType(requestState.selectedType)
-                                } else {
-                                    stringResource(R.string.not_specified)
-                                }
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.document_owner_name),
-                                value = personalState.fullName.ifEmpty {
-                                    stringResource(R.string.not_available)
-                                }
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.national_id),
-                                value = personalState.applicantNationalId.ifEmpty {
-                                    stringResource(R.string.not_available)
-                                }
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.applicant),
-                                value = personalState.relationship.ifEmpty {
-                                    stringResource(R.string.document_owner)
-                                }
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.copies_label),
-                                value = when (requestState.copiesCount) {
-                                    1 -> stringResource(R.string.one_copy)
-                                    2 -> stringResource(R.string.two_copies)
-                                    else -> stringResource(
-                                        R.string.copies_count1,
-                                        requestState.copiesCount
-                                    )
-                                }
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.delivery_method),
-                                value = if (requestState.deliveryMethod.isNotEmpty()) {
-                                    getLocalizedType(requestState.deliveryMethod)
-                                } else {
-                                    stringResource(R.string.home_delivery)
-                                }
-                            )
-                            HorizontalDivider(color = AppColors.Border)
-                            SummaryRow(
-                                label = stringResource(R.string.processing_time),
-                                value = stringResource(R.string.processing_days),
-                                valueColor = AppColors.Success
-                            )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        config?.requiredFiles?.forEach { req ->
+                            val urls = requestState.fileUrls[req.id] ?: emptyList()
+                            if (urls.isNotEmpty()) {
+                                DocumentCheckItem(
+                                    name = stringResource(req.labelRes),
+                                    count = urls.size
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
                         }
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            AppColors.Border
-                        )
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = AppColors.PrimaryLight),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.PrimaryMid)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Column(horizontalAlignment = Alignment.Start) {
                             Text(
-                                text = stringResource(R.string.uploaded_documents),
+                                text = totalFees.toInt().toString(),
+                                fontSize = 36.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AppColors.Primary
+                            )
+                            Text(
+                                text = stringResource(R.string.egp_label),
+                                fontSize = 12.sp,
+                                color = AppColors.TextHint
+                            )
+                        }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                text = stringResource(R.string.total_fees_label),
                                 fontWeight = FontWeight.Bold,
                                 color = AppColors.TextPrimary
                             )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            requestState.nationalIdUrls.forEachIndexed { index, _ ->
-                                DocumentCheckItem(
-                                    name = stringResource(
-                                        R.string.national_id_image_number,
-                                        index + 1
-                                    ),
-                                    count = 1
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-                            requestState.serviceDocumentUrl?.let {
-                                val docName =
-                                    if (serviceName.contains(stringResource(R.string.birth_keyword))) {
-                                        stringResource(R.string.old_birth_certificate)
-                                    } else {
-                                        stringResource(R.string.original_required_document)
-                                    }
-                                DocumentCheckItem(
-                                    name = docName,
-                                    count = 1
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = AppColors.PrimaryLight
-                        ),
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            AppColors.PrimaryMid
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(horizontalAlignment = Alignment.Start) {
-                                Text(
-                                    text = stringResource(
-                                        R.string.total_price,
-                                        requestState.totalFees.toInt()
-                                    ),
-                                    fontSize = 36.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = AppColors.Primary
-                                )
-                                Text(
-                                    text = stringResource(R.string.egp),
-                                    fontSize = 12.sp,
-                                    color = AppColors.TextHint
-                                )
-                            }
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(
-                                    text = stringResource(R.string.total_fees),
-                                    fontWeight = FontWeight.Bold,
-                                    color = AppColors.TextPrimary
-                                )
-                                Text(
-                                    text = stringResource(
-                                        R.string.copies_price,
-                                        requestState.copiesCount
-                                    ),
-                                    fontSize = 12.sp,
-                                    color = AppColors.TextSecond
-                                )
-                            }
+                            // Fix 4: Final Price Calculation Display
+                            Text(
+                                text = stringResource(
+                                    R.string.copies_calculation,
+                                    requestState.copiesCount,
+                                    basePrice.toInt().toString(),
+                                    totalFees.toInt().toString()
+                                ),
+                                fontSize = 12.sp,
+                                color = AppColors.TextSecond
+                            )
                         }
                     }
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -345,16 +282,16 @@ fun SummaryRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = label,
-            color = AppColors.TextSecond,
-            fontSize = 14.sp
-        )
+        Text(text = label, color = AppColors.TextSecond, fontSize = 14.sp)
         Text(
             text = value,
             fontWeight = FontWeight.Bold,
             color = valueColor,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.End,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp)
         )
     }
 }
@@ -384,18 +321,15 @@ fun DocumentCheckItem(
                 modifier = Modifier.size(14.dp)
             )
         }
-
         Spacer(modifier = Modifier.width(12.dp))
-
         Text(
             text = name,
             color = AppColors.TextSecond,
             fontSize = 14.sp,
             modifier = Modifier.weight(1f)
         )
-
         Text(
-            text = stringResource(R.string.document_count, count),
+            text = stringResource(R.string.file_count, count),
             color = AppColors.Primary,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold

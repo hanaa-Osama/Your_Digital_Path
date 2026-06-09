@@ -50,7 +50,8 @@ import com.example.yourdigitalpath.presentation.order_track.component.StatusHigh
 fun TrackingDetailsScreen(
     orderId: String,
     trackingviewModel: TrackingViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    onBack: () -> Unit = { navController.popBackStack() }
 ) {
     val trackingstate by trackingviewModel.state.collectAsState()
 
@@ -86,7 +87,7 @@ fun TrackingDetailsScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                navController.popBackStack()
+                                onBack()
                             },
                             modifier = Modifier
                                 .size(40.dp)

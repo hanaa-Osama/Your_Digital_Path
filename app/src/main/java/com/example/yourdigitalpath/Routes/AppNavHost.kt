@@ -219,7 +219,17 @@ fun AppNavHost(navController: NavHostController) {
                 arguments = listOf(navArgument("orderId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-                TrackingDetailsScreen(orderId = orderId, navController = navController)
+                TrackingDetailsScreen(
+                    orderId = orderId,
+                    navController = navController,
+                    onBack = {
+                        if (!navController.popBackStack("my_orders_screen", false)) {
+                            navController.navigate("my_orders_screen") {
+                                popUpTo("home_screen")
+                            }
+                        }
+                    }
+                )
             }
 
             composable("profile_screen") {
@@ -257,9 +267,7 @@ fun AppNavHost(navController: NavHostController) {
             composable("my_orders_screen") {
                 MyOrdersScreen(
                     onOrderClick = { orderId ->
-                        navController.navigate("tracking_details/$orderId") {
-                            popUpTo("home_screen")
-                        }
+                        navController.navigate("tracking_details/$orderId")
                     }
                 )
             }

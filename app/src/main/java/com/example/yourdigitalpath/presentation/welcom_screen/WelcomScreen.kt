@@ -139,7 +139,7 @@ fun WelcomeScreen(navController: NavController) {
                             vertical = 32.dp
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = stringResource(R.string.get_started),
@@ -199,69 +199,6 @@ fun WelcomeScreen(navController: NavController) {
                             color = AppColors.Primary,
                             fontWeight = FontWeight.SemiBold
                         )
-                    }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        HorizontalDivider(
-                            modifier = Modifier.weight(1f),
-                            color = AppColors.Border,
-                            thickness = 1.dp
-                        )
-                        Text(
-                            text = stringResource(R.string.or_separator),
-                            color = AppColors.TextHint,
-                            fontSize = 13.sp,
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.weight(1f),
-                            color = AppColors.Border,
-                            thickness = 1.dp
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    OutlinedButton(
-                        onClick = { },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(
-                            1.dp,
-                            AppColors.Border
-                        )
-                    ) {
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.login_with_national_id),
-                                fontSize = 14.sp,
-                                color = AppColors.Primary,
-                                fontWeight = FontWeight.Medium
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Image(
-                                painter = painterResource(
-                                    id = R.drawable.personalid
-                                ),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(RoundedCornerShape(6.dp))
-                            )
-                        }
                     }
                 }
             }

@@ -32,19 +32,6 @@ fun LoginButtons(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.login_with_national_id),
-                color = AppColors.Primary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
         Text(
             text = stringResource(R.string.no_account_register),
             color = AppColors.Primary,

@@ -54,9 +54,13 @@ fun PersonalDataScreen(
                 RegisterInputField(
                     label = stringResource(R.string.full_name),
                     value = fullName,
-                    onValueChange = {
-                        fullName = it
-                        viewModel.fullName = it
+                    onValueChange = { value ->
+                        val filteredText = value
+                            .replace(Regex("[^\\p{L}\\s]"), "")
+                            .replace(Regex("\\s+"), " ")
+
+                        fullName = filteredText
+                        viewModel.fullName = filteredText
                     },
                     isVerified = fullName.trim().split(" ").size >= 3
                 )

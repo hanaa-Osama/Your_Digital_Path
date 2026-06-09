@@ -49,8 +49,14 @@ fun RegisterInputField(
                 }
             }
         )
-        if (isError && value.isNotEmpty()) {
-            Text(text = errorMessage, color = AppColors.Danger, fontSize = 11.sp, modifier = Modifier.padding(top = 4.dp))
+
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = AppColors.Danger,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
+            )
         }
     }
 }

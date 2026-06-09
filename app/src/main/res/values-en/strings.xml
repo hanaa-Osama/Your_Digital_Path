@@ -374,4 +374,16 @@
     <string name="relationship_son_daughter">Son / Daughter</string>
     <string name="relationship_sibling">Brother / Sister</string>
     <string name="relationship_spouse">Spouse</string>
+    <string name="full_name_required">Full name is required</string>
+    <string name="full_name_invalid">Please enter at least a triple name</string>
+    <string name="national_id_required">National ID is required</string>
+    <string name="birth_date_required">Birth date is required</string>
+    <string name="phone_required">Phone number is required</string>
+    <string name="phone_prefix_invalid">Number must start with 010, 011, 012, or 015</string>
+    <string name="phone_incomplete">Phone number is incomplete (must be 11 digits)</string>
+    <string name="email_required">Email address is required</string>
+    <string name="email_invalid_letters">Email must contain letters, not just numbers</string>
+    <string name="email_invalid_format">Invalid email format (e.g., example@gmail.com)</string>
+    <string name="password_required">Password is required</string>
+    <string name="confirm_password_required">Confirm password is required</string>
 </resources>

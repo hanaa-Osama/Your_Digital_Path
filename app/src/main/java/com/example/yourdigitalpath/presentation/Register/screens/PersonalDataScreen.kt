@@ -74,7 +74,7 @@ fun PersonalDataScreen(
                 },
                 isVerified = isNameValid,
                 isError = showErrors && !isNameValid,
-                errorMessage = if (fullName.trim().isEmpty()) "الاسم بالكامل مطلوب" else "يرجى إدخال الاسم ثلاثياً على الأقل"
+                errorMessage = if (fullName.trim().isEmpty()) stringResource(R.string.full_name_required) else stringResource(R.string.full_name_invalid)
             )
 
             RegisterInputField(
@@ -88,7 +88,7 @@ fun PersonalDataScreen(
                 },
                 isVerified = isNationalIdValid,
                 isError = showErrors && !isNationalIdValid,
-                errorMessage = if (nationalId.isEmpty()) "الرقم القومي مطلوب" else "الرقم القومي يجب أن يكون 14 رقم"
+                errorMessage = if (nationalId.isEmpty()) stringResource(R.string.national_id_required) else stringResource(R.string.national_id_invalid)
             )
             Column(
                 modifier = Modifier
@@ -103,7 +103,7 @@ fun PersonalDataScreen(
                     },
                     leadingIcon = Icons.Outlined.DateRange,
                     placeholder = stringResource(R.string.birth_date_placeholder),
-                    errorMessage = if (showErrors && !isBirthDateValid) "تاريخ الميلاد مطلوب" else null
+                    errorMessage = if (showErrors && !isBirthDateValid) stringResource(R.string.birth_date_required) else null
                 )
             }
             RegisterInputField(
@@ -119,10 +119,10 @@ fun PersonalDataScreen(
                 isVerified = isPhoneValid,
                 isError = showErrors && !isPhoneValid,
                 errorMessage = when {
-                    phone.isEmpty() -> "رقم الهاتف مطلوب"
-                    !phone.startsWith("01") || (phone.length >= 3 && phone[2] !in listOf('0', '1', '2', '5')) -> "يجب أن يبدأ الرقم بـ 010، 011، 012، أو 015"
-                    phone.length < 11 -> "رقم الهاتف غير مكتمل (يجب أن يكون 11 رقم)"
-                    else -> "رقم الهاتف غير صحيح"
+                    phone.isEmpty() -> stringResource(R.string.phone_required)
+                    !phone.startsWith("01") || (phone.length >= 3 && phone[2] !in listOf('0', '1', '2', '5')) -> stringResource(R.string.phone_prefix_invalid)
+                    phone.length < 11 -> stringResource(R.string.phone_incomplete)
+                    else -> stringResource(R.string.invalid_phone)
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))

@@ -30,112 +30,121 @@ fun AccountDataScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
+    var showErrors by remember { mutableStateOf(false) }
 
     val state by viewModel.state.collectAsState()
-    val isEmailValid = email.contains("@") && email.contains(".")
+    val emailHasLetters = email.any { it.isLetter() }
+    val emailRegex = Regex("^[a-zA-Z0-9._%+-]*[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
+    val isEmailValid = emailRegex.matches(email)
     val isPasswordValid = password.length >= 8
     val passwordsMatch = password == confirmPassword && confirmPassword.isNotEmpty()
+    val isFormValid = isEmailValid && isPasswordValid && passwordsMatch
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(AppColors.Primary)
     ) {
-            RegisterTopBar(onBack = onBack)
-            RegisterStepsIndicator(currentStep = 2)
+        RegisterTopBar(onBack = onBack)
+        RegisterStepsIndicator(currentStep = 2)
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .background(AppColors.Surface, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                    .padding(24.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(AppColors.Surface, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            RegisterSectionHeader(
+                title = stringResource(R.string.account_data)
+            )
 
-                RegisterSectionHeader(
-                    title = stringResource(R.string.account_data)
-                )
+            Spacer(modifier = Modifier.height(20.dp))
 
-                Spacer(modifier = Modifier.height(20.dp))
+            RegisterInputField(
+                label = stringResource(R.string.email),
+                value = email,
+                onValueChange = {
+                    email = it.lowercase()
+                },
+                placeholder = stringResource(R.string.email_placeholder),
+                isVerified = isEmailValid,
+                isError = showErrors && !isEmailValid,
+                errorMessage = when {
+                    email.isEmpty() -> stringResource(R.string.email_required)
+                    !emailHasLetters -> stringResource(R.string.email_invalid_letters)
+                    else -> stringResource(R.string.email_invalid_format)
+                }
+            )
 
-                RegisterInputField(
-                    label = stringResource(R.string.email),
-                    value = email,
-                    onValueChange = { email = it },
-                    placeholder = stringResource(R.string.email_placeholder),
-                    isVerified = isEmailValid
-                )
+            PasswordInputField(
+                label = stringResource(R.string.password),
+                value = password,
+                onValueChange = { password = it },
+                showPassword = showPassword,
+                onToggleVisibility = { showPassword = !showPassword },
+                isVerified = isPasswordValid,
+                isError = showErrors && !isPasswordValid,
+                errorMessage = if (password.isEmpty()) stringResource(R.string.password_required) else stringResource(R.string.password_error)
+            )
 
-                PasswordInputField(
-                    label = stringResource(R.string.password),
-                    value = password,
-                    onValueChange = { password = it },
-                    showPassword = showPassword,
-                    onToggleVisibility = { showPassword = !showPassword },
-                    isVerified = isPasswordValid,
-                    isError = password.isNotEmpty() && !isPasswordValid,
-                    errorMessage = stringResource(R.string.password_error)
-                )
+            PasswordInputField(
+                label = stringResource(R.string.confirm_password),
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                showPassword = showConfirm,
+                onToggleVisibility = { showConfirm = !showConfirm },
+                isVerified = passwordsMatch,
+                isError = showErrors && !passwordsMatch,
+                errorMessage = if (confirmPassword.isEmpty()) stringResource(R.string.confirm_password_required) else stringResource(R.string.passwords_not_match)
+            )
 
-                PasswordInputField(
-                    label = stringResource(R.string.confirm_password),
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    showPassword = showConfirm,
-                    onToggleVisibility = { showConfirm = !showConfirm },
-                    isVerified = passwordsMatch,
-                    isError = confirmPassword.isNotEmpty() && !passwordsMatch,
-                    errorMessage = stringResource(R.string.passwords_not_match)
-                )
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+            RegisterWarningCard(
+                message = stringResource(R.string.password_warning)
+            )
 
-                RegisterWarningCard(
-                    message = stringResource(R.string.password_warning)
-                )
+            Spacer(modifier = Modifier.height(24.dp))
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                RegisterButton(
-                    text = stringResource(R.string.create_account),
-                    onClick = {
+            RegisterButton(
+                text = stringResource(R.string.create_account),
+                onClick = {
+                    showErrors = true
+                    if (isFormValid) {
                         viewModel.register(
                             email = email,
                             password = password
                         )
-                    },
-                    enabled = isEmailValid && isPasswordValid && passwordsMatch
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                when (state) {
-
-                    is RegisterState.Loading -> {
-                        CircularProgressIndicator()
                     }
-
-                    is RegisterState.Success -> {
-                        LaunchedEffect(Unit) {
-                            onRegisterSuccess()
-                            viewModel.resetState()
-                        }
-                    }
-
-                    is RegisterState.Error -> {
-                        Text(
-                            text = stringResource(
-                                (state as RegisterState.Error).messageRes
-                            ),
-                            color = AppColors.Danger
-                        )
-                    }
-
-                    else -> {}
                 }
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            when (state) {
+                is RegisterState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                is RegisterState.Success -> {
+                    LaunchedEffect(Unit) {
+                        onRegisterSuccess()
+                        viewModel.resetState()
+                    }
+                }
+                is RegisterState.Error -> {
+                    Text(
+                        text = stringResource(
+                            (state as RegisterState.Error).messageRes
+                        ),
+                        color = AppColors.Danger
+                    )
+                }
+                else -> {}
             }
         }
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)

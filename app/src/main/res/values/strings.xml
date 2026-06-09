@@ -373,4 +373,16 @@
     <string name="relationship_son_daughter">ابن / ابنة</string>
     <string name="relationship_sibling">أخ / أخت</string>
     <string name="relationship_spouse">زوج / زوجة</string>
+    <string name="full_name_required">الاسم بالكامل مطلوب</string>
+    <string name="full_name_invalid">يرجى إدخال الاسم ثلاثياً على الأقل</string>
+    <string name="national_id_required">الرقم القومي مطلوب</string>
+    <string name="birth_date_required">تاريخ الميلاد مطلوب</string>
+    <string name="phone_required">رقم الهاتف مطلوب</string>
+    <string name="phone_prefix_invalid">يجب أن يبدأ الرقم بـ 010، 011، 012، أو 015</string>
+    <string name="phone_incomplete">رقم الهاتف غير مكتمل (يجب أن يكون 11 رقم)</string>
+    <string name="email_required">البريد الإلكتروني مطلوب</string>
+    <string name="email_invalid_letters">يجب أن يحتوي البريد الإلكتروني على حروف وليس أرقام فقط</string>
+    <string name="email_invalid_format">صيغة البريد الإلكتروني غير صحيحة (مثال: example@gmail.com)</string>
+    <string name="password_required">كلمة المرور مطلوبة</string>
+    <string name="confirm_password_required">تأكيد كلمة المرور مطلوب</string>
 </resources>

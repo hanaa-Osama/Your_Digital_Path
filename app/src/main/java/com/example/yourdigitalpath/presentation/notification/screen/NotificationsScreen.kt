@@ -18,8 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.ui.res.stringResource
-import com.example.yourdigitalpath.R
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsNone
@@ -35,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,9 +44,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.presentation.notification.NotificationViewModel
 import com.example.yourdigitalpath.ui.theme.AppColors
 
@@ -202,32 +203,46 @@ fun NotificationsScreen(
                 ) { notification ->
 
                     val dismissState = rememberSwipeToDismissBoxState(
-                        confirmValueChange = {
-                            if (it == SwipeToDismissBoxValue.EndToStart) {
+                        confirmValueChange = { value ->
+                            if (value == SwipeToDismissBoxValue.EndToStart) {
                                 selectedNotificationId = notification.id
                                 showDeleteDialog = true
+                                // نرجع false عشان الإشعار يفضل موجود وميروحش غير لما نضغط "نعم"
+                                false
+                            } else {
+                                false
                             }
-                            false
                         }
                     )
 
+                    LaunchedEffect(showDeleteDialog) {
+                        if (!showDeleteDialog && selectedNotificationId == null) {
+                            dismissState.reset()
+                        }
+                    }
+
                     SwipeToDismissBox(
                         state = dismissState,
-                        enableDismissFromStartToEnd = true,
+                        enableDismissFromStartToEnd = false,
                         backgroundContent = {
+                            val color = when (dismissState.dismissDirection) {
+                                SwipeToDismissBoxValue.EndToStart -> Color(0xFFFFEBEE)
+                                else -> Color.Transparent
+                            }
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(Color(0xFFFFEBEE), RoundedCornerShape(16.dp))
+                                    .background(color, RoundedCornerShape(16.dp))
                                     .padding(horizontal = 20.dp),
                                 contentAlignment = Alignment.CenterEnd
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.DeleteOutline,
-                                    contentDescription =
-                                        stringResource(R.string.delete),
-                                    tint = Color(0xFFF04438)
-                                )
+                                if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+                                    Icon(
+                                        imageVector = Icons.Default.DeleteOutline,
+                                        contentDescription = stringResource(R.string.delete),
+                                        tint = Color(0xFFF04438)
+                                    )
+                                }
                             }
                         }
                     ) {
@@ -276,14 +291,14 @@ fun NotificationsScreen(
                                     Spacer(modifier = Modifier.height(4.dp))
 
                                     Text(
-                                        text = notification.id,
+                                        text = notification.message,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = AppColors.TextSecond
                                     )
                                 }
 
                                 Text(
-                                    text = stringResource(R.string.now),
+                                    text = notification.timeAgo,
                                     style = MaterialTheme.typography.labelSmall,
                                     color = AppColors.TextHint
                                 )

@@ -385,4 +385,5 @@
     <string name="email_invalid_format">صيغة البريد الإلكتروني غير صحيحة (مثال: example@gmail.com)</string>
     <string name="password_required">كلمة المرور مطلوبة</string>
     <string name="confirm_password_required">تأكيد كلمة المرور مطلوب</string>
+    <string name="national_id_already_used">الرقم القومي مسجل بالفعل</string>
 </resources>

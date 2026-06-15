@@ -28,6 +28,9 @@ fun PersonalDataScreen(
     var nationalId by remember { mutableStateOf(viewModel.nationalId) }
     var birthDate by remember { mutableStateOf(viewModel.birthDate) }
     var phone by remember { mutableStateOf(viewModel.phone) }
+    val nationalIdAlreadyUsedError = stringResource(R.string.national_id_already_used)
+    var isLoading by remember { mutableStateOf(false) }
+    var nationalIdError by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -38,14 +41,11 @@ fun PersonalDataScreen(
         RegisterStepsIndicator(currentStep = 1)
 
         var showErrors by remember { mutableStateOf(false) }
-
         val isNameValid = fullName.trim().split(" ").size >= 3
         val isNationalIdValid = nationalId.length == 14
         val isBirthDateValid = birthDate.isNotEmpty()
-
         val phoneRegex = Regex("^01[0125][0-9]{8}$")
         val isPhoneValid = phone.length == 11 && phoneRegex.matches(phone)
-
         val isFormValid = isNameValid && isNationalIdValid && isBirthDateValid && isPhoneValid
 
         Column(
@@ -84,11 +84,16 @@ fun PersonalDataScreen(
                     if (it.length <= 14 && it.all { ch -> ch.isDigit() }) {
                         nationalId = it
                         viewModel.nationalId = it
+                        nationalIdError = ""
                     }
                 },
-                isVerified = isNationalIdValid,
-                isError = showErrors && !isNationalIdValid,
-                errorMessage = if (nationalId.isEmpty()) stringResource(R.string.national_id_required) else stringResource(R.string.national_id_invalid)
+                isVerified = isNationalIdValid && nationalIdError.isEmpty(),
+                isError = (showErrors && !isNationalIdValid) || nationalIdError.isNotEmpty(),
+                errorMessage = when {
+                    nationalIdError.isNotEmpty() -> nationalIdError
+                    nationalId.isEmpty() -> stringResource(R.string.national_id_required)
+                    else -> stringResource(R.string.national_id_invalid)
+                }
             )
             Column(
                 modifier = Modifier
@@ -132,10 +137,21 @@ fun PersonalDataScreen(
             Spacer(modifier = Modifier.height(24.dp))
             RegisterButton(
                 text = stringResource(R.string.next_account_data),
+                enabled = isFormValid && !isLoading,
                 onClick = {
                     showErrors = true
                     if (isFormValid) {
-                        onNext()
+                        isLoading = true
+
+                        viewModel.checkNationalIdAvailable(nationalId) { exists ->
+                            if (exists) {
+                                nationalIdError = nationalIdAlreadyUsedError
+                                showErrors = true
+                            } else {
+                                onNext()
+                            }
+                            isLoading = false
+                        }
                     }
                 }
             )

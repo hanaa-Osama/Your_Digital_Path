@@ -42,6 +42,7 @@ class RegisterViewModel @Inject constructor(
             RegisterState.Idle
         )
     val state = _state.asStateFlow()
+
     fun register(
         email: String,
         password: String
@@ -49,6 +50,14 @@ class RegisterViewModel @Inject constructor(
         _state.value = RegisterState.Loading
         viewModelScope.launch {
             try {
+                val nationalIdExists = checkNationalIdExists(nationalId)
+                if (nationalIdExists) {
+                    _state.value = RegisterState.Error(
+                        R.string.national_id_already_used
+                    )
+                    return@launch
+                }
+
                 val result =
                     auth.createUserWithEmailAndPassword(
                         email.trim(),
@@ -109,6 +118,35 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
+
+    fun checkNationalIdAvailable(
+        nationalId: String,
+        callback: (Boolean) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val exists = checkNationalIdExists(nationalId)
+                callback(exists)
+            } catch (e: Exception) {
+                callback(false)
+            }
+        }
+    }
+
+    private suspend fun checkNationalIdExists(nationalId: String): Boolean {
+        return try {
+            val snapshot = firestore
+                .collection("users")
+                .whereEqualTo("nationalId", nationalId)
+                .limit(1)
+                .get()
+                .await()
+            snapshot.documents.isNotEmpty()
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     fun resetState() {
         _state.value = RegisterState.Idle
     }

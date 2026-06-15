@@ -386,4 +386,5 @@
     <string name="email_invalid_format">Invalid email format (e.g., example@gmail.com)</string>
     <string name="password_required">Password is required</string>
     <string name="confirm_password_required">Confirm password is required</string>
+    <string name="national_id_already_used">National ID already registered</string>
 </resources>

@@ -1,17 +1,12 @@
 package com.example.yourdigitalpath.Routes
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -23,7 +18,6 @@ import androidx.navigation.navArgument
 import com.blqes.digi.presentation.BottomNavBar
 import com.example.yourdigitalpath.presentation.Home.screens.MainScreen
 import com.example.yourdigitalpath.presentation.Login.AuthViewModel
-import com.example.yourdigitalpath.presentation.Login.LoginState
 import com.example.yourdigitalpath.presentation.Login.screens.LoginScreen
 import com.example.yourdigitalpath.presentation.Register.RegisterViewModel
 import com.example.yourdigitalpath.presentation.Register.screens.AccountDataScreen
@@ -40,6 +34,7 @@ import com.example.yourdigitalpath.presentation.profile.screens.SecurityScreen
 import com.example.yourdigitalpath.presentation.profile.screens.SettingsScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestScreen
 import com.example.yourdigitalpath.presentation.service_request.ServiceRequestViewModel
+import com.example.yourdigitalpath.presentation.splash.SplashScreen
 import com.example.yourdigitalpath.presentation.uploadfile.ServiceSummaryScreen
 import com.example.yourdigitalpath.presentation.uploadfile.UploudFilesScreens
 import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
@@ -48,27 +43,12 @@ import com.example.yourdigitalpath.presentation.welcom_screen.WelcomeScreen
 fun AppNavHost(navController: NavHostController) {
 
     val authViewModel: AuthViewModel = hiltViewModel()
-    val loginState by authViewModel.loginState.collectAsState()
-
-
-    val startDestination = remember {
-        if (authViewModel.isUserAlreadyLoggedIn()) "home_screen" else "welcome_screen"
-    }
-    if (authViewModel.isUserAlreadyLoggedIn() && loginState is LoginState.Idle) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Color(0xFF3D5A80))
-        }
-        return
-    }
     val userName by authViewModel.userName.collectAsState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomBar = currentRoute in listOf(
-        "home_screen",
-        "notifications_screen",
-        "profile_screen",
-        "my_orders_screen"
+        "home_screen", "notifications_screen", "profile_screen", "my_orders_screen"
     )
 
     Scaffold(
@@ -80,14 +60,17 @@ fun AppNavHost(navController: NavHostController) {
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = "splash_screen",
             modifier = Modifier.padding(padding)
         ) {
 
-            composable("welcome_screen") {
-                WelcomeScreen(navController)
+            composable("splash_screen") {
+                SplashScreen(navController = navController)
             }
 
+            composable("welcome_screen") {
+                WelcomeScreen(navController = navController)
+            }
             composable("login_screen") {
                 LoginScreen(
                     navController = navController,

@@ -1,5 +1,6 @@
 package com.example.yourdigitalpath.presentation.order_track
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,7 @@ fun TrackingDetailsScreen(
     navController: NavController,
     onBack: () -> Unit = { navController.popBackStack() }
 ) {
+    val context = LocalContext.current
     val trackingstate by trackingviewModel.state.collectAsState()
 
     LaunchedEffect(orderId) {
@@ -140,7 +143,13 @@ fun TrackingDetailsScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedButton(
-                    onClick = {  },
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "سيتم توفير هذه الميزة مستقبلاً (Future Work)",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),
@@ -154,7 +163,13 @@ fun TrackingDetailsScreen(
                     )
                 }
                 Button(
-                    onClick = { /* Track Shipping */ },
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "سيتم توفير هذه الميزة مستقبلاً (Future Work)",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),

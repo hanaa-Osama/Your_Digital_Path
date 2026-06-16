@@ -18,6 +18,22 @@ import com.example.yourdigitalpath.presentation.Register.components.*
 import com.example.yourdigitalpath.ui.components.CustomDatePickerField
 import com.example.yourdigitalpath.ui.theme.AppColors
 
+fun toEnglishDigits(input: String): String {
+    return input.map { ch ->
+        when (ch) {
+            '٠' -> '0'; '١' -> '1'; '٢' -> '2'; '٣' -> '3'; '٤' -> '4'
+            '٥' -> '5'; '٦' -> '6'; '٧' -> '7'; '٨' -> '8'; '٩' -> '9'
+            else -> ch
+        }
+    }.joinToString("")
+}
+
+fun isAllDigits(input: String): Boolean {
+    return input.all { ch ->
+        ch.isDigit() || ch in '٠'..'٩'
+    }
+}
+
 @Composable
 fun PersonalDataScreen(
     onBack: () -> Unit = {},
@@ -44,8 +60,9 @@ fun PersonalDataScreen(
         val isNameValid = fullName.trim().split(" ").size >= 3
         val isNationalIdValid = nationalId.length == 14
         val isBirthDateValid = birthDate.isNotEmpty()
+        val phoneEnglish = toEnglishDigits(phone)
         val phoneRegex = Regex("^01[0125][0-9]{8}$")
-        val isPhoneValid = phone.length == 11 && phoneRegex.matches(phone)
+        val isPhoneValid = phoneEnglish.length == 11 && phoneRegex.matches(phoneEnglish)
         val isFormValid = isNameValid && isNationalIdValid && isBirthDateValid && isPhoneValid
 
         Column(
@@ -81,7 +98,7 @@ fun PersonalDataScreen(
                 label = stringResource(R.string.national_id),
                 value = nationalId,
                 onValueChange = {
-                    if (it.length <= 14 && it.all { ch -> ch.isDigit() }) {
+                    if (it.length <= 14 && isAllDigits(it)) {
                         nationalId = it
                         viewModel.nationalId = it
                         nationalIdError = ""
@@ -115,7 +132,7 @@ fun PersonalDataScreen(
                 label = stringResource(R.string.phone_number),
                 value = phone,
                 onValueChange = {
-                    if (it.length <= 11 && it.all { ch -> ch.isDigit() }) {
+                    if (it.length <= 11 && isAllDigits(it)) {
                         phone = it
                         viewModel.phone = it
                     }
@@ -125,8 +142,8 @@ fun PersonalDataScreen(
                 isError = showErrors && !isPhoneValid,
                 errorMessage = when {
                     phone.isEmpty() -> stringResource(R.string.phone_required)
-                    !phone.startsWith("01") || (phone.length >= 3 && phone[2] !in listOf('0', '1', '2', '5')) -> stringResource(R.string.phone_prefix_invalid)
-                    phone.length < 11 -> stringResource(R.string.phone_incomplete)
+                    !phoneEnglish.startsWith("01") || (phoneEnglish.length >= 3 && phoneEnglish[2] !in listOf('0', '1', '2', '5')) -> stringResource(R.string.phone_prefix_invalid)
+                    phoneEnglish.length < 11 -> stringResource(R.string.phone_incomplete)
                     else -> stringResource(R.string.invalid_phone)
                 }
             )
@@ -142,8 +159,9 @@ fun PersonalDataScreen(
                     showErrors = true
                     if (isFormValid) {
                         isLoading = true
+                        val englishNationalId = toEnglishDigits(nationalId)
 
-                        viewModel.checkNationalIdAvailable(nationalId) { exists ->
+                        viewModel.checkNationalIdAvailable(englishNationalId) { exists ->
                             if (exists) {
                                 nationalIdError = nationalIdAlreadyUsedError
                                 showErrors = true

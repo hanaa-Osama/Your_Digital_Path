@@ -9,8 +9,10 @@ import com.example.yourdigitalpath.domain.usecase.ClearNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.DeleteNotificationUseCase
 import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -23,18 +25,25 @@ class NotificationViewModel @Inject constructor(
     private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase,
     private val clearNotificationsUseCase: ClearNotificationsUseCase,
     private val deleteNotificationUseCase: DeleteNotificationUseCase,
+    private val auth: FirebaseAuth,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    val notifications: StateFlow<List<NotificationItem>> = getNotificationsUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Companion.Lazily,
-            initialValue = emptyList()
-        )
+    private val currentUserId = auth.currentUser?.uid
+
+    val notifications: StateFlow<List<NotificationItem>> = if (currentUserId != null) {
+        getNotificationsUseCase(currentUserId)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = emptyList()
+            )
+    } else {
+        MutableStateFlow(emptyList())
+    }
 
     fun onNotificationClicked(id: String) {
         viewModelScope.launch {
@@ -56,8 +65,10 @@ class NotificationViewModel @Inject constructor(
 
     fun clearAllNotifications() {
         viewModelScope.launch {
-            clearNotificationsUseCase()
-            notificationManager.cancelAll()
+            currentUserId?.let {
+                clearNotificationsUseCase(it)
+                notificationManager.cancelAll()
+            }
         }
     }
 }

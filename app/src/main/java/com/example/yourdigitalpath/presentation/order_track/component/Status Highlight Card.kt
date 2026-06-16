@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,18 +24,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.ui.theme.AppColors
-import androidx.compose.ui.res.stringResource
-import com.example.yourdigitalpath.R
 
 @Composable
 fun StatusHighlightCard(
     currentOrder: OrderTrackingDetail?
 ) {
+    val lastStep = currentOrder?.steps
+        ?.findLast { it.status == "current" || it.status == "completed" }
+    val isStepCompleted = lastStep?.status == "completed"
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -46,7 +51,10 @@ fun StatusHighlightCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(AppColors.WarningBg, AppColors.Surface)
+                        colors = listOf(
+                            if (isStepCompleted) AppColors.SuccessBg else AppColors.WarningBg,
+                            AppColors.Surface
+                        )
                     )
                 )
                 .padding(20.dp)
@@ -69,15 +77,17 @@ fun StatusHighlightCard(
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        text = currentOrder?.steps
-                            ?.findLast {
-                                it.status == "current" || it.status == "completed"
-                            }
-                            ?.let {
-                                stringResource(it.title)
-                            }
-                            ?: stringResource(R.string.under_review),
-                        color = AppColors.Warning,
+                        text = lastStep?.let {
+                            if (it.status == "completed") {
+                                when (it.title) {
+                                    "قيد المراجعة" -> "تم المراجعة"
+                                    else -> if (it.title.startsWith("جاري ")) {
+                                        it.title.replaceFirst("جاري ", "تم ")
+                                    } else it.title
+                                }
+                            } else it.title
+                        } ?: stringResource(R.string.under_review),
+                        color = if (isStepCompleted) AppColors.Success else AppColors.Warning,
                         fontWeight = FontWeight.Black,
                         fontSize = 20.sp
                     )
@@ -87,15 +97,17 @@ fun StatusHighlightCard(
                     modifier = Modifier
                         .size(56.dp)
                         .background(
-                            AppColors.Warning.copy(alpha = 0.1f),
+                            (if (isStepCompleted) AppColors.Success else AppColors.Warning).copy(
+                                alpha = 0.1f
+                            ),
                             RoundedCornerShape(16.dp)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        Icons.Outlined.AccessTime,
+                        if (isStepCompleted) Icons.Default.Check else Icons.Outlined.AccessTime,
                         contentDescription = null,
-                        tint = AppColors.Warning,
+                        tint = if (isStepCompleted) AppColors.Success else AppColors.Warning,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -110,8 +122,10 @@ fun StatusHighlightCard(
                     .fillMaxWidth()
                     .height(8.dp)
                     .clip(RoundedCornerShape(4.dp)),
-                color = AppColors.Warning,
-                trackColor = AppColors.Warning.copy(alpha = 0.1f),
+                color = if (isStepCompleted) AppColors.Success else AppColors.Warning,
+                trackColor = (if (isStepCompleted) AppColors.Success else AppColors.Warning).copy(
+                    alpha = 0.1f
+                ),
             )
 
             Row(
@@ -125,7 +139,7 @@ fun StatusHighlightCard(
                         R.string.completed_percentage,
                         currentOrder?.progressPercent ?: 0
                     ),
-                    color = AppColors.Warning,
+                    color = if (isStepCompleted) AppColors.Success else AppColors.Warning,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )

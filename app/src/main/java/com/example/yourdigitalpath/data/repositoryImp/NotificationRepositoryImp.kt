@@ -16,9 +16,8 @@ class NotificationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : NotificationRepository {
 
-    override fun getAllNotifications(): Flow<List<NotificationItem>> {
-        return dao.getNotificationsFlow().map { entities ->
-
+    override fun getAllNotifications(userId: String): Flow<List<NotificationItem>> {
+        return dao.getNotificationsFlow(userId).map { entities ->
             entities.map { it.toDomain(context) }
         }
     }
@@ -27,9 +26,10 @@ class NotificationRepositoryImpl @Inject constructor(
         dao.markAsRead(id)
     }
 
-    override suspend fun saveNotification(notification: NotificationItem) {
+    override suspend fun saveNotification(notification: NotificationItem, userId: String) {
         val entity = NotificationEntity(
             id = notification.id,
+            userId = userId,
             title = notification.title,
             message = notification.message,
             type = notification.type,
@@ -39,8 +39,8 @@ class NotificationRepositoryImpl @Inject constructor(
         dao.insertNotification(entity)
     }
 
-    override suspend fun clearAllNotifications() {
-        dao.clearAll()
+    override suspend fun clearAllNotifications(userId: String) {
+        dao.clearAll(userId)
     }
 
     override suspend fun deleteNotification(id: String) {

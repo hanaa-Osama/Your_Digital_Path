@@ -9,6 +9,7 @@ import com.example.yourdigitalpath.domain.model.ServiceRequestModel
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.ServiceRequestRepository
 import com.example.yourdigitalpath.ui.theme.DateUtils
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ServiceRequestRepoImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
+    private val auth: FirebaseAuth,
     private val serviceRequestDao: ServiceRequestDao,
     @ApplicationContext private val context: Context
 ) : ServiceRequestRepository {
@@ -36,33 +38,33 @@ class ServiceRequestRepoImpl @Inject constructor(
 
         val initialSteps = listOf(
             TrackingStep(
-                id = 1,
+                id = 1L,
                 status = "completed",
-                title = R.string.order_received,
+                title = context.getString(R.string.order_received),
                 timestamp = context.getString(R.string.now)
             ),
             TrackingStep(
-                id = 2,
+                id = 2L,
                 status = "current",
-                title = R.string.under_review,
+                title = context.getString(R.string.under_review),
                 timestamp = context.getString(R.string.data_verification)
             ),
             TrackingStep(
-                id = 3,
+                id = 3L,
                 status = "pending",
-                title = R.string.document_processing,
+                title = context.getString(R.string.document_processing),
                 timestamp = ""
             ),
             TrackingStep(
-                id = 4,
+                id = 4L,
                 status = "pending",
-                title = R.string.shipped,
+                title = context.getString(R.string.shipped),
                 timestamp = ""
             ),
             TrackingStep(
-                id = 5,
+                id = 5L,
                 status = "pending",
-                title = R.string.delivered,
+                title = context.getString(R.string.delivered),
                 timestamp = ""
             )
         )
@@ -84,7 +86,8 @@ class ServiceRequestRepoImpl @Inject constructor(
             "steps" to initialSteps,
             "status" to "InProgress",
             "progressPercent" to 45,
-            "timestamp" to com.google.firebase.Timestamp.now()
+            "timestamp" to com.google.firebase.Timestamp.now(),
+            "userId" to auth.currentUser?.uid
         )
         return try {
             val result = firestore

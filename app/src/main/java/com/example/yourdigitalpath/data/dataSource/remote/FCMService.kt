@@ -10,6 +10,7 @@ import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.YourDigitalPathApp
 import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,15 +25,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var notificationDao: NotificationDao
 
+    @Inject
+    lateinit var auth: FirebaseAuth
+
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
         val title = message.notification?.title ?: message.data["title"] ?: getString(R.string.new_notification_title)
         val body = message.notification?.body ?: message.data["body"] ?: ""
         val type = message.data["type"] ?: "info"
+        val userId = message.data["userId"] ?: auth.currentUser?.uid ?: ""
 
         val newNotification = NotificationEntity(
             id = UUID.randomUUID().toString(),
+            userId = userId,
             title = title,
             message = body,
             type = type,

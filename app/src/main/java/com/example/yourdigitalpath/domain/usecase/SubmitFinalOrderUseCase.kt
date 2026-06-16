@@ -1,6 +1,5 @@
 package com.example.yourdigitalpath.domain.usecase
 
-import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.OrderTrackRepository
@@ -38,31 +37,32 @@ class SubmitFinalOrderUseCase @Inject constructor(
             TrackingStep(
                 id = 1,
                 status = "completed",
-                title = R.string.order_received,
-                timestamp = "Now"
+                title = "تم استلام الطلب",
+                timestamp = "الآن"
             ),
             TrackingStep(
                 id = 2,
                 status = "current",
-                title = R.string.under_review,
-                timestamp = "Checking data"
+                title = "قيد المراجعة",
+                timestamp = "",
+                description = "جاري التأكد من البيانات"
             ),
             TrackingStep(
                 id = 3,
                 status = "pending",
-                title = R.string.document_processing,
+                title = "جاري استخراج الوثيقة",
                 timestamp = ""
             ),
             TrackingStep(
                 id = 4,
                 status = "pending",
-                title = R.string.shipped,
+                title = "تم الشحن",
                 timestamp = ""
             ),
             TrackingStep(
                 id = 5,
                 status = "pending",
-                title = R.string.delivered,
+                title = "تم التسليم",
                 timestamp = ""
             )
         )

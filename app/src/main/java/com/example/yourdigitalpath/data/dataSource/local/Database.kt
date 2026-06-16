@@ -21,7 +21,7 @@ import com.example.yourdigitalpath.data.local.entity.UserProfileEntity
         CertificatesEntity::class,
         ServiceRequestEntity::class
     ],
-    version = 5,
+    version = 8,
     exportSchema = false
 )
 abstract class Database : RoomDatabase() {

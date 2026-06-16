@@ -11,8 +11,10 @@ import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.YourDigitalPathApp
 import com.example.yourdigitalpath.data.dataSource.local.Dao.NotificationDao
 import com.example.yourdigitalpath.data.dataSource.local.Entity.NotificationEntity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,13 +24,21 @@ import javax.inject.Singleton
 @Singleton
 class FirestoreNotificationListener @Inject constructor(
     private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth,
     private val notificationDao: NotificationDao,
     private val context: Context
 ) {
     private var isFirstLoad = true
+    private var listenerRegistration: ListenerRegistration? = null
 
     fun startListening() {
-        firestore.collection("notifications")
+        val userId = auth.currentUser?.uid ?: return
+
+        // Stop previous listener if any
+        stopListening()
+
+        listenerRegistration = firestore.collection("notifications")
+            .whereEqualTo("userId", userId)
             .addSnapshotListener { snapshots, error ->
                 if (error != null) {
                     android.util.Log.e("FirestoreListener", "Listen failed.", error)
@@ -50,6 +60,7 @@ class FirestoreNotificationListener @Inject constructor(
 
                         val newNotification = NotificationEntity(
                             id = id,
+                            userId = userId,
                             title = title,
                             message = message,
                             type = type,
@@ -85,5 +96,11 @@ class FirestoreNotificationListener @Inject constructor(
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(id.hashCode(), builder.build())
+    }
+
+    fun stopListening() {
+        listenerRegistration?.remove()
+        listenerRegistration = null
+        isFirstLoad = true
     }
 }

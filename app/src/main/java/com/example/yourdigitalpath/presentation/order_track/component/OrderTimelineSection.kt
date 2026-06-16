@@ -19,18 +19,17 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.ui.res.stringResource
-import com.example.yourdigitalpath.R
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.TrackingStep
-
 import com.example.yourdigitalpath.ui.theme.AppColors
 
 @Composable
@@ -55,9 +54,11 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
 
             steps.forEachIndexed { index, step ->
                 TimelineItem(
-                    status = stringResource(step.title),
+                    title = step.title,
+                    description = step.description,
                     date = step.timestamp,
                     stepStatus = step.status,
+                    isFirst = index == 0,
                     isLast = index == steps.size - 1
                 )
             }
@@ -67,34 +68,76 @@ fun OrderTimelineSection(steps: List<TrackingStep>) {
 
 @Composable
 fun TimelineItem(
-    status: String,
+    title: String,
+    description: String?,
     date: String,
     stepStatus: String,
-    isLast: Boolean
+    isLast: Boolean,
+    isFirst: Boolean = false
 ) {
+    fun String.formatAsCompleted(): String {
+        return when {
+            this == "قيد المراجعة" -> "تم المراجعة"
+            this.startsWith("جاري ") -> this.replaceFirst("جاري ", "تم ")
+            else -> this
+        }
+    }
+
+    val displayTitle = if (stepStatus == "completed") title.formatAsCompleted() else title
+    val displayDate = if (stepStatus == "completed") date.formatAsCompleted() else date
+    val displayDescription =
+        if (stepStatus == "completed") description?.formatAsCompleted() else description
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(30.dp)
+        // Connector Column
+        Box(
+            modifier = Modifier
+                .width(30.dp)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.weight(1f)) {
-                if (!isLast) {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 24.dp)
-                            .width(2.dp)
-                            .fillMaxHeight()
-                            .background(
-                                if (stepStatus == "completed") AppColors.Success else AppColors.Border,
-                                shape = RoundedCornerShape(2.dp)
-                            )
-                    )
-                }
+            // Vertical Line
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .padding(top = 12.dp) // Start from center of icon
+                        .width(2.dp)
+                        .fillMaxHeight()
+                        .background(
+                            if (stepStatus == "completed") AppColors.Success else AppColors.Border.copy(
+                                alpha = 0.5f
+                            ),
+                            shape = RoundedCornerShape(1.dp)
+                        )
+                )
+            }
 
+            // For items after the first, draw line to connect from top
+            if (!isFirst) {
+                Box(
+                    modifier = Modifier
+                        .height(12.dp) // End at center of icon
+                        .width(2.dp)
+                        .background(
+                            if (stepStatus == "completed" || stepStatus == "current") AppColors.Success else AppColors.Border.copy(
+                                alpha = 0.5f
+                            ),
+                            shape = RoundedCornerShape(1.dp)
+                        )
+                )
+            }
+
+            // Step Indicator
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(AppColors.Surface, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
                 when (stepStatus) {
                     "completed" -> {
                         Surface(
@@ -142,37 +185,48 @@ fun TimelineItem(
                     }
                 }
             }
-            if (!isLast) {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
         }
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Text(
-            text = status,
-            fontSize = 14.sp,
-            fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.Medium,
-            color = when (stepStatus) {
-                "completed" -> AppColors.Success
-                "current" -> AppColors.TextPrimary
-                else -> AppColors.TextHint
-            },
+        // Content Column
+        Column(
             modifier = Modifier
-                .padding(top = 2.dp)
-                .weight(2f)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Text(
-            text = if (date.isEmpty()) "-" else date,
-            fontSize = 13.sp,
-            color = AppColors.TextHint,
-            modifier = Modifier
-                .padding(top = 2.dp)
+                .padding(bottom = 24.dp) // Add spacing between steps
                 .weight(1f)
-        )
+        ) {
+            Text(
+                text = displayTitle.ifEmpty { title }.ifEmpty { "-" },
+                fontSize = 15.sp,
+                fontWeight = if (stepStatus == "current") FontWeight.Bold else FontWeight.SemiBold,
+                color = when (stepStatus) {
+                    "completed" -> AppColors.Success
+                    "current" -> AppColors.TextPrimary
+                    else -> AppColors.TextHint
+                }
+            )
+
+            if (!displayDescription.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = displayDescription,
+                    fontSize = 12.sp,
+                    color = AppColors.TextSecond,
+                    lineHeight = 18.sp
+                )
+            }
+        }
+
+        if (displayDate.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = displayDate,
+                fontSize = 12.sp,
+                color = if (stepStatus == "completed") AppColors.Success.copy(alpha = 0.7f) else AppColors.TextHint,
+                modifier = Modifier.padding(top = 2.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.End
+            )
+        }
     }
 }
 

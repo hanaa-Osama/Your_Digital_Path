@@ -1,6 +1,5 @@
 package com.example.yourdigitalpath.domain.usecase
 
-import com.example.yourdigitalpath.R
 import com.example.yourdigitalpath.domain.model.OrderTrackingDetail
 import com.example.yourdigitalpath.domain.model.TrackingStep
 import com.example.yourdigitalpath.domain.repository.OrderRepository
@@ -20,16 +19,16 @@ class AddOrderUseCase @Inject constructor(
 
         val steps = listOf(
             TrackingStep(
-                id = 1,
+                id = 1L,
                 status = "completed",
-                title = R.string.order_received,
+                title = "تم استلام الطلب",
                 timestamp = sdfTime.format(now)
             ),
             TrackingStep(
-                id = 2,
+                id = 2L,
                 status = "current",
-                title = R.string.under_review,
-                timestamp = "Now"
+                title = "قيد المراجعة",
+                timestamp = "الآن"
             )
         )
 

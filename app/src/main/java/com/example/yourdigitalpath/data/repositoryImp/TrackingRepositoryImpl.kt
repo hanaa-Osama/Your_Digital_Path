@@ -36,13 +36,25 @@ class TrackingRepositoryImpl(
                     val stepsList = snapshot.get("steps") as? List<Map<String, Any>> ?: emptyList()
 
                     val domainSteps = stepsList.mapIndexed { index, map ->
+                        val rawTitle = map["title"] as? String
+                        val rawDescription = map["description"] as? String
+
+                        val title = rawTitle?.takeIf { it.isNotBlank() }
+                            ?: rawDescription?.takeIf { it.isNotBlank() }
+                            ?: when (index) {
+                                0 -> context.getString(R.string.order_received)
+                                1 -> context.getString(R.string.under_review)
+                                2 -> context.getString(R.string.document_processing)
+                                3 -> context.getString(R.string.shipped)
+                                4 -> context.getString(R.string.delivered)
+                                else -> "-"
+                            }
+
                         TrackingFirebaseDto(
-                            status_code = map["status"] as? String
-                                ?: "",
-                            update_time = map["timestamp"] as? String
-                                ?: "",
-                            description = map["title"] as? String
-                                ?: ""
+                            status = map["status"] as? String ?: "pending",
+                            timestamp = map["timestamp"] as? String ?: "",
+                            title = title,
+                            description = rawDescription?.takeIf { it != title }
                         ).toDomain(stepId = index.toLong())
                     }
 

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetNotificationsUseCase(
     private val repository: NotificationRepository
 ) {
-    operator fun invoke(): Flow<List<NotificationItem>> {
-        return repository.getAllNotifications()
+    operator fun invoke(userId: String): Flow<List<NotificationItem>> {
+        return repository.getAllNotifications(userId)
     }
 }

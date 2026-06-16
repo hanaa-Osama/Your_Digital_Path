@@ -42,17 +42,12 @@ fun formatTimestamp(context: Context, timestamp: Long): String {
 }
 
 fun TrackingFirebaseDto.toDomain(stepId: Long = 0L): TrackingStep {
-    val title = when (this.status_code) {
-        "completed" -> R.string.order_received
-        "current" -> R.string.under_review
-        "done" -> R.string.order_completed
-        else -> R.string.order_received
-    }
     return TrackingStep(
         id = stepId,
-        title = title,
-        timestamp = this.update_time,
-        status = this.status_code
+        title = this.title,
+        timestamp = this.timestamp,
+        status = this.status,
+        description = this.description
     )
 }
 

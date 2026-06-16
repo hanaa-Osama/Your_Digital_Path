@@ -11,6 +11,7 @@ import com.example.yourdigitalpath.domain.usecase.GetNotificationsUseCase
 import com.example.yourdigitalpath.domain.usecase.MarkNotificationAsReadUseCase
 import com.example.yourdigitalpath.domain.usecase.ObserveOrderTrackingUseCase
 import com.example.yourdigitalpath.domain.usecase.order.CalculateOrderPercentageUseCase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -63,10 +64,11 @@ object AppModule {
     @Singleton
     fun provideFirestoreNotificationListener(
         firestore: FirebaseFirestore,
+        auth: FirebaseAuth,
         dao: NotificationDao,
         @ApplicationContext context: Context
     ): FirestoreNotificationListener {
-        return FirestoreNotificationListener(firestore, dao, context)
+        return FirestoreNotificationListener(firestore, auth, dao, context)
     }
 
 }

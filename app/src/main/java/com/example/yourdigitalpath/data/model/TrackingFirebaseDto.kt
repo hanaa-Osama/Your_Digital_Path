@@ -1,9 +1,8 @@
 package com.example.yourdigitalpath.data.model
 
 data class TrackingFirebaseDto(
-    val status_code: String,
-    val update_time: String,
-    val description: String
+    val status: String = "",
+    val timestamp: String = "",
+    val title: String = "",
+    val description: String? = null
 )
-
-

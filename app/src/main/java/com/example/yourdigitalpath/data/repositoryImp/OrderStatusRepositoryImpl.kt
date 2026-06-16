@@ -8,6 +8,7 @@ import com.example.yourdigitalpath.data.mapper.toDomain
 import com.example.yourdigitalpath.domain.model.OrderModel
 import com.example.yourdigitalpath.domain.model.OrderStatus
 import com.example.yourdigitalpath.domain.repository.OrderRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class OrderRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao,
     private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth,
     @ApplicationContext
     private val context: Context
 ) : OrderRepository {
@@ -33,7 +35,15 @@ class OrderRepositoryImpl @Inject constructor(
             }
 
         val remoteOrders = callbackFlow {
+            val userId = auth.currentUser?.uid
+            if (userId == null) {
+                trySend(emptyList())
+                close()
+                return@callbackFlow
+            }
+
             val listener = firestore.collection("orders")
+                .whereEqualTo("userId", userId)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         android.util.Log.e("OrderRepo", "Listen failed.", error)
